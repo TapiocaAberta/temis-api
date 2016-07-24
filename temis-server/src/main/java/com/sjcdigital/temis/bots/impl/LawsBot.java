@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.bots;
+package com.sjcdigital.temis.bots.impl;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -19,8 +19,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import com.sjcdigital.temis.bots.AbstractBot;
 import com.sjcdigital.temis.exceptions.BotException;
-import com.sjcdigital.temis.service.File;
+import com.sjcdigital.temis.util.File;
 
 /**
  * 
@@ -39,6 +40,9 @@ public class LawsBot extends AbstractBot {
 	@Value("${url.laws}")
 	private String lawsUrl;
 	
+	@Value("${path.leis}")
+	private String path;
+	
 	@Autowired
 	private File file;
 	
@@ -47,7 +51,7 @@ public class LawsBot extends AbstractBot {
 		LocalTime start = LocalTime.now();
 		List<Integer> allYears = getAllYears();
 		
-		String code = "L0001";
+		String code = "L0001"; //TODO: Recuperar do banco, caso ja exista dado
 		String url = "";
 		String body = "";
 		
@@ -68,7 +72,7 @@ public class LawsBot extends AbstractBot {
 				
 				LOGGER.info("READ URL: " + url);
 				
-				file.createFile(body, code, year);
+				file.createFile(getPath(), body, code, year);
 				code = buildLawCode(getNextLawCode(code));
 				tryNextYear = false;
 				limitToTry = 10;
@@ -119,7 +123,7 @@ public class LawsBot extends AbstractBot {
 		
 	}
 	
-	protected List<Integer> getAllYears() {
+	private List<Integer> getAllYears() {
 		
 		List<Integer> years = new LinkedList<>();
 		
@@ -141,17 +145,22 @@ public class LawsBot extends AbstractBot {
 		
 	}
 	
-	protected String buildURL(Integer year, String code) {
+	private String buildURL(Integer year, String code) {
 		return lawsUrl.concat(year.toString()).concat("/").concat(code).concat(".htm");
 	}
 	
-	protected BigInteger getNextLawCode(String current) {
+	private BigInteger getNextLawCode(String current) {
 		BigInteger nextLawCode = new BigInteger(current.replace("L", "")).add(BigInteger.ONE);
 		return nextLawCode;
 	}
 	
-	protected String buildLawCode(BigInteger code) {
+	private String buildLawCode(BigInteger code) {
 		return "L" + StringUtils.leftPad(code.toString(), 4, "0");
+	}
+
+	@Override
+	protected String getPath() {
+		return path.concat("leis/");
 	}
 	
 }

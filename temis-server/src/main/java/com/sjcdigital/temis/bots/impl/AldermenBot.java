@@ -1,0 +1,99 @@
+package com.sjcdigital.temis.bots.impl;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.sjcdigital.temis.bots.AbstractBot;
+import com.sjcdigital.temis.exceptions.BotException;
+import com.sjcdigital.temis.util.File;
+
+/**
+ * 
+ * @author pedro-hos
+ *         
+ */
+
+@Component
+public class AldermenBot extends AbstractBot {
+	
+	private static final Logger LOGGER = LogManager.getLogger(AldermenBot.class);
+	
+	@Value("${url.aldermen}")
+	private String aldermenUrl = "http://www.camarasjc.sp.gov.br/vereadores/";
+	
+	@Value("${path.leis}")
+	private String path;
+	
+	@Autowired
+	private File file;
+	
+	public void saveAldermen() throws BotException {
+		
+		boolean dataBaseEmpty = false;
+		
+		if (!dataBaseEmpty) {
+			return;
+		}
+		
+		Collection<String> allLinks = getAldermenLinks();
+		
+		try {
+			
+			for (String link : allLinks) {
+				Document document = Optional.ofNullable(getPage(link).get()).orElseThrow(BotException::new);
+				file.createFile(getPath(), document.html(), getFileName(link), LocalDate.now().getYear());
+			}
+			
+		} catch (IOException | InterruptedException | ExecutionException exception) {
+			LOGGER.error(ExceptionUtils.getStackTrace(exception));
+		}
+		
+	}
+	
+	private Collection<String> getAldermenLinks() throws BotException {
+		
+		Collection<String> links = new HashSet<>();
+		
+		try {
+			
+			Document document = Optional.ofNullable(getPage(aldermenUrl).get()).orElseThrow(BotException::new);
+			Elements divsBack = document.getElementsByClass("back"); // <div
+			                                                         // class="back">
+			
+			for (Element element : divsBack) {
+				element.select("a").stream().map(l -> l.attr("href")).peek(System.out::println).forEach(links::add); // <a
+				                                                                                                     // href="http://..."><a/>
+			}
+			
+		} catch (IOException | InterruptedException | ExecutionException exception) {
+			LOGGER.error(ExceptionUtils.getStackTrace(exception));
+		}
+		
+		return links;
+	}
+	
+	private String getFileName(String link) {
+		String[] split = link.split("/");
+		return split[split.length - 1];
+	}
+	
+	@Override
+	protected String getPath() {
+		return path.concat("vereadores/");
+	}
+	
+}

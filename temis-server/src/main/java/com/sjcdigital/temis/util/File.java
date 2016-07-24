@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.service;
+package com.sjcdigital.temis.util;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,9 +8,8 @@ import java.nio.file.Paths;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * 
@@ -20,20 +19,17 @@ import org.springframework.stereotype.Service;
  *		
  */
 
-@Service
+@Component
 public class File {
 	
 	private final Logger LOGGER = LogManager.getLogger(this.getClass());
 	
-	@Value("${path.leis}")
-	private String path;
-	
 	@Async
-	public void createFile(final String body, final String fileName, final Integer year) {
+	public void createFile(final String path, final String body, final String fileName, final Integer year) {
 		
 		try {
 			
-			LOGGER.info("Salvando Lei: " + fileName);
+			LOGGER.info("Salvando file: " + fileName);
 			
 			Path pathNio = Paths.get(path.concat(year.toString()));
 			Files.createDirectories(pathNio);
@@ -44,5 +40,6 @@ public class File {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 	}
+	
 	
 }

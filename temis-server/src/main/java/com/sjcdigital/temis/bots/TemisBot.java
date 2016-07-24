@@ -8,12 +8,14 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.sjcdigital.temis.bots.impl.AldermenBot;
+import com.sjcdigital.temis.bots.impl.LawsBot;
 import com.sjcdigital.temis.exceptions.BotException;
 
 /**
  * 
- * @author pedro-hos
- *         Apenas um starter para fazer a carga assim que o servidor subir.
+ * @author pedro-hos Apenas um starter para fazer a carga assim que o servidor
+ *         subir.
  */
 @Component
 public class TemisBot {
@@ -31,7 +33,7 @@ public class TemisBot {
 		
 		try {
 			
-			aldermenBot.getAldermenLinks();
+			aldermenBot.saveAldermen();
 			lawsBot.savePages();
 			
 		} catch (BotException e) {
