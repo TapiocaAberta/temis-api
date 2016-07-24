@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.bots.impl;
+package com.sjcdigital.temis.model.service.bots.impl;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.sjcdigital.temis.bots.AbstractBot;
-import com.sjcdigital.temis.exceptions.BotException;
+import com.sjcdigital.temis.model.exceptions.BotException;
+import com.sjcdigital.temis.model.service.bots.AbstractBot;
 import com.sjcdigital.temis.util.File;
 
 /**

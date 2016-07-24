@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.bots;
+package com.sjcdigital.temis;
 
 import javax.annotation.PostConstruct;
 
@@ -8,9 +8,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.sjcdigital.temis.bots.impl.AldermenBot;
-import com.sjcdigital.temis.bots.impl.LawsBot;
-import com.sjcdigital.temis.exceptions.BotException;
+import com.sjcdigital.temis.model.exceptions.BotException;
+import com.sjcdigital.temis.model.service.bots.impl.AldermenBot;
+import com.sjcdigital.temis.model.service.bots.impl.LawsBot;
 
 /**
  * 
@@ -18,7 +18,7 @@ import com.sjcdigital.temis.exceptions.BotException;
  *         subir.
  */
 @Component
-public class TemisBot {
+public class TemisStarter {
 	
 	private final Logger LOGGER = LogManager.getLogger(this.getClass());
 	

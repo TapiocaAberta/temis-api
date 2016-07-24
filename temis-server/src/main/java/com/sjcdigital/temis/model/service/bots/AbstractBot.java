@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.bots;
+package com.sjcdigital.temis.model.service.bots;
 
 import java.io.IOException;
 import java.util.concurrent.Future;

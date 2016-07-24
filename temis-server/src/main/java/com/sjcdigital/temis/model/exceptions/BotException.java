@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.exceptions;
+package com.sjcdigital.temis.model.exceptions;
 
 /**
  * 

@@ -1,14 +1,14 @@
-package com.sjcdigital.temis.parser;
+package com.sjcdigital.temis.model.service.parsers;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.sjcdigital.temis.Alderman;
+import com.sjcdigital.temis.model.document.Alderman;
 
 /**
  * 
  * @author pedro-hos
- *        
+ *         
  */
 public class AldermenParser {
 	
