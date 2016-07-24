@@ -1,0 +1,8 @@
+server:
+  port: 8080
+  context-path: /temis-server
+  tomcat.uri-encoding: ISO-8859-1
+
+url.laws: http://www.ceaam.net/sjc/legislacao/leis/
+url.aldermen: http://www.camarasjc.sp.gov.br/vereadores/
+path.leis: /Users/pedro-hos/Documents/workspace/transparencia_sjc/leis-sjc/data/html/
