@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.model.service.camel;
+package com.sjcdigital.temis.model.service.camel.route.impl;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class LawsCamel extends RouteBuilder {
+public class LawsRoute extends RouteBuilder {
 	
 	@Override
 	public void configure() throws Exception {

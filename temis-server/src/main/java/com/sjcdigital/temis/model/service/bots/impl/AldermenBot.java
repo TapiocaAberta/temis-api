@@ -22,78 +22,78 @@ import com.sjcdigital.temis.model.service.bots.AbstractBot;
 import com.sjcdigital.temis.util.File;
 
 /**
- * 
+ *
  * @author pedro-hos
- *         
+ *
  */
 
 @Component
 public class AldermenBot extends AbstractBot {
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(AldermenBot.class);
-	
+
 	@Value("${url.aldermen}")
-	private String aldermenUrl = "http://www.camarasjc.sp.gov.br/vereadores/";
-	
+	private String aldermenUrl;
+
 	@Value("${path.leis}")
 	private String path;
-	
+
 	@Autowired
 	private File file;
-	
+
 	public void saveAldermen() throws BotException {
-		
-		boolean dataBaseEmpty = false;
-		
+
+		final boolean dataBaseEmpty = false;
+
 		if (!dataBaseEmpty) {
 			return;
 		}
-		
-		Collection<String> allLinks = getAldermenLinks();
-		
+
+		final Collection<String> allLinks = getAldermenLinks();
+
 		try {
-			
-			for (String link : allLinks) {
-				Document document = Optional.ofNullable(getPage(link).get()).orElseThrow(BotException::new);
+
+			for (final String link : allLinks) {
+				final Document document = Optional.ofNullable(getPage(link).get()).orElseThrow(BotException::new);
 				file.createFile(getPath(), document.html(), getFileName(link), LocalDate.now().getYear());
 			}
-			
+
 		} catch (IOException | InterruptedException | ExecutionException exception) {
 			LOGGER.error(ExceptionUtils.getStackTrace(exception));
 		}
-		
+
 	}
-	
+
 	private Collection<String> getAldermenLinks() throws BotException {
-		
-		Collection<String> links = new HashSet<>();
-		
+
+		final Collection<String> links = new HashSet<>();
+
 		try {
-			
-			Document document = Optional.ofNullable(getPage(aldermenUrl).get()).orElseThrow(BotException::new);
-			Elements divsBack = document.getElementsByClass("back"); // <div
-			                                                         // class="back">
-			
-			for (Element element : divsBack) {
+
+			final Document document = Optional.ofNullable(getPage(aldermenUrl).get()).orElseThrow(BotException::new);
+			final Elements divsBack = document.getElementsByClass("back"); // <div
+			// class="back">
+
+			for (final Element element : divsBack) {
 				element.select("a").stream().map(l -> l.attr("href")).peek(System.out::println).forEach(links::add); // <a
-				                                                                                                     // href="http://..."><a/>
+				// href="http://..."><a/>
 			}
-			
+
 		} catch (IOException | InterruptedException | ExecutionException exception) {
 			LOGGER.error(ExceptionUtils.getStackTrace(exception));
 		}
-		
+
 		return links;
 	}
-	
-	private String getFileName(String link) {
-		String[] split = link.split("/");
+
+	private String getFileName(final String link) {
+		final String[] split = link.split("/");
 		return split[split.length - 1];
 	}
-	
+
 	@Override
 	protected String getPath() {
 		return path.concat("vereadores/");
 	}
-	
+
 }
