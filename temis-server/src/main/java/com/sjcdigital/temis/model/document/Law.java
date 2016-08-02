@@ -4,19 +4,19 @@ import java.time.LocalDate;
 
 public class Law {
 
-	private String lawCode;
+	private String code;
 	private String author;
-	private String description;
+	private String desc;
 	private LocalDate date;
 	private String title;
-	private String projectLawNumber;
+	private String number;
 
-	public String getLawCode() {
-		return lawCode;
+	public String getCode() {
+		return code;
 	}
 
-	public void setLawCode(final String lawId) {
-		this.lawCode = lawId;
+	public void setCode(final String lawId) {
+		this.code = lawId;
 	}
 
 	public String getAuthor() {
@@ -27,12 +27,12 @@ public class Law {
 		this.author = author;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getDesc() {
+		return desc;
 	}
 
-	public void setDescription(final String description) {
-		this.description = description;
+	public void setDesc(final String description) {
+		this.desc = description;
 	}
 
 	public LocalDate getDate() {
@@ -51,12 +51,12 @@ public class Law {
 		this.title = title;
 	}
 
-	public String getProjectLawNumber() {
-		return projectLawNumber;
+	public String getNumber() {
+		return number;
 	}
 
-	public void setProjectLawNumber(final String projectLawNumber) {
-		this.projectLawNumber = projectLawNumber;
+	public void setNumber(final String projectLawNumber) {
+		this.number = projectLawNumber;
 	}
 
 }
