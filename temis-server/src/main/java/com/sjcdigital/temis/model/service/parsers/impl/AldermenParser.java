@@ -16,10 +16,9 @@ import com.sjcdigital.temis.model.document.Alderman;
 import com.sjcdigital.temis.model.service.parsers.AbstractParser;
 
 /**
- *
  * @author pedro-hos
- *
  */
+
 @Component
 public class AldermenParser extends AbstractParser {
 

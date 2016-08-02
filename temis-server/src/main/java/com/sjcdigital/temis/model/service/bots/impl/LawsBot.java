@@ -1,5 +1,6 @@
 package com.sjcdigital.temis.model.service.bots.impl;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.time.Duration;
@@ -13,10 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.jsoup.HttpStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.sjcdigital.temis.model.exceptions.BotException;
@@ -24,19 +23,17 @@ import com.sjcdigital.temis.model.service.bots.AbstractBot;
 import com.sjcdigital.temis.util.File;
 
 /**
- * 
+ *
  * @author pedro-hos
- *         
- *         Classe responsável por pegar as páginas das leis em:
- *         http://www.ceaam.net/sjc/legislacao/index.php, e salvá-las em uma
- *         pasta para realização de parse posteriormente.
- * 		
+ *
+ *         Classe responsável por pegar as páginas das leis em: http://www.ceaam.net/sjc/legislacao/index.php, e salvá-las em uma pasta para realização de parse posteriormente.
+ *
  */
 @Component
 public class LawsBot extends AbstractBot {
 	
 	private static final Logger LOGGER = LogManager.getLogger(LawsBot.class);
-			
+	
 	@Value("${url.laws}")
 	private String lawsUrl;
 	
@@ -48,16 +45,16 @@ public class LawsBot extends AbstractBot {
 	
 	public void savePages() throws BotException {
 		
-		LocalTime start = LocalTime.now();
-		List<Integer> allYears = getAllYears();
+		final LocalTime start = LocalTime.now();
+		final List<Integer> allYears = getAllYears();
 		
-		String code = "L0001"; //TODO: Recuperar do banco, caso ja exista dado
+		String code = "L0001"; // TODO: Recuperar do banco, caso ja exista dado
 		String url = "";
 		String body = "";
 		
 		boolean tryNextYear = false;
 		
-		int currentYear = LocalDate.now().getYear();
+		final int currentYear = LocalDate.now().getYear();
 		int index = 0;
 		int limitToTry = 10;
 		Integer year = null;
@@ -79,35 +76,26 @@ public class LawsBot extends AbstractBot {
 				
 			} catch (InterruptedException | ExecutionException | IOException exception) {
 				
-				if (exception instanceof HttpStatusException) {
+				if (exception instanceof FileNotFoundException) {
 					
-					HttpStatusException statusException = (HttpStatusException) exception;
+					LOGGER.error("Error 404: " + url);
 					
-					if (statusException.getStatusCode() == HttpStatus.NOT_FOUND.value()) {
-						
-						LOGGER.error("Error 404: " + url);
-						
-						if (year != currentYear && !tryNextYear) {
-							index += 1;
-							tryNextYear = true;
-							
-						} else {
-							
-							if(limitToTry == 0) {
-								break;
-							}
-							
-							if (year != currentYear) {
-								index -= 1;
-							}
-							
-							limitToTry-=1;
-							code = buildLawCode(getNextLawCode(code));
-						}
+					if (year != currentYear && !tryNextYear) {
+						index++;
+						tryNextYear = true;
 						
 					} else {
-						LOGGER.error(ExceptionUtils.getStackTrace(statusException));
-						throw new BotException(statusException);
+						
+						if (limitToTry == 0) {
+							break;
+						}
+						
+						if (year != currentYear) {
+							index--;
+						}
+						
+						limitToTry--;
+						code = buildLawCode(getNextLawCode(code));
 					}
 					
 				} else {
@@ -125,12 +113,12 @@ public class LawsBot extends AbstractBot {
 	
 	private List<Integer> getAllYears() {
 		
-		List<Integer> years = new LinkedList<>();
+		final List<Integer> years = new LinkedList<>();
 		
 		int year = 1948;
-		int currentYear = LocalDate.now().getYear();
+		final int currentYear = LocalDate.now().getYear();
 		
-		boolean dataBaseEmpty = false;
+		final boolean dataBaseEmpty = false;
 		
 		if (!dataBaseEmpty) {
 			years.add(currentYear);
@@ -145,19 +133,19 @@ public class LawsBot extends AbstractBot {
 		
 	}
 	
-	private String buildURL(Integer year, String code) {
+	private String buildURL(final Integer year, final String code) {
 		return lawsUrl.concat(year.toString()).concat("/").concat(code).concat(".htm");
 	}
 	
-	private BigInteger getNextLawCode(String current) {
-		BigInteger nextLawCode = new BigInteger(current.replace("L", "")).add(BigInteger.ONE);
+	private BigInteger getNextLawCode(final String current) {
+		final BigInteger nextLawCode = new BigInteger(current.replace("L", "")).add(BigInteger.ONE);
 		return nextLawCode;
 	}
 	
-	private String buildLawCode(BigInteger code) {
+	private String buildLawCode(final BigInteger code) {
 		return "L" + StringUtils.leftPad(code.toString(), 4, "0");
 	}
-
+	
 	@Override
 	protected String getPath() {
 		return path.concat("leis/");
