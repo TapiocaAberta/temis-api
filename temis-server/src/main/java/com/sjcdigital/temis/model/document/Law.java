@@ -16,7 +16,7 @@ public class Law {
 	}
 
 	public void setCode(final String lawId) {
-		this.code = lawId;
+		code = lawId;
 	}
 
 	public String getAuthor() {
@@ -32,7 +32,7 @@ public class Law {
 	}
 
 	public void setDesc(final String description) {
-		this.desc = description;
+		desc = description;
 	}
 
 	public LocalDate getDate() {
@@ -56,7 +56,17 @@ public class Law {
 	}
 
 	public void setNumber(final String projectLawNumber) {
-		this.number = projectLawNumber;
+		number = projectLawNumber;
+	}
+
+	@Override
+	public String toString() {
+		return "{ code: " + code + ", "
+				+ "author: " + author + ", "
+				+ "desc: " + desc + ", "
+				+ "date: " + date + ", "
+				+ "title: " + title + ", "
+				+ "number: " + number + " }";
 	}
 
 }
