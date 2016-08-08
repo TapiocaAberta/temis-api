@@ -1,7 +1,14 @@
-server:
-  port: 8080
+spring:
   context-path: /temis-server
-  tomcat.uri-encoding: ISO-8859-1
+  profiles.active: local
+---
+spring:
+  profiles: local
+  
+  data:
+   mongodb:
+    uri: mongodb://localhost/temisdb
+---
 
 url.laws: http://www.ceaam.net/sjc/legislacao/leis/
 url.aldermen: http://www.camarasjc.sp.gov.br/vereadores/

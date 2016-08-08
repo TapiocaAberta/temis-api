@@ -1,15 +1,28 @@
 package com.sjcdigital.temis.model.document;
 
 import java.time.LocalDate;
+import java.util.Collection;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Law {
 
+	@Id
+	private String id;
+
+	@Indexed(unique = true)
 	private String code;
-	private String author;
+
+	private Collection<Alderman> author;
+
 	private String desc;
 	private LocalDate date;
 	private String title;
-	private String number;
+
+	@Field(value = "PLNumber")
+	private String projectLawNumber;
 
 	public String getCode() {
 		return code;
@@ -19,11 +32,11 @@ public class Law {
 		code = lawId;
 	}
 
-	public String getAuthor() {
+	public Collection<Alderman> getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(final String author) {
+	public void setAuthor(final Collection<Alderman> author) {
 		this.author = author;
 	}
 
@@ -51,22 +64,18 @@ public class Law {
 		this.title = title;
 	}
 
-	public String getNumber() {
-		return number;
+	public String getProjectLawNumber() {
+		return projectLawNumber;
 	}
 
-	public void setNumber(final String projectLawNumber) {
-		number = projectLawNumber;
+	public void setProjectLawNumber(final String projectLawNumber) {
+		this.projectLawNumber = projectLawNumber;
 	}
 
 	@Override
 	public String toString() {
-		return "{ code: " + code + ", "
-				+ "author: " + author + ", "
-				+ "desc: " + desc + ", "
-				+ "date: " + date + ", "
-				+ "title: " + title + ", "
-				+ "number: " + number + " }";
+		return "{ code: " + code + ", " + "author: " + author + ", " + "desc: " + desc + ", " + "date: " + date + ", "
+		        + "title: " + title + ", " + "number: " + projectLawNumber + " }";
 	}
 
 }

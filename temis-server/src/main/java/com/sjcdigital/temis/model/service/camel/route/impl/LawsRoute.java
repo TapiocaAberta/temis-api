@@ -17,28 +17,26 @@ public class LawsRoute extends AbstractRoute {
 
 	@Autowired
 	private LawsProcessor processor;
-	
+
 	@Override
 	public void configure() throws Exception {
-		
+
 		from("file://" + buildPath() + "2013" + buildOptions()).to("direct:send-process");
 		from("file://" + buildPath() + "2014" + buildOptions()).to("direct:send-process");
 		from("file://" + buildPath() + "2015" + buildOptions()).to("direct:send-process");
 		from("file://" + buildPath() + LocalDate.now().getYear() + buildOptions()).to("direct:send-process");
 
-		from("direct:send-process")
-			.log("Send to process: ${file:path}")
-		.process(processor);
+		from("direct:send-process").process(processor);
 	}
-	
+
 	@Override
 	protected String buildPath() {
 		return path + "leis/";
 	}
-	
+
 	@Override
 	protected String buildOptions() {
 		return "?delay=5s&include=.*.html&move=${file:parent}/read/${file:onlyname}";
 	}
-	
+
 }
