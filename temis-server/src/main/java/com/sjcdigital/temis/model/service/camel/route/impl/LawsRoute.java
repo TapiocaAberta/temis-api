@@ -36,7 +36,7 @@ public class LawsRoute extends AbstractRoute {
 
 	@Override
 	protected String buildOptions() {
-		return "?delay=5s&include=.*.html&move=${file:parent}/read/${file:onlyname}";
+		return "?delay=30s&include=.*.html&move=${file:parent}/read/${file:onlyname}";
 	}
 
 }
