@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.sjcdigital.temis.model.document.Law;
 import com.sjcdigital.temis.model.exceptions.BotException;
+import com.sjcdigital.temis.model.repositories.LawsRepository;
 import com.sjcdigital.temis.model.service.bots.AbstractBot;
 import com.sjcdigital.temis.util.File;
 
@@ -26,7 +29,8 @@ import com.sjcdigital.temis.util.File;
  *
  * @author pedro-hos
  *
- *         Classe responsável por pegar as páginas das leis em: http://www.ceaam.net/sjc/legislacao/index.php, e salvá-las em uma pasta para realização de parse posteriormente.
+ *         Classe responsável por pegar as páginas das leis em: http://www.ceaam.net/sjc/legislacao/index.php,
+ *         e salvá-las em uma pasta para realização de parse posteriormente.
  *
  */
 @Component
@@ -40,17 +44,23 @@ public class LawsBot extends AbstractBot {
 	@Value("${path.leis}")
 	private String path;
 
+	@Value("${year.start.extract}")
+	private int year;
+
 	@Autowired
 	private File file;
+
+	@Autowired
+	private LawsRepository lawsRepository;
 
 	public void savePages() throws BotException {
 
 		final LocalTime start = LocalTime.now();
 		final List<Integer> allYears = getAllYears();
 
-		String code = "L8865"; // TODO: Recuperar do banco, caso ja exista dado
-		String url = "";
-		String body = "";
+		String code = getCode();
+		String url  = StringUtils.EMPTY;
+		String body = StringUtils.EMPTY;
 
 		boolean tryNextYear = false;
 
@@ -111,22 +121,26 @@ public class LawsBot extends AbstractBot {
 
 	}
 
+	private String getCode() {
+		final Optional<Law> lastLaw = lawsRepository.findFirstByOrderByCodeDesc();
+		return lastLaw.isPresent() ? "L".concat(lastLaw.get().getCode()) : "L0001";
+	}
+
 	private List<Integer> getAllYears() {
 
 		final List<Integer> years = new LinkedList<>();
-
-		int year = 2013;
 		final int currentYear = LocalDate.now().getYear();
 
-		final boolean dataBaseEmpty = true;
-
-		if (!dataBaseEmpty) {
+		if (lawsRepository.count() != 0) {
 			years.add(currentYear);
-		}
 
-		while (year <= currentYear) {
-			years.add(year);
-			year += 1;
+		} else {
+
+			while (year <= currentYear) {
+				years.add(year);
+				year += 1;
+			}
+
 		}
 
 		return years;
