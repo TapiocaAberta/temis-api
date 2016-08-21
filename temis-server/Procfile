@@ -1,1 +1,0 @@
-web: java -Dserver.port=$PORT -jar target/temis-server.jar
