@@ -3,6 +3,7 @@
  */
 package com.sjcdigital.temis;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import com.sjcdigital.temis.model.service.bots.BotService;
 @Component
 public class TemisCron {
 
+	@Autowired
 	private BotService service;
 
 	@Scheduled(cron = "0 0 0 1 * ?")
