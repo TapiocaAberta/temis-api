@@ -1,3 +1,0 @@
----
-default_process_types:
-    web: java -Dserver.port=$PORT -jar target/temis-server.jar
