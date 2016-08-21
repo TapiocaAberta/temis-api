@@ -1,1 +1,3 @@
-web: java $JAVA_OPTS -Dserver.port=$PORT -jar target/*.jar
+---
+default_process_types:
+    web: java -Dserver.port=$PORT -jar target/temis-server.jar
