@@ -123,7 +123,7 @@ public class LawsBot extends AbstractBot {
 
 	private String getCode() {
 		final Optional<Law> lastLaw = lawsRepository.findFirstByOrderByCodeDesc();
-		return lastLaw.isPresent() ? "L".concat(lastLaw.get().getCode()) : "L0001";
+		return lastLaw.isPresent() ?  buildLawCode(getNextLawCode(lastLaw.get().getCode())) : "L8865"; //L8865 is the last code of 2012
 	}
 
 	private List<Integer> getAllYears() {

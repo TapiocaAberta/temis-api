@@ -13,4 +13,4 @@ spring:
 year.start.extract: 2013
 url.laws: http://www.ceaam.net/sjc/legislacao/leis/
 url.aldermen: http://www.camarasjc.sp.gov.br/vereadores/
-path.leis: /Users/pedro-hos/Documents/workspace/transparencia_sjc/temis/data/html/
+path.leis: src/main/resources/data/html/

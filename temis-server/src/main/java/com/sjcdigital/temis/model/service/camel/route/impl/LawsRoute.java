@@ -1,7 +1,5 @@
 package com.sjcdigital.temis.model.service.camel.route.impl;
 
-import java.time.LocalDate;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,23 +18,17 @@ public class LawsRoute extends AbstractRoute {
 
 	@Override
 	public void configure() throws Exception {
-
-		from("file://" + buildPath() + "2013" + buildOptions()).to("direct:send-process");
-		from("file://" + buildPath() + "2014" + buildOptions()).to("direct:send-process");
-		from("file://" + buildPath() + "2015" + buildOptions()).to("direct:send-process");
-		from("file://" + buildPath() + LocalDate.now().getYear() + buildOptions()).to("direct:send-process");
-
-		from("direct:send-process").process(processor);
+		from(FILE + path() + options()).process(processor);
 	}
 
 	@Override
-	protected String buildPath() {
+	protected String path() {
 		return path + "leis/";
 	}
 
 	@Override
-	protected String buildOptions() {
-		return "?delay=30s&include=.*.html&move=${file:parent}/read/${file:onlyname}";
+	protected String options() {
+		return "?delay=30s&recursive=true&delete=true";
 	}
 
 }

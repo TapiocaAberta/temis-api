@@ -1,7 +1,5 @@
 package com.sjcdigital.temis.model.service.camel.route.impl;
 
-import java.time.LocalDate;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,19 +18,12 @@ public class AldermanRoute extends AbstractRoute {
 
 	@Override
 	public void configure() throws Exception {
-		from("file://" + buildPath() + buildOptions())
-		.process(processor)
-		.to("file://" + buildPath().concat("/read"));
+		from(FILE + path() + options()).process(processor);
 	}
 
 	@Override
-	protected String buildPath() {
-		return path + "vereadores/" + LocalDate.now().getYear();
-	}
-
-	@Override
-	protected String buildOptions() {
-		return "?delay=5s";
+	protected String path() {
+		return path + "vereadores/";
 	}
 
 }
