@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.sjcdigital.temis.model.service.camel.processor;
 
@@ -19,15 +19,15 @@ import com.sjcdigital.temis.model.service.parsers.impl.AldermenParser;
  */
 @Component
 public class AldermanProcessor implements Processor {
-	
+
 	@Autowired
 	private AldermenParser parser;
-	
+
 	@Override
-	public void process(Exchange exchange) throws Exception {
+	public void process(final Exchange exchange) throws Exception {
 		final Message in = exchange.getIn();
-		File file = in.getMandatoryBody(File.class);
+		final File file = in.getMandatoryBody(File.class);
 		parser.parse(file);
 	}
-	
+
 }

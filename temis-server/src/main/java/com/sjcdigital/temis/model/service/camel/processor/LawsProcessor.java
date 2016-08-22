@@ -22,12 +22,12 @@ public class LawsProcessor implements Processor {
 
 	@Autowired
 	private LawsParser lawsParser;
-	
+
 	@Override
 	public void process(final Exchange exchange) throws Exception {
 		final Message in = exchange.getIn();
 		final File file = in.getMandatoryBody(File.class);
 		lawsParser.parse(file);
 	}
-	
+
 }
