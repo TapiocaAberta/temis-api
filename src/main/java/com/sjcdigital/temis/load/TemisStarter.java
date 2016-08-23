@@ -1,4 +1,4 @@
-package com.sjcdigital.temis;
+package com.sjcdigital.temis.load;
 
 import javax.annotation.PostConstruct;
 
