@@ -1,6 +1,6 @@
 spring:
   context-path: /temis-server
-  profiles.active: production
+  profiles.active: local
 ---
 spring:
   profiles: local
@@ -14,7 +14,7 @@ spring:
     
   data:
    mongodb:
-    uri: mongodb://temis_user:temisq1w2e3r4@ds013216.mlab.com:13216/temisdb
+    uri: ${mongo.url}
 ---
 
 year.start.extract: 2013
