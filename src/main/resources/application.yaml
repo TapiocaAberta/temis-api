@@ -1,6 +1,6 @@
 spring:
   context-path: /temis-server
-  profiles.active: production
+  profiles.active: local
 ---
 spring:
   profiles: local
