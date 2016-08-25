@@ -1,8 +1,9 @@
 package com.sjcdigital.temis.model.repositories;
 
-import java.util.Collection;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.sjcdigital.temis.model.document.Law;
@@ -16,5 +17,5 @@ public interface LawsRepository extends MongoRepository<Law, String> {
 	
 	Optional<Law> findFirstByOrderByCodeDesc();
 	
-	Collection<Law> findByAuthorNameLike(final String name);
+	Page<Law> findByAuthorNameLike(final String name, Pageable page);
 }

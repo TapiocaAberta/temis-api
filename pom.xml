@@ -50,6 +50,20 @@
 			<version>${spring-boot.version}</version>
 		</dependency>
 
+		<!-- HATEOAS (HYPERMIDIA) -->
+		<dependency>
+			<groupId>org.springframework.hateoas</groupId>
+			<artifactId>spring-hateoas</artifactId>
+			<version>0.21.0.RELEASE</version>
+		</dependency>
+
+		<!-- model mapper -->
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>0.7.5</version>
+		</dependency>
+
 		<!-- Camel -->
 		<dependency>
 			<groupId>org.apache.camel</groupId>
