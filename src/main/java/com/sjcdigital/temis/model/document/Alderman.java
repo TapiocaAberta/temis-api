@@ -1,8 +1,11 @@
 package com.sjcdigital.temis.model.document;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.sjcdigital.temis.dto.document.AldermanDto;
 
 @Document
 public class Alderman {
@@ -116,6 +119,14 @@ public class Alderman {
 
 	public void setNotFound(final Boolean notFound) {
 		this.notFound = notFound;
+	}
+	
+	public AldermanDto convert() {
+		ModelMapper mapper = new ModelMapper();
+		AldermanDto aldermanDto = mapper.map(this, AldermanDto.class);
+		aldermanDto.setAldermanId(this.id);
+		
+		return aldermanDto;
 	}
 
 }
