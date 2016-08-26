@@ -3,24 +3,16 @@
  */
 package com.sjcdigital.temis.controller;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.hateoas.Resource;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.sjcdigital.temis.dto.document.AldermanDto;
 import com.sjcdigital.temis.model.document.Alderman;
 import com.sjcdigital.temis.model.repositories.AldermanRepository;
 
@@ -28,34 +20,22 @@ import com.sjcdigital.temis.model.repositories.AldermanRepository;
  * @author pedro-hos
  */
 
-@RestController
+@Controller
 @RequestMapping("/api/alderman")
 public class AldermanController {
 	
 	@Autowired
 	private AldermanRepository aldermanRepository;
 	
-	@RequestMapping(method = RequestMethod.GET)
-	@ResponseStatus(code = HttpStatus.OK)
-	public List<Resource<Alderman>> getCurrentAldermen() {
-		
-		List<Resource<Alderman>> aldermanResources = new ArrayList<Resource<Alderman>>();
-		List<Alderman> aldermanList = aldermanRepository.findAll(new Sort(Sort.Direction.ASC, "name"));
-		
-		for (Alderman alderman : aldermanList) {
-			Resource<Alderman> resource = new Resource<Alderman>(alderman);
-			resource.add(linkTo(methodOn(AldermanController.class).getCurrentAldermen()).withSelfRel());
-			resource.add(linkTo(methodOn(AldermanController.class).getAlderman(alderman.getName())).withRel("alderman"));
-			aldermanResources.add(resource);
-		}
-		
-		return aldermanResources;
+	@GetMapping(value = "/")
+	public Collection<Alderman> getCurrentAldermen(Pageable page) {
+		return aldermanRepository.findAll(page).getContent();
 	}
 	
-	@RequestMapping(method = RequestMethod.GET)
-	public AldermanDto getAlderman(@RequestParam() String name) {
+	@GetMapping(value = "/{name}")
+	public Alderman getAlderman(@RequestParam String name) {
 		Optional<Alderman> alderman = aldermanRepository.findByName(name);
-		return alderman.get().convert();
+		return alderman.get();
 	}
 	
 }
