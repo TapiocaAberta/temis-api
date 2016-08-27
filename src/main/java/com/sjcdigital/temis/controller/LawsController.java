@@ -1,15 +1,13 @@
 package com.sjcdigital.temis.controller;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.ExposesResourceFor;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,24 +20,20 @@ import com.sjcdigital.temis.model.repositories.LawsRepository;
  * @author pedro-hos
  */
 @Controller
-@ExposesResourceFor(LawsController.class)
-@RequestMapping("/api/laws/")
-public class LawsController {
+@ExposesResourceFor(Law.class)
+@RequestMapping("/api/laws")
+public class LawsController extends AbstractController<Law> {
 	
 	@Autowired
 	private LawsRepository lawsRepository;
 	
-	@GetMapping
-	public Resources<Law> findAllPageable(Pageable page) {
-		
-		Resources<Law> resouce = new Resources<>(lawsRepository.findAll(page));
-		resouce.add(linkTo(methodOn(LawsController.class).findAllPageable(page.next())).withRel(Link.REL_NEXT));
-		
-		return resouce;
+	@GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<Resources<Law>> findAllPageable(final Pageable pageable) {
+		return ResponseEntity.ok(createResources(lawsRepository.findAll(pageable)));
 	}
 	
-	@GetMapping(value = "alderman/{name}")
-	public Collection<Law> findByAutorName(@PathVariable final String name, Pageable page) {
+	@GetMapping(value = "/alderman/{name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public Collection<Law> findByAutorName(@PathVariable final String name, final Pageable page) {
 		return lawsRepository.findByAuthorNameLike(name, page).getContent();
 	}
 }

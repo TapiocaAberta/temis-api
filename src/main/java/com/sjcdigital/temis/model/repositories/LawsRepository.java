@@ -12,10 +12,7 @@ import com.sjcdigital.temis.model.document.Law;
  * @author pedro-hos
  */
 public interface LawsRepository extends MongoRepository<Law, String> {
-	
 	Optional<Law> findByCode(String code);
-	
 	Optional<Law> findFirstByOrderByCodeDesc();
-	
 	Page<Law> findByAuthorNameLike(final String name, Pageable page);
 }
