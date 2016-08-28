@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.sjcdigital.temis.controller;
 
 import java.lang.reflect.ParameterizedType;
@@ -20,7 +17,7 @@ import org.springframework.hateoas.Resources;
 public abstract class AbstractController<T> {
 	
 	@Autowired
-	private EntityLinks links;
+	protected EntityLinks links;
 	
 	public Resources<T> createResources(Page<T> page) {
 		

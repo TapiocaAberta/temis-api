@@ -19,6 +19,7 @@ import com.sjcdigital.temis.model.repositories.LawsRepository;
 /**
  * @author pedro-hos
  */
+
 @Controller
 @ExposesResourceFor(Law.class)
 @RequestMapping("/api/laws")
@@ -33,7 +34,7 @@ public class LawsController extends AbstractController<Law> {
 	}
 	
 	@GetMapping(value = "/alderman/{name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public Collection<Law> findByAutorName(@PathVariable final String name, final Pageable page) {
-		return lawsRepository.findByAuthorNameLike(name, page).getContent();
+	public ResponseEntity<Collection<Law>> findByAutorName(@PathVariable final String name, final Pageable page) {
+		return ResponseEntity.ok(lawsRepository.findByAuthorNameLike(name, page).getContent());
 	}
 }
