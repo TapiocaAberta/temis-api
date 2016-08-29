@@ -54,6 +54,7 @@ public class AldermanController extends AbstractController<Alderman> {
 	private Resource<Alderman> createLeiResource(Alderman a) {
 		Resource<Alderman> resource = new Resource<>(a);
 		resource.add(links.linkFor(Law.class).slash("/alderman/").slash(a.getName()).withRel("leis"));
+		resource.add(links.linkFor(Alderman.class).slash(a.getName()).withSelfRel());
 		return resource;
 	}
 	

@@ -1,11 +1,8 @@
 package com.sjcdigital.temis.model.document;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.sjcdigital.temis.dto.document.AldermanDto;
 
 @Document
 public class Alderman {
@@ -96,14 +93,6 @@ public class Alderman {
 		this.photo = photo;
 	}
 	
-	@Override
-	public String toString() {
-		return "{ " + "name: " + name + ", politicalParty: " + politicalParty + ", info:" + info + ", email: " + email
-		        + ", legislature: " + legislature + ", workplace: " + workplace + ", phone: " + phone + ", photo: "
-		        + photo + "}";
-				
-	}
-	
 	public String getId() {
 		return id;
 	}
@@ -120,12 +109,12 @@ public class Alderman {
 		this.notFound = notFound;
 	}
 	
-	public AldermanDto convert() {
-		ModelMapper mapper = new ModelMapper();
-		AldermanDto aldermanDto = mapper.map(this, AldermanDto.class);
-		aldermanDto.setAldermanId(this.id);
-		
-		return aldermanDto;
+	@Override
+	public String toString() {
+		return "{ " + "name: " + name + ", politicalParty: " + politicalParty + ", info:" + info + ", email: " + email
+		        + ", legislature: " + legislature + ", workplace: " + workplace + ", phone: " + phone + ", photo: "
+		        + photo + "}";
+				
 	}
 	
 }

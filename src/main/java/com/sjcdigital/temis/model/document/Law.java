@@ -7,6 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Law {
 
 	@Id
@@ -18,7 +20,10 @@ public class Law {
 	private Collection<Alderman> author;
 
 	private String desc;
+	
+	@JsonFormat(pattern="dd-MM-yyyy")
 	private LocalDate date;
+	
 	private String title;
 
 	@Field(value = "PLNumber")
