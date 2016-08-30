@@ -1,8 +1,7 @@
 package com.sjcdigital.temis.controller;
 
-import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.Resources;
@@ -34,7 +33,8 @@ public class LawsController extends AbstractController<Law> {
 	}
 	
 	@GetMapping(value = "/alderman/{name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Collection<Law>> findByAutorName(@PathVariable final String name, final Pageable page) {
-		return ResponseEntity.ok(lawsRepository.findByAuthorNameLike(name, page).getContent());
+	public ResponseEntity<Resources<Law>> findByAutorName(@PathVariable final String name, final Pageable page) {
+		Page<Law> laws = lawsRepository.findByAuthorNameLike(name, page);
+		return ResponseEntity.ok(createResources(laws));
 	}
 }

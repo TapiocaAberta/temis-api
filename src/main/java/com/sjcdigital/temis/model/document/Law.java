@@ -21,7 +21,7 @@ public class Law {
 
 	private String desc;
 	
-	@JsonFormat(pattern="dd-MM-yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	private LocalDate date;
 	
 	private String title;
