@@ -1,4 +1,4 @@
-# TÊMIS-SERVER (
+# TÊMIS-SERVER
 
 ![alt tag](http://files.deuseseherois.webnode.com.br/system_preview_detail_200000053-8ee8990dc5/T%C3%AAmis.jpg)
 
@@ -30,13 +30,17 @@ Api foi hospedada no Heroku, usando MLabs para armazenar os dados no Mongo. Todo
 [http://temis-server.herokuapp.com/api/](http://temis-server.herokuapp.com/api/)
 
 URI | Descrição | _links
------------- | -------------
-http://temis-server.herokuapp.com/api/laws| Acessa todas as leis, paginadas, com tamanho de 20 | self, first, next e last
-http://temis-server.herokuapp.com/api/laws?page={n}| Acessa todas as leis, paginadas, de uma determinada página com tamanho de 20 | self, first, next e last
-http://temis-server.herokuapp.com/api/laws?page={n}&size={n}| Acessa todas as leis, paginadas, de uma determinada página e tamanho | self, first, next e last
-http://temis-server.herokuapp.com/api/laws/alderman/{name}| Acessa todas as leis, paginadas, com tamanho de 20 | self, first, next e last
-http://temis-server.herokuapp.com/api/laws/alderman/{name}?page={n}| Acessa todas as leis, paginadas, de uma determinada página com tamanho de 20 | self, first, next e last
-http://temis-server.herokuapp.com/api/laws/alderman?/{name}page={n}&size={n}| Acessa todas as leis, paginadas, de uma determinada página e tamanho | self, first, next e last
-http://temis-server.herokuapp.com/api/alderman| Acessa todas os vereadores. | leis (leis do vereador), self
+:------------: | :-------------: | :------------:
+http://temis-server.herokuapp.com/api/laws| Acessa todas as leis, paginadas, com tamanho de 20 | self, first, next e last |
+http://temis-server.herokuapp.com/api/laws?page={n}| Acessa todas as leis, paginadas, de uma determinada página com tamanho de 20 | self, first, next e last |
+http://temis-server.herokuapp.com/api/laws?page={n}&size={n}| Acessa todas as leis, paginadas, de uma determinada página e tamanho | self, first, next e last |
+http://temis-server.herokuapp.com/api/laws/alderman/{name}| Acessa todas as leis, paginadas, com tamanho de 20 | self, first, next e last |
+http://temis-server.herokuapp.com/api/laws/alderman/{name}?page={n}| Acessa todas as leis, paginadas, de uma determinada página com tamanho de 20 | self, first, next e last |
+http://temis-server.herokuapp.com/api/laws/alderman?/{name}page={n}&size={n}| Acessa todas as leis, paginadas, de uma determinada página e tamanho | self, first, next e last |
+http://temis-server.herokuapp.com/api/alderman| Acessa todas os vereadores. | leis (leis do vereador), self |
+
+Método 	  | URI									  | Retorno 
+:-----:	  | :-------------------------------------| :------------------
+GET		    | /api/laws                           |  Status 200 e um JSON com uma lista Papers.
 
 contato: [pedro-hos@outlook.com](pedro-hos@outlook.com)
