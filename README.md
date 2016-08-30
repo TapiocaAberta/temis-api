@@ -26,21 +26,16 @@ Neste projeto, criamos um "chupa-cabra" e raspamos as Leis Ordinárias presentes
 
 ### URIs
 
-Api foi hospedada no Heroku, usando MLabs para armazenar os dados no Mongo. Todos serviços estão presentes em:
-[http://temis-server.herokuapp.com/api/](http://temis-server.herokuapp.com/api/)
+Api foi hospedada no Heroku, usando MLabs para armazenar os dados no Mongo. Todos serviços estão presentes em: http://temis-server.herokuapp.com/
 
-URI | Descrição | _links
-:------------: | :-------------: | :------------:
-http://temis-server.herokuapp.com/api/laws| Acessa todas as leis, paginadas, com tamanho de 20 | self, first, next e last |
-http://temis-server.herokuapp.com/api/laws?page={n}| Acessa todas as leis, paginadas, de uma determinada página com tamanho de 20 | self, first, next e last |
-http://temis-server.herokuapp.com/api/laws?page={n}&size={n}| Acessa todas as leis, paginadas, de uma determinada página e tamanho | self, first, next e last |
-http://temis-server.herokuapp.com/api/laws/alderman/{name}| Acessa todas as leis, paginadas, com tamanho de 20 | self, first, next e last |
-http://temis-server.herokuapp.com/api/laws/alderman/{name}?page={n}| Acessa todas as leis, paginadas, de uma determinada página com tamanho de 20 | self, first, next e last |
-http://temis-server.herokuapp.com/api/laws/alderman?/{name}page={n}&size={n}| Acessa todas as leis, paginadas, de uma determinada página e tamanho | self, first, next e last |
-http://temis-server.herokuapp.com/api/alderman| Acessa todas os vereadores. | leis (leis do vereador), self |
+Método 	  | URI 		  | Descrição 		| _links (HATEOAS)
+:---------|:------------: | :-------------: | :------------:
+GET | api/laws| Acessa todas as leis, paginadas, com tamanho de 20 | self, first, next e last |
+GET | api/laws?page={n}| Acessa todas as leis, paginadas, de uma determinada página com tamanho de 20 | self, first, next e last |
+GET | api/laws?page={n}&size={n}| Acessa todas as leis, paginadas, de uma determinada página e tamanho | self, first, next e last |
+GET | api/laws/alderman/{name}| Acessa todas as leis, paginadas, com tamanho de 20 | self, first, next e last |
+GET | api/laws/alderman/{name}?page={n}| Acessa todas as leis, paginadas, de uma determinada página com tamanho de 20 | self, first, next e last |
+GET | api/laws/alderman?/{name}page={n}&size={n}| Acessa todas as leis, paginadas, de uma determinada página e tamanho | self, first, next e last |
+GET | api/alderman| Acessa todas os vereadores. | leis (leis do vereador), self |
 
-Método 	  | URI									  | Retorno 
-:-----:	  | :-------------------------------------| :------------------
-GET		    | /api/laws                           |  Status 200 e um JSON com uma lista Papers.
-
-contato: [pedro-hos@outlook.com](pedro-hos@outlook.com)
+contato: pedro-hos@outlook.com
