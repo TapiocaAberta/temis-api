@@ -1,5 +1,19 @@
 package com.sjcdigital.temis.model.service.bots.impl;
 
+import com.sjcdigital.temis.model.document.Law;
+import com.sjcdigital.temis.model.exceptions.BotException;
+import com.sjcdigital.temis.model.repositories.LawsRepository;
+import com.sjcdigital.temis.model.service.bots.AbstractBot;
+import com.sjcdigital.temis.util.File;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -11,20 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import com.sjcdigital.temis.model.document.Law;
-import com.sjcdigital.temis.model.exceptions.BotException;
-import com.sjcdigital.temis.model.repositories.LawsRepository;
-import com.sjcdigital.temis.model.service.bots.AbstractBot;
-import com.sjcdigital.temis.util.File;
-
 /**
  *
  * @author pedro-hos
@@ -34,6 +34,7 @@ import com.sjcdigital.temis.util.File;
  *
  */
 @Component
+@Order(2)
 public class LawsBot extends AbstractBot {
 
 	private static final Logger LOGGER = LogManager.getLogger(LawsBot.class);
@@ -53,7 +54,7 @@ public class LawsBot extends AbstractBot {
 	@Autowired
 	private LawsRepository lawsRepository;
 
-	public void savePages() throws BotException {
+	public void saveData() throws BotException {
 
 		final LocalTime start = LocalTime.now();
 		final List<Integer> allYears = getAllYears();
