@@ -1,11 +1,12 @@
 package com.sjcdigital.temis.model.service.bots.impl;
 
-import com.sjcdigital.temis.model.exceptions.BotException;
-import com.sjcdigital.temis.model.service.bots.Bot;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import com.sjcdigital.temis.model.exceptions.BotException;
+import com.sjcdigital.temis.model.service.bots.Bot;
 
 /**
  * @author Rafael Peretta
@@ -20,6 +21,7 @@ public class CompositeBot implements Bot {
 
     @Override
     public void saveData() throws BotException {
+    	
         for (Bot bot : bots) {
             bot.saveData();
         }

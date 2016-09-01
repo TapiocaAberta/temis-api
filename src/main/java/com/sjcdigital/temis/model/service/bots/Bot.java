@@ -11,4 +11,5 @@ import com.sjcdigital.temis.model.exceptions.BotException;
 public interface Bot {
 
     void saveData() throws BotException;
+  
 }
