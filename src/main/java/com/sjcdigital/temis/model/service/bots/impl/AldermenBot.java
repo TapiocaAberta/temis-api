@@ -1,12 +1,9 @@
 package com.sjcdigital.temis.model.service.bots.impl;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-
+import com.sjcdigital.temis.model.exceptions.BotException;
+import com.sjcdigital.temis.model.repositories.AldermanRepository;
+import com.sjcdigital.temis.model.service.bots.AbstractBot;
+import com.sjcdigital.temis.util.File;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -15,12 +12,15 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import com.sjcdigital.temis.model.exceptions.BotException;
-import com.sjcdigital.temis.model.repositories.AldermanRepository;
-import com.sjcdigital.temis.model.service.bots.AbstractBot;
-import com.sjcdigital.temis.util.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 /**
  *
@@ -29,6 +29,7 @@ import com.sjcdigital.temis.util.File;
  */
 
 @Component
+@Order(1)
 public class AldermenBot extends AbstractBot {
 
 	private static final Logger LOGGER = LogManager.getLogger(AldermenBot.class);
@@ -45,7 +46,7 @@ public class AldermenBot extends AbstractBot {
 	@Autowired
 	private AldermanRepository aldermanRepository;
 
-	public void saveAldermen() throws BotException {
+	public void saveData() throws BotException {
 
 		if (aldermanRepository.count() != 0) {
 			return;

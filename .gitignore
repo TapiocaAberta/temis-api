@@ -15,6 +15,9 @@ bin/
 .project
 .tern-project
 
+# Intellij directories
+.idea/
+
 # Forge file
 .forge_settings
 
