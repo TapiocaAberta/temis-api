@@ -1,6 +1,7 @@
 package com.sjcdigital.temis.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.Resources;
@@ -33,7 +34,7 @@ public class LawsController extends AbstractController<Law> {
 	 * @param pageable
 	 * @return Laws
 	 */
-	@RequestMapping(method = RequestMethod.GET, produces =  MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<Resources<Law>> findAllPageable(final Pageable pageable) {
 		return ResponseEntity.ok(createResources(lawsRepository.findAll(pageable)));
 	}
@@ -43,7 +44,7 @@ public class LawsController extends AbstractController<Law> {
 	 * @param pageable
 	 * @return Laws
 	 */
-	@RequestMapping(value = "/{code}", method = RequestMethod.GET, produces =  MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/{code}", method = RequestMethod.GET)
 	public @ResponseBody Law findByCode(@PathVariable final String code) {
 		return lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
 	}
@@ -70,6 +71,18 @@ public class LawsController extends AbstractController<Law> {
 		Law law = lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
 		law.voteNegative();
 		return lawsRepository.save(law);
+	}
+	
+	/**
+	 * find by law by alderman name
+	 * @param name alderman name
+	 * @param page page
+	 * @return Laws 
+	 */
+	@RequestMapping(value = "/alderman/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<Resources<Law>> findByAutorName(@PathVariable final String name, final Pageable page) {
+		Page<Law> laws = lawsRepository.findByAuthorNameLike(name, page);
+		return ResponseEntity.ok(createResources(laws));
 	}
 	
 }
