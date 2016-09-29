@@ -39,7 +39,7 @@ public class LawsController extends AbstractController<Law> {
 	}
 	
 	/**
-	 * Find All Laws
+	 * Find one Law by Code
 	 * @param pageable
 	 * @return Laws
 	 */
