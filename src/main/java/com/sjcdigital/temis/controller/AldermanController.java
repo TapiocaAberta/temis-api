@@ -30,14 +30,18 @@ public class AldermanController extends AbstractController<Alderman> {
 	@Autowired
 	private AldermanRepository aldermanRepository;
 	
+	/**
+	 * Get all Alderman
+	 * @return List Alderman
+	 */
 	@GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Collection<Resource<Alderman>>> getCurrentAldermen() {
+	public ResponseEntity<Collection<Resource<Alderman>>> getAlderman() {
 		
 		Collection<Resource<Alderman>> aldermanResources = new ArrayList<Resource<Alderman>>();
 		Collection<Alderman> alderman = aldermanRepository.findAll();
 		
 		alderman.forEach(a -> {
-			Resource<Alderman> resource = createLeiResource(a);
+			Resource<Alderman> resource = createLawResource(a);
 			aldermanResources.add(resource);
 		});
 		
@@ -45,16 +49,26 @@ public class AldermanController extends AbstractController<Alderman> {
 	}
 
 	
+	/**
+	 * Get alderman by Name
+	 * @param name, alderman name
+	 * @return Alderman
+	 */
 	@GetMapping(value = "/{name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Resource<Alderman>> getAlderman(@RequestParam final String name) {
 		Optional<Alderman> alderman = aldermanRepository.findByName(name);
-		return ResponseEntity.ok(createLeiResource(alderman.get()));
+		return ResponseEntity.ok(createLawResource(alderman.get()));
 	}
 	
-	private Resource<Alderman> createLeiResource(Alderman a) {
-		Resource<Alderman> resource = new Resource<>(a);
-		resource.add(links.linkFor(Law.class).slash("/alderman/").slash(a.getName()).withRel("leis"));
-		resource.add(links.linkFor(Alderman.class).slash(a.getName()).withSelfRel());
+	/**
+	 * create Alderman Resource
+	 * @param alderman
+	 * @return Alderman
+	 */
+	private Resource<Alderman> createLawResource(Alderman alderman) {
+		Resource<Alderman> resource = new Resource<>(alderman);
+		resource.add(links.linkFor(Law.class).slash("/alderman/").slash(alderman.getName()).withRel("leis"));
+		resource.add(links.linkFor(Alderman.class).slash(alderman.getName()).withSelfRel());
 		return resource;
 	}
 	

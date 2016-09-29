@@ -7,9 +7,12 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sjcdigital.temis.controller.exceptions.ResourceNotFoundException;
 import com.sjcdigital.temis.model.document.Law;
 import com.sjcdigital.temis.model.repositories.LawsRepository;
 
@@ -25,9 +28,48 @@ public class LawsController extends AbstractController<Law> {
 	@Autowired
 	private LawsRepository lawsRepository;
 	
-	@GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Resources<?>> findAllPageable(final Pageable pageable) {
+	/**
+	 * Find All Laws
+	 * @param pageable
+	 * @return Laws
+	 */
+	@RequestMapping(method = RequestMethod.GET, produces =  MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<Resources<Law>> findAllPageable(final Pageable pageable) {
 		return ResponseEntity.ok(createResources(lawsRepository.findAll(pageable)));
+	}
+	
+	/**
+	 * Find All Laws
+	 * @param pageable
+	 * @return Laws
+	 */
+	@RequestMapping(value = "/{code}", method = RequestMethod.GET, produces =  MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public @ResponseBody Law findByCode(@PathVariable final String code) {
+		return lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
+	}
+	
+	/**
+	 * Vote Positive
+	 * @param code Law
+	 * @return Status
+	 */
+	@RequestMapping(value = "/{code}/vote/positive", method = RequestMethod.PUT)
+	public @ResponseBody Law votePositive(@PathVariable final String code) {
+		Law law = lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
+		law.votePositive();
+		return lawsRepository.save(law);
+	}
+	
+	/**
+	 * Vote Negative
+	 * @param code Law
+	 * @return Status
+	 */
+	@RequestMapping(value = "/{code}/vote/negative", method = RequestMethod.PUT)
+	public @ResponseBody Law voteNegative(@PathVariable final String code) {
+		Law law = lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
+		law.voteNegative();
+		return lawsRepository.save(law);
 	}
 	
 }

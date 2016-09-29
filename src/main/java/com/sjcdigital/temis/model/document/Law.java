@@ -1,5 +1,6 @@
 package com.sjcdigital.temis.model.document;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.Collection;
 
@@ -28,6 +29,10 @@ public class Law {
 
 	@Field(value = "PLNumber")
 	private String projectLawNumber;
+	
+	private BigInteger positiveVotes = BigInteger.ZERO;
+	
+	private BigInteger negativeVotes = BigInteger.ZERO;
 
 	public String getCode() {
 		return code;
@@ -81,6 +86,30 @@ public class Law {
 	public String toString() {
 		return "{ code: " + code + ", " + "author: " + author + ", " + "desc: " + desc + ", " + "date: " + date + ", "
 		        + "title: " + title + ", " + "number: " + projectLawNumber + " }";
+	}
+
+	public BigInteger getPositiveVotes() {
+		return positiveVotes;
+	}
+
+	public void setPositiveVotes(BigInteger positiveVotes) {
+		this.positiveVotes = positiveVotes;
+	}
+
+	public BigInteger getNegativeVotes() {
+		return negativeVotes;
+	}
+
+	public void setNegativeVotes(BigInteger negativeVotes) {
+		this.negativeVotes = negativeVotes;
+	}
+	
+	public void votePositive() {
+		setPositiveVotes(this.positiveVotes.add(BigInteger.ONE));
+	}
+	
+	public void voteNegative() {
+		setNegativeVotes(this.negativeVotes.add(BigInteger.ONE));
 	}
 
 }
