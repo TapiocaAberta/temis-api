@@ -27,4 +27,4 @@ bin/
 
 *~
 
-data/html/*
+src/main/resources/data/html/*
