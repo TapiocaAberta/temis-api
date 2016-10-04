@@ -22,6 +22,9 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * @author fabiohbarbosa
+ */
 @Component
 @Order(3)
 public class PresenceAldermenBot extends AbstractBot {
