@@ -3,7 +3,7 @@ package com.sjcdigital.temis.model.service.camel.route.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.sjcdigital.temis.model.service.camel.processor.LawsProcessor;
+import com.sjcdigital.temis.model.service.camel.processor.impl.LawsProcessor;
 import com.sjcdigital.temis.model.service.camel.route.AbstractRoute;
 
 /**
