@@ -48,14 +48,20 @@ public class AldermanPresenceParser extends AbstractParser {
                 final LocalDate date = parseDate(file);
                 final Alderman alderman = parseAlderman(row);
                 final boolean isPresent = parsePresent(row);
-
-                sessionRepository.save(new OrdinarySession(session, date, alderman, isPresent));
+                save(session, date, alderman, isPresent);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void save(final int session, final LocalDate date, final Alderman alderman, final boolean isPresent) {
+        Optional<Alderman> optSession = sessionRepository.findBySessionAndDateAndAlderman(session, date, alderman);
+        if (!optSession.isPresent()) {
+            sessionRepository.save(new OrdinarySession(session, date, alderman, isPresent));
+        }
     }
 
     private boolean parsePresent(final HSSFRow row) {
@@ -80,7 +86,7 @@ public class AldermanPresenceParser extends AbstractParser {
 
         final String name = row.getCell(AldermanPresenceSheet.NAME_COLUMN.NUM).getStringCellValue().trim();
         final Optional<Alderman> optAlderman = aldermanRepository.findByNameContainingIgnoreCase(name);
-        return optAlderman.orElse(aldermanRepository.save(new Alderman(WordUtils.capitalize(name.toLowerCase()), true)));
+        return optAlderman.orElseGet(() -> aldermanRepository.save(new Alderman(WordUtils.capitalize(name.toLowerCase()), true)));
 
     }
 
