@@ -10,6 +10,6 @@ import com.sjcdigital.temis.model.document.Alderman;
  * @author pedro-hos
  */
 public interface AldermanRepository extends MongoRepository<Alderman, String> {
-	public Optional<Alderman> findByName(String name);
-	public Optional<Alderman> findByNameContainingIgnoreCase(String name);
+	Optional<Alderman> findByName(String name);
+	Optional<Alderman> findByNameContainingIgnoreCase(String name);
 }
