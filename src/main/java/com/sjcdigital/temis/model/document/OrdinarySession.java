@@ -16,18 +16,21 @@ public class OrdinarySession {
 
     private Integer session;
     private LocalDate date;
+
     @DBRef
     private Alderman alderman;
     private Boolean isPresent;
+    private AldermanSurrogate surrogate;
 
     public OrdinarySession() {
     }
 
-    public OrdinarySession(final Integer session, final LocalDate date, final Alderman alderman, final Boolean isPresent) {
+    public OrdinarySession(final Integer session, final LocalDate date, final Alderman alderman, final Boolean isPresent, final AldermanSurrogate surrogate) {
         this.session = session;
         this.date = date;
         this.alderman = alderman;
         this.isPresent = isPresent;
+        this.surrogate = surrogate;
     }
 
     public String getId() {
@@ -70,4 +73,11 @@ public class OrdinarySession {
         isPresent = present;
     }
 
+    public AldermanSurrogate getSurrogate() {
+        return surrogate;
+    }
+
+    public void setSurrogate(final AldermanSurrogate surrogate) {
+        this.surrogate = surrogate;
+    }
 }

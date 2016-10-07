@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.model.document;
+package com.sjcdigital.temis.model.enums;
 
 /**
  * @author fabiohbarbosa
