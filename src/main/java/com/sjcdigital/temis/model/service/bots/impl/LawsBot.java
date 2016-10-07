@@ -82,7 +82,7 @@ public class LawsBot extends AbstractBot {
 
 				LOGGER.info("READ URL: " + url);
 
-				file.createFile(getPath(), body, code, year);
+				file.createHTMLFile(getPath(), body, code, year);
 				code = buildLawCode(getNextLawCode(code));
 				tryNextYear = false;
 				limitToTry = 10;
