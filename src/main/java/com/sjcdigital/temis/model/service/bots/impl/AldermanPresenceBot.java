@@ -26,12 +26,12 @@ import java.util.stream.Collectors;
  */
 @Component
 @Order(3)
-public class PresenceAldermanBot extends AbstractBot {
+public class AldermanPresenceBot extends AbstractBot {
 
-    private static final Logger LOGGER = LogManager.getLogger(PresenceAldermanBot.class);
+    private static final Logger LOGGER = LogManager.getLogger(AldermanPresenceBot.class);
 
-    @Value("${url.presence-alderman}")
-    private String presenceAldermanUrl;
+    @Value("${url.alderman-presence}")
+    private String aldermanPresenceUrl;
 
     @Value("${path.leis}")
     private String path;
@@ -54,7 +54,7 @@ public class PresenceAldermanBot extends AbstractBot {
 
         try {
 
-            final Document document = Optional.ofNullable(getPage(presenceAldermanUrl).get()).orElseThrow(BotException::new);
+            final Document document = Optional.ofNullable(getPage(aldermanPresenceUrl).get()).orElseThrow(BotException::new);
             final Elements divsPresenca = document.getElementsByClass("presenca");
 
             divsPresenca.stream()
