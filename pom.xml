@@ -78,12 +78,12 @@
 			<version>3.4</version>
 		</dependency>
 
-		<!-- commons-io -->
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.5</version>
-		</dependency>
+        <!-- commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
 
         <!-- apache POI -->
         <dependency>
@@ -91,7 +91,6 @@
             <artifactId>poi</artifactId>
             <version>3.15</version>
         </dependency>
-
 
         <!-- JSOUP -->
 		<dependency>
