@@ -76,20 +76,19 @@ public class AldermenParser extends AbstractParser {
 		return elementsInfo.select("h4:contains(" + key + ")").first();
 	}
 
-	private void saveOrUpdate(final Alderman aldermanToSave) {
+    private void saveOrUpdate(final Alderman aldermanToSave) {
 
-		final Optional<Alderman> alderman = aldermanRepository.findByName(aldermanToSave.getName());
+        final Optional<Alderman> alderman = aldermanRepository.findByName(aldermanToSave.getName());
 
-		if(alderman.isPresent()) {
+        if (alderman.isPresent()) {
             LOGGER.info("Saving: " + alderman.get().getName());
             aldermanToSave.setId(alderman.get().getId());
-			aldermanRepository.save(aldermanToSave);
+            aldermanRepository.save(aldermanToSave);
 
-		} else {
-			aldermanRepository.save(aldermanToSave);
+        } else {
+            aldermanRepository.save(aldermanToSave);
+        }
 
-		}
-
-	}
+    }
 
 }
