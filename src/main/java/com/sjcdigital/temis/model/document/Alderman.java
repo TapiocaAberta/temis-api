@@ -1,8 +1,13 @@
 package com.sjcdigital.temis.model.document;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Document
 public class Alderman {
@@ -108,7 +113,30 @@ public class Alderman {
 	public void setNotFound(final Boolean notFound) {
 		this.notFound = notFound;
 	}
-	
+
+    public static String normalizeName(final String name) {
+        String newName = name.trim();
+        newName = newName.toLowerCase();
+        newName = StringUtils.normalizeSpace(newName);
+        newName = WordUtils.capitalize(newName);
+        newName = normalizeNameCharacters(newName);
+
+        return newName;
+    }
+
+    private static String normalizeNameCharacters(final String name) {
+        final Map<String, String> specialChars = new HashMap<>();
+        specialChars.put("ª", "a");
+        specialChars.put("-", "");
+
+        String newName = name;
+        for (Map.Entry<String, String> e : specialChars.entrySet()) {
+            newName = newName.replace(e.getKey(), e.getValue());
+        }
+
+        return newName;
+    }
+
 	@Override
 	public String toString() {
 		return "{ " + "name: " + name + ", politicalParty: " + politicalParty + ", info:" + info + ", email: " + email
