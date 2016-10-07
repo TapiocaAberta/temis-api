@@ -78,7 +78,7 @@ public class AldermenBot extends AbstractBot {
 			// class="back">
 
 			for (final Element element : divsBack) {
-				element.select("a").stream().map(l -> l.attr("href")).peek(System.out::println).forEach(links::add); // <a
+				element.select("a").stream().map(l -> l.attr("href")).forEach(links::add); // <a
 				// href="http://..."><a/>
 			}
 

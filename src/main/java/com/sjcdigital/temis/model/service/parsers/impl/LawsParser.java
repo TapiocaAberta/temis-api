@@ -48,7 +48,7 @@ public class LawsParser extends AbstractParser {
 
 		try {
 
-			LOGGER.info("Parsing e Save: " + file.getName());
+			LOGGER.debug("Parsing and save: " + file.getName());
 
 			final Document document = readFile(file).get();
 			document.select("script").remove();
