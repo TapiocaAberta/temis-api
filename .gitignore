@@ -17,6 +17,7 @@ bin/
 
 # Intellij directories
 .idea/
+*.iml
 
 # Forge file
 .forge_settings
@@ -26,4 +27,4 @@ bin/
 
 *~
 
-data/html/*
+src/main/resources/data/html/*

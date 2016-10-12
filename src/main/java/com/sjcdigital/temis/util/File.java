@@ -1,10 +1,12 @@
 package com.sjcdigital.temis.util;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -25,11 +27,11 @@ public class File {
 	private final Logger LOGGER = LogManager.getLogger(this.getClass());
 	
 	@Async
-	public void createFile(final String path, final String body, final String fileName, final Integer year) {
+	public void createHTMLFile(final String path, final String body, final String fileName, final Integer year) {
 		
 		try {
-			
-			LOGGER.info("Salvando file: " + fileName);
+
+		    LOGGER.info("Salvando HTML file: " + fileName);
 			
 			Path pathNio = Paths.get(path.concat(year.toString()));
 			Files.createDirectories(pathNio);
@@ -40,6 +42,26 @@ public class File {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 	}
+
+	@Async
+	public void createXLSFile(final String path, final String url, final String fileName, final Integer year) {
+
+        try {
+
+            LOGGER.info("Salvando XLS file: " + fileName);
+
+            Path pathNio = Paths.get(path.concat(year.toString()));
+            Files.createDirectories(pathNio);
+            String filePath = pathNio.toString().concat("/").concat(fileName).concat(".xls");
+
+            FileUtils.copyURLToFile(new URL(url), new java.io.File(filePath));
+
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
+        }
+
+
+    }
 	
 	
 }

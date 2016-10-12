@@ -11,7 +11,7 @@ import com.sjcdigital.temis.model.service.bots.BotService;
 
 /**
  * @author pedro-hos
- * 		Executa todo mês, no dia 01, a busca por novas leis
+ * 		Executa a cada mês, no dia 01, a busca por novos registros
  *
  */
 @Component

@@ -17,6 +17,8 @@ spring:
 ---
 
 year.start.extract: 2013
-url.laws: http://www.ceaam.net/sjc/legislacao/leis/
-url.aldermen: http://www.camarasjc.sp.gov.br/vereadores/
+url:
+  laws: http://www.ceaam.net/sjc/legislacao/leis/
+  aldermen: http://www.camarasjc.sp.gov.br/vereadores/
+  alderman-presence: http://www.camarasjc.sp.gov.br/portal-da-transparencia/presenca-de-vereadores.php
 path.leis: src/main/resources/data/html/

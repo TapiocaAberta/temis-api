@@ -58,7 +58,7 @@ public class AldermenBot extends AbstractBot {
 
 			for (final String link : allLinks) {
 				final Document document = Optional.ofNullable(getPage(link).get()).orElseThrow(BotException::new);
-				file.createFile(getPath(), document.html(), getFileName(link), LocalDate.now().getYear());
+				file.createHTMLFile(getPath(), document.html(), getFileName(link), LocalDate.now().getYear());
 			}
 
 		} catch (IOException | InterruptedException | ExecutionException exception) {
@@ -78,7 +78,7 @@ public class AldermenBot extends AbstractBot {
 			// class="back">
 
 			for (final Element element : divsBack) {
-				element.select("a").stream().map(l -> l.attr("href")).peek(System.out::println).forEach(links::add); // <a
+				element.select("a").stream().map(l -> l.attr("href")).forEach(links::add); // <a
 				// href="http://..."><a/>
 			}
 
