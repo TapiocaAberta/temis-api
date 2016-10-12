@@ -1,0 +1,5 @@
+mongo:
+  container_name: mongodb-temis-api
+  image: mongo
+  ports:
+  - 27017:27017
