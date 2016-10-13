@@ -1,51 +1,52 @@
 package com.sjcdigital.temis.controller;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.ExposesResourceFor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.sjcdigital.temis.controller.exceptions.ResourceNotFoundException;
 import com.sjcdigital.temis.model.document.Alderman;
 import com.sjcdigital.temis.model.document.Law;
 import com.sjcdigital.temis.model.repositories.AldermanRepository;
+import com.sjcdigital.temis.model.repositories.LawsRepository;
 
 /**
  * @author pedro-hos
  */
 
-@Controller
-@ExposesResourceFor(Alderman.class)
+@RestController
 @RequestMapping("/api/alderman")
-public class AldermanController extends AbstractController<Alderman> {
+public class AldermanController {
 	
 	@Autowired
 	private AldermanRepository aldermanRepository;
+	
+	@Autowired
+	private LawsRepository lawRepository;
 	
 	/**
 	 * Get all Alderman
 	 * @return List Alderman
 	 */
-	@GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Collection<Resource<Alderman>>> getAlderman() {
+	@GetMapping
+	public PagedResources<Resource<Alderman>> findAll(final Pageable pageable, final PagedResourcesAssembler<Alderman> assembler) {
 		
-		Collection<Resource<Alderman>> aldermanResources = new ArrayList<Resource<Alderman>>();
-		Collection<Alderman> alderman = aldermanRepository.findAll();
+		final PagedResources<Resource<Alderman>> pagedResources = assembler.toResource(aldermanRepository.findAll(pageable));
 		
-		alderman.forEach(a -> {
-			Resource<Alderman> resource = createLawResource(a);
-			aldermanResources.add(resource);
+		pagedResources.forEach(resource -> {
+			createAldermanResource(resource.getContent(), resource);
 		});
 		
-		return ResponseEntity.ok(aldermanResources);
+		return pagedResources;
 	}
 
 	
@@ -54,22 +55,35 @@ public class AldermanController extends AbstractController<Alderman> {
 	 * @param name, alderman name
 	 * @return Alderman
 	 */
-	@GetMapping(value = "/{name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Resource<Alderman>> getAlderman(@RequestParam final String name) {
-		Optional<Alderman> alderman = aldermanRepository.findByName(name);
-		return ResponseEntity.ok(createLawResource(alderman.get()));
+	@GetMapping("/{name}")
+	public Resource<Alderman> findByName(@PathVariable final String name) {
+		
+		Alderman alderman = aldermanRepository.findByName(name).orElseThrow(ResourceNotFoundException :: new);
+		
+		Resource<Alderman> resource = new Resource<Alderman>(alderman);
+		createAldermanResource(alderman, resource);
+		
+		return resource;
 	}
 	
 	/**
-	 * create Alderman Resource
-	 * @param alderman
+	 * Get alderman law by alderman name
+	 * @param name, alderman name
 	 * @return Alderman
 	 */
-	private Resource<Alderman> createLawResource(Alderman alderman) {
-		Resource<Alderman> resource = new Resource<>(alderman);
-		resource.add(links.linkFor(Law.class).slash("/alderman/").slash(alderman.getName()).withRel("leis"));
-		resource.add(links.linkFor(Alderman.class).slash(alderman.getName()).withSelfRel());
-		return resource;
+	@GetMapping("/{name}/law")
+	public PagedResources<Resource<Law>> findLawByAlderman(@PathVariable final String name, final Pageable pageable, final PagedResourcesAssembler<Law> assembler) {
+		return assembler.toResource(lawRepository.findByAuthorNameLike(name, pageable));
+	}
+	
+	/**
+	 * build Alderman Resources
+	 * @param alderman
+	 * @param resource
+	 */
+	private void createAldermanResource(Alderman alderman, Resource<Alderman> resource) {
+		resource.add(linkTo(methodOn(AldermanController.class).findByName(alderman.getName())).withSelfRel());
+		resource.add(linkTo(methodOn(AldermanController.class).findLawByAlderman(alderman.getName(), null, null)).withRel("leis"));
 	}
 	
 	

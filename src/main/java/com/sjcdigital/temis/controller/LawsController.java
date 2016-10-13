@@ -3,15 +3,14 @@ package com.sjcdigital.temis.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.ExposesResourceFor;
-import org.springframework.hateoas.Resources;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.Resource;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.sjcdigital.temis.controller.exceptions.ResourceNotFoundException;
 import com.sjcdigital.temis.model.document.Law;
@@ -21,10 +20,9 @@ import com.sjcdigital.temis.model.repositories.LawsRepository;
  * @author pedro-hos
  */
 
-@Controller
-@ExposesResourceFor(Law.class)
+@RestController
 @RequestMapping("/api/laws")
-public class LawsController extends AbstractController<Law> {
+public class LawsController {
 	
 	@Autowired
 	private LawsRepository lawsRepository;
@@ -34,9 +32,9 @@ public class LawsController extends AbstractController<Law> {
 	 * @param pageable
 	 * @return Laws
 	 */
-	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<Resources<Law>> findAllPageable(final Pageable pageable) {
-		return ResponseEntity.ok(createResources(lawsRepository.findAll(pageable)));
+	@GetMapping
+	public PagedResources<Resource<Law>> findAllPageable(final Pageable pageable, final PagedResourcesAssembler<Law> assembler) {
+		return assembler.toResource(lawsRepository.findAll(pageable));
 	}
 	
 	/**
@@ -44,8 +42,8 @@ public class LawsController extends AbstractController<Law> {
 	 * @param pageable
 	 * @return Laws
 	 */
-	@RequestMapping(value = "/{code}", method = RequestMethod.GET)
-	public @ResponseBody Law findByCode(@PathVariable final String code) {
+	@GetMapping("/{code}")
+	public Law findByCode(@PathVariable final String code) {
 		return lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
 	}
 	
@@ -54,8 +52,8 @@ public class LawsController extends AbstractController<Law> {
 	 * @param code Law
 	 * @return Status
 	 */
-	@RequestMapping(value = "/{code}/vote/positive", method = RequestMethod.PUT)
-	public @ResponseBody Law votePositive(@PathVariable final String code) {
+	@PutMapping("/{code}/vote/yes")
+	public Law votePositive(@PathVariable final String code) {
 		Law law = lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
 		law.votePositive();
 		return lawsRepository.save(law);
@@ -66,8 +64,8 @@ public class LawsController extends AbstractController<Law> {
 	 * @param code Law
 	 * @return Status
 	 */
-	@RequestMapping(value = "/{code}/vote/negative", method = RequestMethod.PUT)
-	public @ResponseBody Law voteNegative(@PathVariable final String code) {
+	@PutMapping("/{code}/vote/no")
+	public Law voteNegative(@PathVariable final String code) {
 		Law law = lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
 		law.voteNegative();
 		return lawsRepository.save(law);
@@ -79,10 +77,10 @@ public class LawsController extends AbstractController<Law> {
 	 * @param page page
 	 * @return Laws 
 	 */
-	@RequestMapping(value = "/alderman/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Resources<Law>> findByAutorName(@PathVariable final String name, final Pageable page) {
+	@GetMapping("/alderman/{name}")
+	public PagedResources<Resource<Law>> findByAutorName(@PathVariable final String name, final Pageable page, final PagedResourcesAssembler<Law> assembler) {
 		Page<Law> laws = lawsRepository.findByAuthorNameLike(name, page);
-		return ResponseEntity.ok(createResources(laws));
+		return assembler.toResource(laws);
 	}
 	
 }

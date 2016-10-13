@@ -1,12 +1,10 @@
 package com.sjcdigital.temis.model.service.parsers.impl;
 
-import com.sjcdigital.temis.model.document.Alderman;
-import com.sjcdigital.temis.model.document.AldermanSurrogate;
-import com.sjcdigital.temis.model.document.OrdinarySession;
-import com.sjcdigital.temis.model.enums.AldermanPresenceSheet;
-import com.sjcdigital.temis.model.repositories.AldermanRepository;
-import com.sjcdigital.temis.model.repositories.OrdinarySessionRepository;
-import com.sjcdigital.temis.model.service.parsers.AbstractParser;
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Optional;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -19,14 +17,18 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Optional;
+import com.sjcdigital.temis.model.document.Alderman;
+import com.sjcdigital.temis.model.document.AldermanSurrogate;
+import com.sjcdigital.temis.model.document.OrdinarySession;
+import com.sjcdigital.temis.model.enums.AldermanPresenceSheet;
+import com.sjcdigital.temis.model.repositories.AldermanRepository;
+import com.sjcdigital.temis.model.repositories.OrdinarySessionRepository;
+import com.sjcdigital.temis.model.service.parsers.AbstractParser;
 
 /**
  * @author fabiohbarbosa
  */
+
 @Component
 public class AldermanPresenceParser extends AbstractParser {
 
@@ -42,7 +44,7 @@ public class AldermanPresenceParser extends AbstractParser {
     public void parse(final File file) {
 
         LOGGER.debug(String.format("Starting file %s parse", file.getName()));
-
+        
         try {
 
             final Workbook wb = new HSSFWorkbook(FileUtils.openInputStream(file));
@@ -60,11 +62,14 @@ public class AldermanPresenceParser extends AbstractParser {
 
                 save(session, date, alderman, aldermanPresent, surrogate);
             }
+            
+            wb.close();
 
         } catch (IOException e) {
             LOGGER.error(ExceptionUtils.getStackTrace(e));
+            
         }
-
+        
     }
 
     private AldermanSurrogate parseSurrogate(final boolean isPresent, final Row row) {
@@ -80,12 +85,15 @@ public class AldermanPresenceParser extends AbstractParser {
     }
 
     private void save(final int session, final LocalDate date, final Alderman alderman, final boolean isPresent, final AldermanSurrogate surrogate) {
-        final Integer count = sessionRepository.countBySessionAndDateAndAlderman(session, date, alderman);
+        
+    	final Integer count = sessionRepository.countBySessionAndDateAndAlderman(session, date, alderman);
+        
         if (count == 0) {
             sessionRepository.save(new OrdinarySession(session, date, alderman, isPresent, surrogate));
             LOGGER.info(String.format("Save '%s' in session '%sº %s'", alderman.getName(), session, date));
             return;
         }
+        
         LOGGER.debug(String.format("%s already in session '%sº %s'", alderman.getName(), session, date));
     }
 
@@ -98,9 +106,9 @@ public class AldermanPresenceParser extends AbstractParser {
 
     private int parseSession(final Row row) {
         return Integer.parseInt(row.getCell(AldermanPresenceSheet.SESSION_COLUMN.NUM)
-                .getStringCellValue()
-                .split("-")[1].trim()
-                .split("ª")[0].trim());
+                	  .getStringCellValue()
+                	  .split("-")[1].trim()
+                	  .split("ª")[0].trim());
     }
 
     private LocalDate parseDate(final File file) {
@@ -108,9 +116,10 @@ public class AldermanPresenceParser extends AbstractParser {
     }
 
     private Alderman parseAlderman(final Row row) {
+    	
         final String name = Alderman.normalizeName(row.getCell(AldermanPresenceSheet.NAME_COLUMN.NUM).getStringCellValue());
-
         final Optional<Alderman> optAlderman = aldermanRepository.findByNameContainingIgnoreCase(name);
+        
         return optAlderman.orElseGet(() -> {
             LOGGER.warn(String.format("Not found Alderman %s", name));
             return aldermanRepository.save(new Alderman(name, true));
