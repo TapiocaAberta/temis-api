@@ -1,11 +1,10 @@
 package com.sjcdigital.temis.controller;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityLinks;
+import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +24,7 @@ import com.sjcdigital.temis.model.repositories.LawsRepository;
 
 @RestController
 @RequestMapping("/api/alderman")
+@ExposesResourceFor(Alderman.class)
 public class AldermanController {
 	
 	@Autowired
@@ -32,6 +32,9 @@ public class AldermanController {
 	
 	@Autowired
 	private LawsRepository lawRepository;
+	
+	@Autowired
+	private EntityLinks entityLinks;
 	
 	/**
 	 * Get all Alderman
@@ -82,8 +85,8 @@ public class AldermanController {
 	 * @param resource
 	 */
 	private void createAldermanResource(Alderman alderman, Resource<Alderman> resource) {
-		resource.add(linkTo(methodOn(AldermanController.class).findByName(alderman.getName())).withSelfRel());
-		resource.add(linkTo(methodOn(AldermanController.class).findLawByAlderman(alderman.getName(), null, null)).withRel("leis"));
+		resource.add(entityLinks.linkFor(Alderman.class).slash(alderman.getName()).withSelfRel());
+		resource.add(entityLinks.linkFor(Alderman.class).slash(alderman.getName()).slash("/law").withRel("leis"));
 	}
 	
 	
