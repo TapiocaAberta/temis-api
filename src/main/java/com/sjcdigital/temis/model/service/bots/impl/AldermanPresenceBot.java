@@ -1,8 +1,13 @@
 package com.sjcdigital.temis.model.service.bots.impl;
 
-import com.sjcdigital.temis.model.exceptions.BotException;
-import com.sjcdigital.temis.model.service.bots.AbstractBot;
-import com.sjcdigital.temis.util.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -13,13 +18,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
+import com.sjcdigital.temis.model.exceptions.BotException;
+import com.sjcdigital.temis.model.service.bots.AbstractBot;
+import com.sjcdigital.temis.util.File;
 
 /**
  * @author fabiohbarbosa
@@ -35,9 +36,6 @@ public class AldermanPresenceBot extends AbstractBot {
 
     @Value("${path.leis}")
     private String path;
-
-    @Value("${year.start.extract}")
-    private int year;
 
     @Autowired
     private File file;

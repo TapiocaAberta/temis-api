@@ -53,14 +53,14 @@ public class AldermenParser extends AbstractParser {
 
 			final Elements elementsInfo = element.select("div.col-sm-7.texto");
 
-			alderman.setName(elementsInfo.select("h3").text());
-			alderman.setEmail(getElementValue(elementsInfo, "E-mail").nextElementSibling().text());
-			alderman.setInfo(getElementValue(elementsInfo, "Dados Pessoais").nextElementSibling().text());
-			alderman.setLegislature(getElementValue(elementsInfo, "Legislatura").nextSibling().toString());
-			alderman.setPhone(getElementValue(elementsInfo, "Telefone").nextSibling().toString());
-			alderman.setPoliticalParty(extractedPoliticalParty(elementsInfo));
-			alderman.setWorkplace(getElementValue(elementsInfo, "Local de Trabalho").nextSibling().toString());
-			alderman.setPhoto(element.getElementsByClass("img-responsive").attr("src"));
+			alderman.setName(elementsInfo.select("h3").text().trim());
+			alderman.setEmail(getElementValue(elementsInfo, "E-mail").nextElementSibling().text().trim());
+			alderman.setInfo(getElementValue(elementsInfo, "Dados Pessoais").nextElementSibling().text().trim());
+			alderman.setLegislature(getElementValue(elementsInfo, "Legislatura").nextSibling().toString().trim());
+			alderman.setPhone(getElementValue(elementsInfo, "Telefone").nextSibling().toString().trim());
+			alderman.setPoliticalParty(extractedPoliticalParty(elementsInfo).trim());
+			alderman.setWorkplace(getElementValue(elementsInfo, "Local de Trabalho").nextSibling().toString().trim());
+			alderman.setPhoto(element.getElementsByClass("img-responsive").attr("src").trim());
 
 		}
 
@@ -81,11 +81,14 @@ public class AldermenParser extends AbstractParser {
         final Optional<Alderman> alderman = aldermanRepository.findByName(aldermanToSave.getName());
 
         if (alderman.isPresent()) {
-            LOGGER.info("Saving: " + alderman.get().getName());
+        	
+            LOGGER.info("Update: " + alderman.get().getName());
             aldermanToSave.setId(alderman.get().getId());
+            aldermanToSave.setLawsCount(alderman.get().getLawsCount());
             aldermanRepository.save(aldermanToSave);
 
         } else {
+        	LOGGER.info("Create: " + aldermanToSave.getName());
             aldermanRepository.save(aldermanToSave);
         }
 

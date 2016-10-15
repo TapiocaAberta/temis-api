@@ -1,13 +1,14 @@
 package com.sjcdigital.temis.model.document;
 
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Document
 public class Alderman {
@@ -23,9 +24,10 @@ public class Alderman {
 	private String email;
 	private String legislature;
 	private String workplace;
-	private String photo;
+	private String photo = "http://sjcdigital.github.io/balanco-municipios-sp/images/dados_abertos_sjc.jpg";
 	private String phone;
 	private Boolean notFound = false;
+	private BigInteger lawsCount = BigInteger.ZERO;
 	
 	public Alderman() {}
 	
@@ -112,6 +114,18 @@ public class Alderman {
 	
 	public void setNotFound(final Boolean notFound) {
 		this.notFound = notFound;
+	}
+	
+	public void plusLaw() {
+		this.setLawsCount(getLawsCount().add(BigInteger.ONE));
+	}
+	
+	public BigInteger getLawsCount() {
+		return lawsCount;
+	}
+
+	public void setLawsCount(BigInteger lawsCount) {
+		this.lawsCount = lawsCount;
 	}
 
     public static String normalizeName(final String name) {

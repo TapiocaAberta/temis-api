@@ -1,9 +1,12 @@
 package com.sjcdigital.temis.model.service.bots.impl;
 
-import com.sjcdigital.temis.model.exceptions.BotException;
-import com.sjcdigital.temis.model.repositories.AldermanRepository;
-import com.sjcdigital.temis.model.service.bots.AbstractBot;
-import com.sjcdigital.temis.util.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -15,12 +18,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
+import com.sjcdigital.temis.model.exceptions.BotException;
+import com.sjcdigital.temis.model.service.bots.AbstractBot;
+import com.sjcdigital.temis.util.File;
 
 /**
  *
@@ -43,14 +43,8 @@ public class AldermenBot extends AbstractBot {
 	@Autowired
 	private File file;
 
-	@Autowired
-	private AldermanRepository aldermanRepository;
-
+	@Override
 	public void saveData() throws BotException {
-
-		if (aldermanRepository.count() != 0) {
-			return;
-		}
 
 		final Collection<String> allLinks = getAldermenLinks();
 

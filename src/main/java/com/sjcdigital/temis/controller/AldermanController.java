@@ -1,6 +1,7 @@
 package com.sjcdigital.temis.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityLinks;
@@ -42,13 +43,8 @@ public class AldermanController {
 	 */
 	@GetMapping
 	public PagedResources<Resource<Alderman>> findAll(final Pageable pageable, final PagedResourcesAssembler<Alderman> assembler) {
-		
 		final PagedResources<Resource<Alderman>> pagedResources = assembler.toResource(aldermanRepository.findAll(pageable));
-		
-		pagedResources.forEach(resource -> {
-			createAldermanResource(resource.getContent(), resource);
-		});
-		
+		pagedResources.forEach(this :: createAldermanResource);
 		return pagedResources;
 	}
 
@@ -60,23 +56,22 @@ public class AldermanController {
 	 */
 	@GetMapping("/{name}")
 	public Resource<Alderman> findByName(@PathVariable final String name) {
-		
 		Alderman alderman = aldermanRepository.findByName(name).orElseThrow(ResourceNotFoundException :: new);
-		
 		Resource<Alderman> resource = new Resource<Alderman>(alderman);
-		createAldermanResource(alderman, resource);
-		
+		createAldermanResource(resource);
 		return resource;
 	}
 	
 	/**
 	 * Get alderman law by alderman name
-	 * @param name, alderman name
+	 * @param name
 	 * @return Alderman
 	 */
 	@GetMapping("/{name}/law")
 	public PagedResources<Resource<Law>> findLawByAlderman(@PathVariable final String name, final Pageable pageable, final PagedResourcesAssembler<Law> assembler) {
-		return assembler.toResource(lawRepository.findByAuthorNameLike(name, pageable));
+		Alderman alderman = aldermanRepository.findByName(name).orElseThrow(ResourceNotFoundException ::  new);
+		Page<Law> laws = lawRepository.findByAuthorId(alderman.getId(), pageable);
+		return assembler.toResource(laws);
 	}
 	
 	/**
@@ -84,10 +79,9 @@ public class AldermanController {
 	 * @param alderman
 	 * @param resource
 	 */
-	private void createAldermanResource(Alderman alderman, Resource<Alderman> resource) {
-		resource.add(entityLinks.linkFor(Alderman.class).slash(alderman.getName()).withSelfRel());
-		resource.add(entityLinks.linkFor(Alderman.class).slash(alderman.getName()).slash("/law").withRel("leis"));
+	private void createAldermanResource(Resource<Alderman> resource) {
+		resource.add(entityLinks.linkFor(Alderman.class).slash(resource.getContent().getName()).withSelfRel());
+		resource.add(entityLinks.linkFor(Alderman.class).slash(resource.getContent().getName()).slash("/law").withRel("leis"));
 	}
-	
 	
 }

@@ -16,7 +16,9 @@ spring:
     uri: ${mongo.url}
 ---
 
-year.start.extract: 2013
+year.start.law.extract: 2013
+code.start.law.extract: L8865
+
 url:
   laws: http://www.ceaam.net/sjc/legislacao/leis/
   aldermen: http://www.camarasjc.sp.gov.br/vereadores/

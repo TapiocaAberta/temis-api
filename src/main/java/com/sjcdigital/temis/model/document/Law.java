@@ -6,10 +6,13 @@ import java.util.Collection;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+@Document
 public class Law {
 
 	@Id
@@ -18,6 +21,7 @@ public class Law {
 	@Indexed(unique = true)
 	private String code;
 
+	@DBRef
 	private Collection<Alderman> author;
 
 	private String desc;

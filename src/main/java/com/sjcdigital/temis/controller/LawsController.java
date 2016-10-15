@@ -1,9 +1,10 @@
 package com.sjcdigital.temis.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityLinks;
+import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,10 +23,14 @@ import com.sjcdigital.temis.model.repositories.LawsRepository;
 
 @RestController
 @RequestMapping("/api/laws")
+@ExposesResourceFor(Law.class)
 public class LawsController {
 	
 	@Autowired
 	private LawsRepository lawsRepository;
+	
+	@Autowired
+	private EntityLinks entityLinks;
 	
 	/**
 	 * Find All Laws
@@ -34,7 +39,10 @@ public class LawsController {
 	 */
 	@GetMapping
 	public PagedResources<Resource<Law>> findAllPageable(final Pageable pageable, final PagedResourcesAssembler<Law> assembler) {
-		return assembler.toResource(lawsRepository.findAll(pageable));
+		PagedResources<Resource<Law>> pagedResources = assembler.toResource(lawsRepository.findAllByOrderByDateDesc(pageable)
+																						  .orElseThrow(ResourceNotFoundException :: new));
+		pagedResources.forEach(this :: createVoteResource);
+		return pagedResources;
 	}
 	
 	/**
@@ -43,8 +51,11 @@ public class LawsController {
 	 * @return Laws
 	 */
 	@GetMapping("/{code}")
-	public Law findByCode(@PathVariable final String code) {
-		return lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
+	public Resource<Law> findByCode(@PathVariable final String code) {
+		Law law = lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
+		Resource<Law> resource = new Resource<Law>(law);
+		createVoteResource(resource);
+		return resource;
 	}
 	
 	/**
@@ -53,10 +64,15 @@ public class LawsController {
 	 * @return Status
 	 */
 	@PutMapping("/{code}/vote/yes")
-	public Law votePositive(@PathVariable final String code) {
+	public Resource<Law> voteYes(@PathVariable final String code) {
+		
 		Law law = lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
 		law.votePositive();
-		return lawsRepository.save(law);
+		
+		Resource<Law> resource = new Resource<Law>(lawsRepository.save(law));
+		createVoteResource(resource);
+		
+		return resource;
 	}
 	
 	/**
@@ -65,22 +81,20 @@ public class LawsController {
 	 * @return Status
 	 */
 	@PutMapping("/{code}/vote/no")
-	public Law voteNegative(@PathVariable final String code) {
+	public Resource<Law> voteNo(@PathVariable final String code) {
 		Law law = lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
 		law.voteNegative();
-		return lawsRepository.save(law);
+		
+		Resource<Law> resource = new Resource<Law>(lawsRepository.save(law));
+		createVoteResource(resource);
+		
+		return resource;
 	}
 	
-	/**
-	 * find by law by alderman name
-	 * @param name alderman name
-	 * @param page page
-	 * @return Laws 
-	 */
-	@GetMapping("/alderman/{name}")
-	public PagedResources<Resource<Law>> findByAutorName(@PathVariable final String name, final Pageable page, final PagedResourcesAssembler<Law> assembler) {
-		Page<Law> laws = lawsRepository.findByAuthorNameLike(name, page);
-		return assembler.toResource(laws);
+	private void createVoteResource(Resource<Law> resource) {
+		resource.add(entityLinks.linkFor(Law.class).slash(resource.getContent().getCode()).withSelfRel());
+		resource.add(entityLinks.linkFor(Law.class).slash(resource.getContent().getCode()).slash("/vote/yes").withRel("voteYes"));
+		resource.add(entityLinks.linkFor(Law.class).slash(resource.getContent().getCode()).slash("/vote/no").withRel("voteNo"));
 	}
 	
 }

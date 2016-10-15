@@ -46,8 +46,11 @@ public class LawsBot extends AbstractBot {
 	@Value("${path.leis}")
 	private String path;
 
-	@Value("${year.start.extract}")
-	private int year;
+	@Value("${year.start.law.extract}")
+	private int initialYear;
+	
+	@Value("${code.start.law.extract}")
+	private String initialCode;
 
 	@Autowired
 	private File file;
@@ -61,7 +64,7 @@ public class LawsBot extends AbstractBot {
 		final LocalTime start = LocalTime.now();
 		final List<Integer> allYears = getAllYears();
 
-		String code = getCode();
+		String code = getInitialCode();
 		String url  = StringUtils.EMPTY;
 		String body = StringUtils.EMPTY;
 
@@ -124,9 +127,9 @@ public class LawsBot extends AbstractBot {
 
 	}
 
-	private String getCode() {
+	private String getInitialCode() {
 		final Optional<Law> lastLaw = lawsRepository.findFirstByOrderByCodeDesc();
-		return lastLaw.isPresent() ?  buildLawCode(getNextLawCode(lastLaw.get().getCode())) : "L8865"; //L8865 is the last code of 2012
+		return lastLaw.isPresent() ?  buildLawCode(getNextLawCode(lastLaw.get().getCode())) : initialCode; //L8865 is the last code of 2012
 	}
 
 	private List<Integer> getAllYears() {
@@ -139,9 +142,9 @@ public class LawsBot extends AbstractBot {
 
 		} else {
 
-			while (year <= currentYear) {
-				years.add(year);
-				year += 1;
+			while (initialYear <= currentYear) {
+				years.add(initialYear);
+				initialYear += 1;
 			}
 
 		}

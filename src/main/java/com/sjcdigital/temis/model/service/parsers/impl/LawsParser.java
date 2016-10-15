@@ -57,7 +57,7 @@ public class LawsParser extends AbstractParser {
 			final Element body = document.body();
 
 			final Law law = new Law();
-			law.setDesc(body.html());
+			law.setDesc(body.html().trim());
 			law.setTitle(document.title());
 			law.setAuthor(buildAuthor(body));
 			law.setDate(buildDate(body));
@@ -79,19 +79,9 @@ public class LawsParser extends AbstractParser {
 	}
 
 	private Optional<Alderman> getAlderman(final String authorName) {
-
-		final Optional<Alderman> alderman = aldermanRepository.findByNameContainingIgnoreCase(authorName);
-
-		if (alderman.isPresent()) {
-			return alderman;
-
-		} else {
-			LOGGER.info("Author: " + authorName);
-			final Alderman aldermanNotfound = new Alderman(authorName, true);
-
-			return Optional.of(aldermanRepository.save(aldermanNotfound));
-		}
-
+		final Alderman alderman = aldermanRepository.findByNameContainingIgnoreCase(authorName).orElse(new Alderman(authorName, true));
+		alderman.plusLaw();
+		return Optional.of(aldermanRepository.save(alderman));
 	}
 
 	private String extractedCode(final File file) {
@@ -163,8 +153,7 @@ public class LawsParser extends AbstractParser {
 		if (matcher.find()) {
 
 			final String de = " de ";
-			final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy",
-			        new Locale("pt", "br"));
+			final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", new Locale("pt", "br"));
 			final String[] dateSplit = matcher.group(0).split(de);
 			final String day = StringUtils.leftPad(dateSplit[0].trim(), 2, "0");
 			final String month = WordUtils.capitalize(dateSplit[1].trim());
