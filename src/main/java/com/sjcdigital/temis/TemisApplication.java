@@ -17,8 +17,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableAsync
-@EnableScheduling
 @EnableSwagger2
+@EnableScheduling
 @SpringBootApplication
 @EnableMongoRepositories("com.sjcdigital.temis.model.repositories")
 public class TemisApplication {

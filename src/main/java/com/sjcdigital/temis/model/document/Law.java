@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -24,8 +25,12 @@ public class Law {
 	@DBRef
 	private Collection<Alderman> author;
 
+	@TextIndexed
 	private String desc;
 	
+	private String summary;
+	
+	@Indexed
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	private LocalDate date;
 	
@@ -86,12 +91,6 @@ public class Law {
 		this.projectLawNumber = projectLawNumber;
 	}
 
-	@Override
-	public String toString() {
-		return "{ code: " + code + ", " + "author: " + author + ", " + "desc: " + desc + ", " + "date: " + date + ", "
-		        + "title: " + title + ", " + "number: " + projectLawNumber + " }";
-	}
-
 	public BigInteger getPositiveVotes() {
 		return positiveVotes;
 	}
@@ -114,6 +113,14 @@ public class Law {
 	
 	public void voteNegative() {
 		setNegativeVotes(this.negativeVotes.add(BigInteger.ONE));
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
 	}
 
 }

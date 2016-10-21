@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
@@ -12,7 +13,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.log4j.LogManager;
@@ -48,21 +48,26 @@ public class LawsParser extends AbstractParser {
 
 		try {
 
-			LOGGER.debug("Parsing and save: " + file.getName());
+			LOGGER.info("Parsing and save: " + file.getParentFile().getName());
 
 			final Document document = readFile(file).get();
+			
+			final Law law = new Law();
+			final Optional<String> title = buildTitle(document.title().trim());
+			
+			law.setSummary(buildSummary(document.head().select("script").toString()).orElse(""));
+			law.setTitle(title.orElse(""));
+			law.setDate(buildDate(title.orElse("")).orElse(LocalDate.now()));
+			
 			document.select("script").remove();
-			document.select("href").remove();
+			document.select("a[href]").remove();
 
 			final Element body = document.body();
 
-			final Law law = new Law();
 			law.setDesc(body.html().trim());
-			law.setTitle(document.title());
 			law.setAuthor(buildAuthor(body));
-			law.setDate(buildDate(body));
-			law.setCode(extractedCode(file));
-			law.setProjectLawNumber(buildProjectLawNumber(body));
+			law.setCode(extractedCode(file).orElse(""));
+			law.setProjectLawNumber(buildProjectLawNumber(body).orElse(""));
 
 			saveLaw(law);
 
@@ -70,6 +75,28 @@ public class LawsParser extends AbstractParser {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 
+	}
+
+	private Optional<String> buildTitle(String title) {
+		
+		final Matcher matcher = getMatcher("lei\\s*municipal\\s*nº?\\s*\\d+\\.?\\d+,?\\s*(de)?\\s*\\d{1,2}/\\d{1,2}/\\d{2,4}", title);
+
+		if (matcher.find()) {
+			return Optional.of(matcher.group(0));
+		}
+		
+		return Optional.empty();
+	}
+
+	private Optional<String> buildSummary(String script) {
+		
+		final Matcher matcher = getMatcher("Xtesta\\((.+)\\)", script);
+
+		if (matcher.find()) {
+			return Optional.of(matcher.group(1).split("\",\"")[1].replaceAll("<!--", "").replaceAll("--!?>", ""));
+		}
+		
+		return Optional.empty();
 	}
 
 	private void saveLaw(final Law law) {
@@ -84,20 +111,20 @@ public class LawsParser extends AbstractParser {
 		return Optional.of(aldermanRepository.save(alderman));
 	}
 
-	private String extractedCode(final File file) {
-		return file.getName().replace("L", "").replace(".html", "");
+	private Optional<String> extractedCode(final File file) {
+		return Optional.of(file.getName().replace("L", "").replace(".html", ""));
 	}
 
-	private String buildProjectLawNumber(final Element body) {
+	private Optional<String> buildProjectLawNumber(final Element body) {
 
 		final String regPub = body.getElementsByClass("RegPub").text();
-		final Matcher matcher = getMatcher("nº [0-9]+/[0-9]+", regPub);
+		final Matcher matcher = getMatcher("n. \\d+/\\d+", regPub);
 
 		if (matcher.find()) {
-			return matcher.group(0);
+			return Optional.of(matcher.group(0));
 		}
 
-		return "";
+		return Optional.empty();
 	}
 
 	private Collection<Alderman> buildAuthor(final Element body) {
@@ -139,31 +166,34 @@ public class LawsParser extends AbstractParser {
 		authorClean = authorClean.replaceAll("mensagem .*", ""); // Ex. mensagem 83/atl/14
 		authorClean = authorClean.replaceAll("(^\\s*dr|^dr)(a*)(\\.*)", " ");
 		authorClean = authorClean.replaceAll("e outro(s{0,1})", ""); // Ex. e outros
-		authorClean = authorClean.replace(")", "");
+		authorClean = authorClean.replace(")\\.:", "");
 		authorClean = authorClean.trim();
 
 		return WordUtils.capitalize(authorClean);
 	}
 
-	private LocalDate buildDate(final Element body) {
+	private Optional<LocalDate> buildDate(final String title) {
 
-		final String footerText = body.getElementsByClass("RP").text();
-		final Matcher matcher = getMatcher("[0-9]{1,2} de [a-zA-Z]+ de [0-9]{4}", footerText);
+		final Matcher matcher = getMatcher("\\d{1,2}/\\d{1,2}/\\d{2,4}", title);
 
 		if (matcher.find()) {
 
-			final String de = " de ";
-			final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", new Locale("pt", "br"));
-			final String[] dateSplit = matcher.group(0).split(de);
-			final String day = StringUtils.leftPad(dateSplit[0].trim(), 2, "0");
-			final String month = WordUtils.capitalize(dateSplit[1].trim());
-			final String year = dateSplit[2].trim();
-			final String date = day.concat(de).concat(month).concat(de).concat(year);
+			final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("pt", "br"));
+			
+			String date = matcher.group(0);
+			LOGGER.info("Data: " + date);
+			
+			try {
+				return Optional.of(LocalDate.parse(date, dateTimeFormat));
+				
+			} catch (DateTimeParseException exception) {
+				LOGGER.error("Data: " + date + " não pode ser parseada!");
+				return Optional.empty();
+			}
 
-			return LocalDate.parse(date, dateTimeFormat);
 		}
 
-		return LocalDate.now();
+		return Optional.empty();
 	}
 
 	private Matcher getMatcher(final String regex, final String input) {

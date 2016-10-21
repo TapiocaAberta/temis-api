@@ -16,8 +16,8 @@ spring:
     uri: ${mongo.url}
 ---
 
-year.start.law.extract: 2013
-code.start.law.extract: L8865
+year.start.law.extract: 1947
+code.start.law.extract: L0017
 
 url:
   laws: http://www.ceaam.net/sjc/legislacao/leis/

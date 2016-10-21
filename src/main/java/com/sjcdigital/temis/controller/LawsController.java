@@ -1,5 +1,7 @@
 package com.sjcdigital.temis.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sjcdigital.temis.controller.exceptions.ResourceNotFoundException;
 import com.sjcdigital.temis.model.document.Law;
 import com.sjcdigital.temis.model.repositories.LawsRepository;
+import com.sjcdigital.temis.model.service.vote.Vote;
 
 /**
  * @author pedro-hos
@@ -28,6 +31,9 @@ public class LawsController {
 	
 	@Autowired
 	private LawsRepository lawsRepository;
+	
+	@Autowired
+	private Vote vote;
 	
 	@Autowired
 	private EntityLinks entityLinks;
@@ -64,14 +70,9 @@ public class LawsController {
 	 * @return Status
 	 */
 	@PutMapping("/{code}/vote/yes")
-	public Resource<Law> voteYes(@PathVariable final String code) {
-		
-		Law law = lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
-		law.votePositive();
-		
-		Resource<Law> resource = new Resource<Law>(lawsRepository.save(law));
+	public Resource<Law> voteYes(@PathVariable final String code, HttpServletRequest request) {
+		Resource<Law> resource = new Resource<Law>(vote.voteYes(code, request.getRemoteAddr()));
 		createVoteResource(resource);
-		
 		return resource;
 	}
 	
@@ -81,13 +82,9 @@ public class LawsController {
 	 * @return Status
 	 */
 	@PutMapping("/{code}/vote/no")
-	public Resource<Law> voteNo(@PathVariable final String code) {
-		Law law = lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
-		law.voteNegative();
-		
-		Resource<Law> resource = new Resource<Law>(lawsRepository.save(law));
+	public Resource<Law> voteNo(@PathVariable final String code, HttpServletRequest request) {
+		Resource<Law> resource = new Resource<Law>(vote.voteNo(code, request.getRemoteAddr()));
 		createVoteResource(resource);
-		
 		return resource;
 	}
 	
