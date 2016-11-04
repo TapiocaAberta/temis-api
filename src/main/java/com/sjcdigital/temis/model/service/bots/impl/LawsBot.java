@@ -3,9 +3,7 @@ package com.sjcdigital.temis.model.service.bots.impl;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +59,6 @@ public class LawsBot extends AbstractBot {
 	@Override
 	public void saveData() throws BotException {
 
-		final LocalTime start = LocalTime.now();
 		final List<Integer> allYears = getAllYears();
 
 		String code = getInitialCode();
@@ -82,8 +79,6 @@ public class LawsBot extends AbstractBot {
 				year = allYears.get(index);
 				url = buildURL(year, code);
 				body = getPage(url).get().html();
-
-				LOGGER.debug("READ URL: " + url);
 
 				file.createHTMLFile(getPath(), body, code, year);
 				code = buildLawCode(getNextLawCode(code));
@@ -122,8 +117,6 @@ public class LawsBot extends AbstractBot {
 			}
 
 		}
-
-		LOGGER.info("ELAPSED TIME: " + Duration.between(start, LocalTime.now()));
 
 	}
 

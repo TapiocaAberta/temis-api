@@ -30,8 +30,6 @@ public class File {
 	public void createHTMLFile(final String path, final String body, final String fileName, final Integer year) {
 		
 		try {
-
-		    LOGGER.info("Salvando HTML file: " + fileName);
 			
 			Path pathNio = Paths.get(path.concat(year.toString()));
 			Files.createDirectories(pathNio);

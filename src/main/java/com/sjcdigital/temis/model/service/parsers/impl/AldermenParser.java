@@ -81,14 +81,11 @@ public class AldermenParser extends AbstractParser {
         final Optional<Alderman> alderman = aldermanRepository.findByName(aldermanToSave.getName());
 
         if (alderman.isPresent()) {
-        	
-            LOGGER.info("Update: " + alderman.get().getName());
             aldermanToSave.setId(alderman.get().getId());
             aldermanToSave.setLawsCount(alderman.get().getLawsCount());
             aldermanRepository.save(aldermanToSave);
 
         } else {
-        	LOGGER.info("Create: " + aldermanToSave.getName());
             aldermanRepository.save(aldermanToSave);
         }
 

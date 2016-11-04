@@ -8,12 +8,14 @@ import org.springframework.hateoas.EntityLinks;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sjcdigital.temis.controller.exceptions.ResourceNotFoundException;
+import com.sjcdigital.temis.controller.util.ResourceUtil;
 import com.sjcdigital.temis.model.document.Alderman;
 import com.sjcdigital.temis.model.document.Law;
 import com.sjcdigital.temis.model.repositories.AldermanRepository;
@@ -68,18 +70,30 @@ public class AldermanController {
 	 * @return Alderman
 	 */
 	@GetMapping("/{name}/law")
-	public PagedResources<Resource<Law>> findLawByAlderman(@PathVariable final String name, final Pageable pageable, final PagedResourcesAssembler<Law> assembler) {
+	public Resources<Law> findLawByAlderman(@PathVariable final String name, final Pageable pageable, final PagedResourcesAssembler<Law> assembler) {
 		Alderman alderman = aldermanRepository.findByName(name).orElseThrow(ResourceNotFoundException ::  new);
 		Page<Law> laws = lawRepository.findByAuthorId(alderman.getId(), pageable);
-		return assembler.toResource(laws);
+		return createAldermanLawResource(laws, name);
 	}
 	
+	/**
+	 * build Alderman Law Resources
+	 * @param laws laws
+	 * @param name name
+	 * @return Resources of Law
+	 */
+	private Resources<Law> createAldermanLawResource(final Page<Law> laws, final String name) {
+		final String endopoint = name + "/law";
+		return ResourceUtil.createResources(laws, endopoint, entityLinks, Alderman.class);
+	}
+
+
 	/**
 	 * build Alderman Resources
 	 * @param alderman
 	 * @param resource
 	 */
-	private void createAldermanResource(Resource<Alderman> resource) {
+	private void createAldermanResource(final Resource<Alderman> resource) {
 		resource.add(entityLinks.linkFor(Alderman.class).slash(resource.getContent().getName()).withSelfRel());
 		resource.add(entityLinks.linkFor(Alderman.class).slash(resource.getContent().getName()).slash("/law").withRel("leis"));
 	}

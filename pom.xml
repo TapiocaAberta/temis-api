@@ -5,7 +5,6 @@
 
 	<groupId>com.sjcdigital.temis</groupId>
 	<artifactId>temis-server</artifactId>
-	<version>1.1.0</version>
 	<packaging>jar</packaging>
 
 	<name>temis</name>
@@ -111,6 +110,15 @@
 			<version>2.4.0</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.opennlp/opennlp-tools -->
+		<dependency>
+			<groupId>org.apache.opennlp</groupId>
+			<artifactId>opennlp-tools</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+
+
+
 		<!-- Testes -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -152,4 +160,5 @@
 		</plugins>
 	</build>
 
+	<version>1.0.0-ALPHA1</version>
 </project> 

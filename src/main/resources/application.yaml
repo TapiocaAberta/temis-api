@@ -1,8 +1,9 @@
 spring:
-  profiles.active: local
+  profiles.active: prod
 ---
 spring:
   profiles: local
+  jpa.show-sql: true
   
   data:
    mongodb:
@@ -16,8 +17,8 @@ spring:
     uri: ${mongo.url}
 ---
 
-year.start.law.extract: 1947
-code.start.law.extract: L0017
+year.start.law.extract: 1948
+code.start.law.extract: L0001
 
 url:
   laws: http://www.ceaam.net/sjc/legislacao/leis/

@@ -45,9 +45,11 @@ public class LawsController {
 	 */
 	@GetMapping
 	public PagedResources<Resource<Law>> findAllPageable(final Pageable pageable, final PagedResourcesAssembler<Law> assembler) {
-		PagedResources<Resource<Law>> pagedResources = assembler.toResource(lawsRepository.findAllByOrderByDateDesc(pageable)
+		
+		PagedResources<Resource<Law>> pagedResources = assembler.toResource(lawsRepository.findAllByOrderByCodeDesc(pageable)
 																						  .orElseThrow(ResourceNotFoundException :: new));
 		pagedResources.forEach(this :: createVoteResource);
+		
 		return pagedResources;
 	}
 	
