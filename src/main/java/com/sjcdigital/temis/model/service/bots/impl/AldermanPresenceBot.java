@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 import com.sjcdigital.temis.model.exceptions.BotException;
 import com.sjcdigital.temis.model.service.bots.AbstractBot;
-import com.sjcdigital.temis.util.File;
+import com.sjcdigital.temis.util.TemisFileUtil;
 
 /**
  * @author fabiohbarbosa
@@ -38,7 +38,7 @@ public class AldermanPresenceBot extends AbstractBot {
     private String path;
 
     @Autowired
-    private File file;
+    private TemisFileUtil file;
 
     @Override
     public void saveData() throws BotException {

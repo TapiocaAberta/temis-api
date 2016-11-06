@@ -3,6 +3,7 @@
  */
 package com.sjcdigital.temis.model.service.vote;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -43,17 +44,11 @@ public class Vote {
 		votes = new HashMap<>();
 	}
 	
-	public Law voteYes(final String code, final String ip) {
+	public Law addVote(final String code, final BigInteger rating, final String ip) {
 		canVote(code, ip);
 		Law law = lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
-		law.votePositive();
-		return lawsRepository.save(law);
-	}
-	
-	public Law voteNo(final String code, final String ip) {
-		canVote(code, ip);
-		Law law = lawsRepository.findByCode(code).orElseThrow(ResourceNotFoundException::new);
-		law.voteNegative();
+		law.addVote();
+		law.addRating(rating);
 		return lawsRepository.save(law);
 	}
 	

@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.sjcdigital.temis.model.document.Alderman;
@@ -41,6 +42,15 @@ import com.sjcdigital.temis.model.service.parsers.AbstractParser;
 public class LawsParser extends AbstractParser {
 	
 	private static final Logger LOGGER = LogManager.getLogger(LawsParser.class);
+	
+	@Value("${path.images}")
+	private String pathImages;
+	
+	@Value("${url.context}")
+	private String urlContext;
+	
+	@Value("${politico.sem_foto}")
+	private String noPhoto;
 	
 	@Autowired
 	private LawsRepository lawsRepository;
@@ -109,7 +119,8 @@ public class LawsParser extends AbstractParser {
 	}
 	
 	private Alderman getAldemerman() {
-		Alderman alderman = aldermanRepository.findByName("Sem autor").orElse(new Alderman("Sem autor", true));
+		final String photo = urlContext.concat(pathImages).concat(noPhoto);
+		Alderman alderman = aldermanRepository.findByName("Sem autor").orElse(new Alderman("Sem autor", true, photo));
 		alderman.plusLaw();
 		return aldermanRepository.save(alderman);
 	}
@@ -122,8 +133,9 @@ public class LawsParser extends AbstractParser {
 	
 	private Alderman getByDistance(String authorName) {
 		
+		final String photo = urlContext.concat(pathImages).concat(noPhoto);
 		Map<Double, Alderman> names = new HashMap<>();
-		names.put(Double.MIN_VALUE, new Alderman(authorName, true));
+		names.put(Double.MIN_VALUE, new Alderman(authorName, true, photo));
 		
 		for(Alderman alderman : aldermanRepository.findAll()) {
 			
@@ -162,7 +174,7 @@ public class LawsParser extends AbstractParser {
 		final Element first = body.getElementsByClass("RegPub").first();
 		final String regPub = Objects.nonNull(first) ? first.text() : "";
 		
-		final Matcher matcher = getMatcher("de\\s*autoria\\s*(dos|das|doe|da|de|do|o)?\\s*(.*)\\)", regPub);
+		final Matcher matcher = getMatcher("autoria:?\\s*(dos|das|doe|da|de|do|o)?\\s*(.*)\\)?", regPub);
 		
 		if (matcher.find()) {
 			
@@ -208,6 +220,7 @@ public class LawsParser extends AbstractParser {
 			return new String[] {"Mesa da Câmara"};
 		}
 		
+		authorClean = authorClean.replaceAll("verª", ""); // Ex. vereadores A, B, C
 		authorClean = authorClean.replaceAll("((v?)e(r?)e(r?)ador(es|as|a){0,1}|ver\\.|vers\\.)\\s*", ""); // Ex. vereadores A, B, C
 		
 		//Dr Angela special case
@@ -220,7 +233,7 @@ public class LawsParser extends AbstractParser {
 		authorClean = authorClean.replaceAll("^\\s*pet{1,2}it{1,2}i da farmácia comunitária", " fernando petiti da farmácia comunitária ");
 		
 		//Dilerminado-Dié Dirlermano Dié  Dilermando Dié 
-		authorClean = authorClean.replaceAll("dilerminado-dié|dirlermano dié", " dilermando dié ");
+		authorClean = authorClean.replaceAll("dilerminado\\s*-\\s*dié|dirlermano\\s*dié|dilermando\\s*die", " dilermando dié ");
 		
 		//José R Romancini  José Raimundo Romancini
 		authorClean = authorClean.replaceAll("josé r\\. romancini", " josé raimundo romancini ");
@@ -229,7 +242,7 @@ public class LawsParser extends AbstractParser {
 		authorClean = authorClean.replaceAll("aloisio petiti", " aloísio petiti ");
 		
 		// Flavia Camarço  Flávia Camarço 
-		authorClean = authorClean.replaceAll("flavia camarço", " flávia camarço ");
+		authorClean = authorClean.replaceAll("flavia camarço|flávia camarço|flavia camargo", " flávia camargo ");
 		
 		// Aloisio Petiti  Aloisio Petiti 
 		authorClean = authorClean.replaceAll("aloisio petiti", " aloisio petiti ");
@@ -246,14 +259,19 @@ public class LawsParser extends AbstractParser {
 		// Carlinhos De Almeida =>  Carlinhos Almeida  
 		authorClean = authorClean.replaceAll("carlinhos de almeida", " carlinhos almeida ");
 		
-		authorClean = authorClean.replaceAll("prof(essor(a*)?|\\.*)", "");
-		authorClean = authorClean.replaceAll("p(i|1)\\s*(\\d+)(-*\\d+)(\\/*\\d+)\\.*$", ""); // Ex. pi 1234-09/34
-		authorClean = authorClean.replaceAll("mensagem .*", ""); // Ex. mensagem 83/atl/14
-		authorClean = authorClean.replaceAll("e outro(s{0,1})", ""); // Ex. e outros
-		authorClean = authorClean.replaceAll("\\s*-*\\s*[pP]roc.?\\s*(rio)*", "");
-		authorClean = authorClean.replaceAll("[\\.:\\-\\/\\)]", " "); //) . : -
-		authorClean = authorClean.replaceAll("(nº)", "");
-		authorClean = authorClean.replaceAll("\\d*", "");
+		// Cristóvão Gonçalves 
+		authorClean = authorClean.replaceAll("crist6vao gonalves|cristdvao gonalves", " Cristóvão Gonçalves ");
+		
+		authorClean = authorClean.replaceAll("prof(essor(a*)?|\\.*)", "").trim();
+		authorClean = authorClean.replaceAll("processo", "").trim();
+		authorClean = authorClean.replaceAll("['\\.:\\-\\/\\)]", "").trim(); //) . : -
+		authorClean = authorClean.replaceAll("(nº)", "").trim();
+		authorClean = authorClean.replaceAll("p(i|1):?\\s*(\\d+)\\.*$", "").trim(); // Ex. pi 1234-09/34
+		authorClean = authorClean.replaceAll("mensagem .*", "").trim(); // Ex. mensagem 83/atl/14
+		authorClean = authorClean.replaceAll("e outro(s{0,1})", "").trim(); // Ex. e outros
+		authorClean = authorClean.replaceAll("\\s*-*\\s*[pP]roc.?\\s*(rio)*", "").trim();
+		authorClean = authorClean.replaceAll("\\d*", "").trim();
+		authorClean = authorClean.replaceAll("\\s+pl\\s*", "").trim();
 		authorClean = authorClean.trim();
 		
 		return WordUtils.capitalize(authorClean).split("(, | E | e | a | A )");

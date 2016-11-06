@@ -39,9 +39,16 @@ public class Law {
 	@Field(value = "PLNumber")
 	private String projectLawNumber;
 	
-	private BigInteger positiveVotes = BigInteger.ZERO;
+	private BigInteger votesCount = BigInteger.ZERO;
+	private BigInteger rating = BigInteger.ZERO;
 	
-	private BigInteger negativeVotes = BigInteger.ZERO;
+	public void addVote() {
+		this.votesCount = this.votesCount.add(BigInteger.ONE);
+	}
+	
+	public void addRating(BigInteger rating) {
+		this.rating = this.rating.add(rating).divide(votesCount);
+	}
 
 	public String getCode() {
 		return code;
@@ -91,36 +98,28 @@ public class Law {
 		this.projectLawNumber = projectLawNumber;
 	}
 
-	public BigInteger getPositiveVotes() {
-		return positiveVotes;
-	}
-
-	public void setPositiveVotes(BigInteger positiveVotes) {
-		this.positiveVotes = positiveVotes;
-	}
-
-	public BigInteger getNegativeVotes() {
-		return negativeVotes;
-	}
-
-	public void setNegativeVotes(BigInteger negativeVotes) {
-		this.negativeVotes = negativeVotes;
-	}
-	
-	public void votePositive() {
-		setPositiveVotes(this.positiveVotes.add(BigInteger.ONE));
-	}
-	
-	public void voteNegative() {
-		setNegativeVotes(this.negativeVotes.add(BigInteger.ONE));
-	}
-
 	public String getSummary() {
 		return summary;
 	}
 
-	public void setSummary(String summary) {
+	public void setSummary(final String summary) {
 		this.summary = summary;
+	}
+
+	public BigInteger getVotesCount() {
+		return votesCount;
+	}
+
+	public void setVotesCount(final BigInteger votesTotal) {
+		this.votesCount = votesTotal;
+	}
+
+	public BigInteger getRating() {
+		return rating;
+	}
+
+	public void setRating(final BigInteger rating) {
+		this.rating = rating;
 	}
 
 }

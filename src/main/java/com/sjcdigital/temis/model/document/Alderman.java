@@ -24,14 +24,15 @@ public class Alderman {
 	private String email;
 	private String legislature;
 	private String workplace;
-	private String photo = "http://sjcdigital.github.io/balanco-municipios-sp/images/dados_abertos_sjc.jpg";
+	private String photo;
 	private String phone;
 	private Boolean notFound = false;
 	private BigInteger lawsCount = BigInteger.ZERO;
 	
 	public Alderman() {}
 	
-	public Alderman(final String name, final Boolean notFound) {
+	public Alderman(final String name, final Boolean notFound, final String photo) {
+		this.photo = photo;
 		this.name = name;
 		this.notFound = notFound;
 	}
@@ -123,34 +124,34 @@ public class Alderman {
 	public BigInteger getLawsCount() {
 		return lawsCount;
 	}
-
+	
 	public void setLawsCount(BigInteger lawsCount) {
 		this.lawsCount = lawsCount;
 	}
-
-    public static String normalizeName(final String name) {
-        String newName = name.trim();
-        newName = newName.toLowerCase();
-        newName = StringUtils.normalizeSpace(newName);
-        newName = WordUtils.capitalize(newName);
-        newName = normalizeNameCharacters(newName);
-
-        return newName;
-    }
-
-    private static String normalizeNameCharacters(final String name) {
-        final Map<String, String> specialChars = new HashMap<>();
-        specialChars.put("ª", "a");
-        specialChars.put("-", "");
-
-        String newName = name;
-        for (Map.Entry<String, String> e : specialChars.entrySet()) {
-            newName = newName.replace(e.getKey(), e.getValue());
-        }
-
-        return newName;
-    }
-
+	
+	public static String normalizeName(final String name) {
+		String newName = name.trim();
+		newName = newName.toLowerCase();
+		newName = StringUtils.normalizeSpace(newName);
+		newName = WordUtils.capitalize(newName);
+		newName = normalizeNameCharacters(newName);
+		
+		return newName;
+	}
+	
+	private static String normalizeNameCharacters(final String name) {
+		final Map<String, String> specialChars = new HashMap<>();
+		specialChars.put("ª", "a");
+		specialChars.put("-", "");
+		
+		String newName = name;
+		for (Map.Entry<String, String> e : specialChars.entrySet()) {
+			newName = newName.replace(e.getKey(), e.getValue());
+		}
+		
+		return newName;
+	}
+	
 	@Override
 	public String toString() {
 		return "{ " + "name: " + name + ", politicalParty: " + politicalParty + ", info:" + info + ", email: " + email

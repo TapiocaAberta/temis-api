@@ -22,7 +22,7 @@ import com.sjcdigital.temis.model.document.Law;
 import com.sjcdigital.temis.model.exceptions.BotException;
 import com.sjcdigital.temis.model.repositories.LawsRepository;
 import com.sjcdigital.temis.model.service.bots.AbstractBot;
-import com.sjcdigital.temis.util.File;
+import com.sjcdigital.temis.util.TemisFileUtil;
 
 /**
  *
@@ -51,7 +51,7 @@ public class LawsBot extends AbstractBot {
 	private String initialCode;
 
 	@Autowired
-	private File file;
+	private TemisFileUtil file;
 
 	@Autowired
 	private LawsRepository lawsRepository;

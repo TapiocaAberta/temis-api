@@ -15,6 +15,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.sjcdigital.temis.model.document.Alderman;
@@ -34,6 +35,15 @@ public class AldermanPresenceParser extends AbstractParser {
 
     private static final Logger LOGGER = LogManager.getLogger(AldermanPresenceParser.class);
 
+    @Value("${path.images}")
+	private String pathImages;
+	
+	@Value("${url.context}")
+	private String urlContext;
+	
+	@Value("${politico.sem_foto}")
+	private String noPhoto;
+	
     @Autowired
     private AldermanRepository aldermanRepository;
 
@@ -122,7 +132,7 @@ public class AldermanPresenceParser extends AbstractParser {
         
         return optAlderman.orElseGet(() -> {
             LOGGER.warn(String.format("Not found Alderman %s", name));
-            return aldermanRepository.save(new Alderman(name, true));
+            return aldermanRepository.save(new Alderman(name, true, urlContext.concat(pathImages).concat(noPhoto)));
         });
 
     }

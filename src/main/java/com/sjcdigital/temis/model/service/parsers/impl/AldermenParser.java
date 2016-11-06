@@ -12,11 +12,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.sjcdigital.temis.model.document.Alderman;
 import com.sjcdigital.temis.model.repositories.AldermanRepository;
 import com.sjcdigital.temis.model.service.parsers.AbstractParser;
+import com.sjcdigital.temis.util.TemisFileUtil;
 
 /**
  * @author pedro-hos
@@ -26,10 +28,22 @@ import com.sjcdigital.temis.model.service.parsers.AbstractParser;
 public class AldermenParser extends AbstractParser {
 
 	private static final Logger LOGGER = LogManager.getLogger(AldermenParser.class);
+	
+	@Value("${url.context}")
+	private String urlContext;
+
+	@Value("${path.webapp}")
+	private String pathWebapp;
+	
+	@Value("${path.images}")
+	private String pathImages;
 
 	@Autowired
 	private AldermanRepository aldermanRepository;
-
+	
+	@Autowired
+	private TemisFileUtil fileUtil;
+	
 	@Override
 	public void parse(final File file) {
 
@@ -53,14 +67,15 @@ public class AldermenParser extends AbstractParser {
 
 			final Elements elementsInfo = element.select("div.col-sm-7.texto");
 
-			alderman.setName(elementsInfo.select("h3").text().trim());
+			String politicianName = elementsInfo.select("h3").text().trim();
+			alderman.setName(politicianName);
 			alderman.setEmail(getElementValue(elementsInfo, "E-mail").nextElementSibling().text().trim());
 			alderman.setInfo(getElementValue(elementsInfo, "Dados Pessoais").nextElementSibling().text().trim());
 			alderman.setLegislature(getElementValue(elementsInfo, "Legislatura").nextSibling().toString().trim());
 			alderman.setPhone(getElementValue(elementsInfo, "Telefone").nextSibling().toString().trim());
 			alderman.setPoliticalParty(extractedPoliticalParty(elementsInfo).trim());
 			alderman.setWorkplace(getElementValue(elementsInfo, "Local de Trabalho").nextSibling().toString().trim());
-			alderman.setPhoto(element.getElementsByClass("img-responsive").attr("src").trim());
+			alderman.setPhoto(createPhoto(element.getElementsByClass("img-responsive").attr("src").trim(), politicianName));
 
 		}
 
@@ -68,7 +83,14 @@ public class AldermenParser extends AbstractParser {
 
 	}
 
-	private String extractedPoliticalParty(final Elements elements) {
+	protected String createPhoto(String url, String politicianName) {
+		politicianName = politicianName.toLowerCase().replaceAll(" ", "_");
+		String fullImagePath = pathImages.concat(politicianName).concat(".jpg");
+		fileUtil.savePhoto(url, pathWebapp.concat(fullImagePath));
+		return urlContext.concat(fullImagePath);
+	}
+
+	protected String extractedPoliticalParty(final Elements elements) {
 		return elements.select("h3").first().nextElementSibling().text().replaceAll("Partido: ", "");
 	}
 
@@ -76,7 +98,7 @@ public class AldermenParser extends AbstractParser {
 		return elementsInfo.select("h4:contains(" + key + ")").first();
 	}
 
-    private void saveOrUpdate(final Alderman aldermanToSave) {
+	protected void saveOrUpdate(final Alderman aldermanToSave) {
 
         final Optional<Alderman> alderman = aldermanRepository.findByName(aldermanToSave.getName());
 

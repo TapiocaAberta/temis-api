@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -14,15 +15,12 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 /**
- * 
  * @author pedro-hos
- *         
- *         Classe para trabalhar com files.
- *		
+ * Classe para trabalhar com files.
  */
 
 @Component
-public class File {
+public class TemisFileUtil {
 	
 	private final Logger LOGGER = LogManager.getLogger(this.getClass());
 	
@@ -57,9 +55,20 @@ public class File {
         } catch (IOException e) {
             LOGGER.error(ExceptionUtils.getStackTrace(e));
         }
-
-
     }
+	
+	public void savePhoto(String urlPhoto, String path) {
+		
+		try {
+			
+			URL url = new URL(urlPhoto);
+			Files.write(Paths.get(path), IOUtils.toByteArray(url));
+			
+		} catch (IOException e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		
+	}
 	
 	
 }

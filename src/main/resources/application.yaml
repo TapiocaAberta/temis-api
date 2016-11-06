@@ -3,11 +3,12 @@ spring:
 ---
 spring:
   profiles: local
-  jpa.show-sql: true
   
   data:
    mongodb:
     uri: mongodb://localhost/temisdb
+    
+url.context: http://localhost:8080/
 ---
 spring:
   profiles: production
@@ -15,13 +16,21 @@ spring:
   data:
    mongodb:
     uri: ${mongo.url}
+    
+url.images: http://temis-server.herokuapp.com/
 ---
 
-year.start.law.extract: 1990
-code.start.law.extract: L3721
+year.start.law.extract: 1992
+code.start.law.extract: L4130
 
 url:
   laws: http://www.ceaam.net/sjc/legislacao/leis/
   aldermen: http://www.camarasjc.sp.gov.br/vereadores/
   alderman-presence: http://www.camarasjc.sp.gov.br/portal-da-transparencia/presenca-de-vereadores.php
-path.leis: src/main/resources/data/html/
+
+path:
+  leis: src/main/resources/data/html/
+  webapp: src/main/webapp/
+  images: img/vereadores/
+
+politico.sem_foto: politico_sem_foto.png
