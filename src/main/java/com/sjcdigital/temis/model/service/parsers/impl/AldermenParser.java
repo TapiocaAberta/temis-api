@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import com.sjcdigital.temis.model.document.Alderman;
 import com.sjcdigital.temis.model.repositories.AldermanRepository;
 import com.sjcdigital.temis.model.service.parsers.AbstractParser;
+import com.sjcdigital.temis.util.StringUtil;
 import com.sjcdigital.temis.util.TemisFileUtil;
 
 /**
@@ -84,7 +85,7 @@ public class AldermenParser extends AbstractParser {
 	}
 
 	protected String createPhoto(String url, String politicianName) {
-		politicianName = politicianName.toLowerCase().replaceAll(" ", "_");
+		politicianName = StringUtil.unaccent(politicianName.toLowerCase().replaceAll(" ", "_"));
 		String fullImagePath = pathImages.concat(politicianName).concat(".jpg");
 		fileUtil.savePhoto(url, pathWebapp.concat(fullImagePath));
 		return urlContext.concat(fullImagePath);
