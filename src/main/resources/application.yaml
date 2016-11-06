@@ -17,7 +17,7 @@ spring:
    mongodb:
     uri: ${mongo.url}
     
-url.images: http://temis-server.herokuapp.com/
+url.context: http://temis-server.herokuapp.com/
 ---
 
 year.start.law.extract: 1992
