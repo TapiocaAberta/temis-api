@@ -9,7 +9,7 @@ import java.text.Normalizer;
  * StringUtils
  *
  */
-public class StringUtil {
+public class StringUtil { 
 
 	/**
 	 * Remove toda a acentuação da string substituindo por caracteres simples sem acento.
