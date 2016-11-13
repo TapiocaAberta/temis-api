@@ -32,6 +32,7 @@ import com.sjcdigital.temis.model.document.Alderman;
 import com.sjcdigital.temis.model.document.Law;
 import com.sjcdigital.temis.model.repositories.AldermanRepository;
 import com.sjcdigital.temis.model.repositories.LawsRepository;
+import com.sjcdigital.temis.model.service.machine_learn.ClassifyLaw;
 import com.sjcdigital.temis.model.service.parsers.AbstractParser;
 
 /**
@@ -58,6 +59,9 @@ public class LawsParser extends AbstractParser {
 	@Autowired
 	private AldermanRepository aldermanRepository;
 	
+	@Autowired
+	private ClassifyLaw classifyLaw;
+	
 	@Override
 	public void parse(final File file) {
 		
@@ -68,7 +72,10 @@ public class LawsParser extends AbstractParser {
 			final Law law = new Law();
 			final Optional<String> title = buildTitle(document.title().trim());
 			
-			law.setSummary(buildSummary(document.head().select("script").toString()).orElse(null));
+			String summary = buildSummary(document.head().select("script").toString()).orElse(null);
+			
+			law.setSummary(summary);
+			law.setType(Objects.nonNull(summary) ? classifyLaw.classify(summary) : null);
 			law.setTitle(title.orElse(null));
 			law.setDate(buildDate(title.orElse("")).orElse(LocalDate.now()));
 			

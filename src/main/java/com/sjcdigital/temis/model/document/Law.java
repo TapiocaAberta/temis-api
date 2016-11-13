@@ -30,6 +30,8 @@ public class Law {
 	
 	private String summary;
 	
+	private String type;
+	
 	@Indexed
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	private LocalDate date;
@@ -120,6 +122,14 @@ public class Law {
 
 	public void setRating(final BigInteger rating) {
 		this.rating = rating;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }
