@@ -1,5 +1,5 @@
 spring:
-  profiles.active: production
+  profiles.active: local
 ---
 spring:
   profiles: local
