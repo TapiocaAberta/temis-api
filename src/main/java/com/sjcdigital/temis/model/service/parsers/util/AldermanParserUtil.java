@@ -29,8 +29,9 @@ public class AldermanParserUtil {
 	
 	private static final Logger LOGGER = LogManager.getLogger(AldermanParserUtil.class);
 	
-	private static List<String> noPolitician = Arrays.asList( "Poder Executivo", "Comissão de Justiça", "Mesa Diretora", "Comissão de Servidores Públicos", "Bancada dos Vereadores",
-															  "Comissão de Justiça, Redação e Direitos Humanos", "Diversos Vereadores", "Mesa da Câmara" );
+	private static List<String> noPolitician = Arrays.asList( "Poder Executivo", "Comissão de Justiça", "Mesa Diretora", "Comissão de Servidores Públicos", 
+															  "Bancada dos Vereadores", "Comissão de Justiça, Redação e Direitos Humanos", "Mesa da Câmara",
+															  "Diversos Vereadores" );
 	
 	@Value("${path.images}")
 	private String pathImages;
