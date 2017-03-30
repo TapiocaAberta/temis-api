@@ -1,6 +1,5 @@
 app:
   build: .
-  command: sh /wildfly/bin/standalone.sh
   ports:
-    - '8080:8080'
-    - '9990:9990'
+    - 8080:8080
+    - 9990:9990
