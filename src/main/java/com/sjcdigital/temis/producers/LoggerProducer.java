@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.producer;
+package com.sjcdigital.temis.producers;
 
 import java.util.logging.Logger;
 

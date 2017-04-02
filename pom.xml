@@ -16,7 +16,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<version.war.plugin>2.5</version.war.plugin>
 	</properties>
-	
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -35,7 +35,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>javax.enterprise</groupId>
@@ -73,6 +73,14 @@
 			<version>3.0.11.Final</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+			<version>3.0.11.Final</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
@@ -96,7 +104,8 @@
 			<version>2.4.1</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
+
 		<!-- Tests -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -129,7 +138,7 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<profiles>
 		<profile>
 			<!-- When built in OpenShift the 'openshift' profile will be used when 
@@ -156,5 +165,5 @@
 			</build>
 		</profile>
 	</profiles>
-	
+
 </project>

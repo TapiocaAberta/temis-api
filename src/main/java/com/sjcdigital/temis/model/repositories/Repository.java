@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.service;
+package com.sjcdigital.temis.model.repositories;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
@@ -17,9 +17,10 @@ import javax.persistence.criteria.CriteriaQuery;
  * 
  */
 @Stateless
-public abstract class Service<T> {
+public abstract class Repository<T> {
 
 	protected Class<T> tipo = retornaTipo();
+
 	@PersistenceContext(unitName = "primary")
 	protected EntityManager em;
 
@@ -61,11 +62,11 @@ public abstract class Service<T> {
 	@SuppressWarnings({ "unchecked" })
 	private Class<T> retornaTipo() {
 		Class<?> clazz = this.getClass();
-		
-		while (!clazz.getSuperclass().equals(Service.class)) {
+
+		while (!clazz.getSuperclass().equals(Repository.class)) {
 			clazz = clazz.getSuperclass();
 		}
-		
+
 		ParameterizedType tipoGenerico = (ParameterizedType) clazz.getGenericSuperclass();
 		return (Class<T>) tipoGenerico.getActualTypeArguments()[0];
 	}
