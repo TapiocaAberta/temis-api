@@ -7,7 +7,9 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import com.sjcdigital.temis.annotations.Property;
-import com.sjcdigital.temis.model.service.ExtractLawWS;
+import com.sjcdigital.temis.model.service.bots.author.VereadorBot;
+import com.sjcdigital.temis.model.service.bots.exceptions.BotException;
+import com.sjcdigital.temis.model.service.extrator.lei.LeisExtrator;
 import com.sjcdigital.temis.resources.HelloResource;
 
 /**
@@ -18,15 +20,24 @@ import com.sjcdigital.temis.resources.HelloResource;
 public class HelloResourceImpl implements HelloResource {
 	
 	@Inject
-	private ExtractLawWS extract;
+	private LeisExtrator extract;
+	
+	@Inject
+	private VereadorBot bot;
 	
 	@Inject
 	@Property("hello.world")
 	private String helloWorld;
+	
+	@Inject
+	@Property("path.images")
+	private String path;
 
 	@Override
 	public Response sayHello( String text ) {
-
+		
+		System.out.println(path);
+		
 		if (Optional.ofNullable(text).isPresent()) {
 			return Response.ok("Hello ".concat(text)).build();
 		}
@@ -36,7 +47,15 @@ public class HelloResourceImpl implements HelloResource {
 
 	@Override
 	public Response extract() {
-		return Response.ok(extract.extract()).build();
+		
+		try {
+			bot.saveData();
+		} catch (BotException e) {
+			e.printStackTrace();
+		}
+		
+		return Response.ok().build();
+		//return Response.ok(extract.extract()).build();
 	}
 
 }

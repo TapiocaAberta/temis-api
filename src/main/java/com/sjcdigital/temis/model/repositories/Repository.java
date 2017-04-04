@@ -21,7 +21,7 @@ public abstract class Repository<T> {
 
 	protected Class<T> tipo = retornaTipo();
 
-	@PersistenceContext(unitName = "primary")
+	@PersistenceContext(unitName = "temis-unit")
 	protected EntityManager em;
 
 	public void salvar(T entidade) {

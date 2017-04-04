@@ -1,4 +1,7 @@
-package com.sjcdigital.temis.model.service;
+package com.sjcdigital.temis.model.service.extrator.lei;
+
+import java.util.Optional;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -8,16 +11,19 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import com.sjcdigital.temis.annotations.Property;
-import com.sjcdigital.temis.model.dto.ArrayOfRetornoPesquisa;
+import com.sjcdigital.temis.model.service.extrator.lei.dto.ArrayOfRetornoPesquisa;
 
 /**
  * @author pedro-hos
  */
-
 @Stateless
-public class ExtractLawWS {
+public class LeisExtrator {
 	
-	@Inject @Property("url.laws") private String url;
+	@Inject
+	private Logger logger;
+	
+	
+	@Inject @Property("url.leis") private String url;
 	
 	@Inject @Property("pagina.atual") private String paginaAtual;
 	@Inject @Property("pagina.atual.value") private Integer paginaAtualValue;
@@ -46,7 +52,7 @@ public class ExtractLawWS {
 	@Inject @Property("tipoDoc") private String tipoDoc;
 	@Inject @Property("tipoDoc.value") private String tipoDocValue;
 
-	public ArrayOfRetornoPesquisa extract() {
+	public Optional<ArrayOfRetornoPesquisa> getDocuments() {
 
 		Client client = ClientBuilder.newClient();
 		
@@ -64,10 +70,12 @@ public class ExtractLawWS {
 
 		try {
 			
-			System.out.println(response.getStatus());
-			ArrayOfRetornoPesquisa entity = response.readEntity(ArrayOfRetornoPesquisa.class);
+			logger.info(String.valueOf(response.getStatus()));
+			return Optional.ofNullable(response.readEntity(ArrayOfRetornoPesquisa.class));
 			
-			return entity;
+			
+		} catch(Exception e){
+			return Optional.empty();
 			
 		} finally {
 			response.close();

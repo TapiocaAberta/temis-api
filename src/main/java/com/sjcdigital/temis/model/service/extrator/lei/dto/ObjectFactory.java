@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.model.dto;
+package com.sjcdigital.temis.model.service.extrator.lei.dto;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
