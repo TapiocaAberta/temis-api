@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.model.service.bots.author;
+package com.sjcdigital.temis.model.service.bots.vereador;
 
 import java.io.IOException;
 import java.util.Collection;

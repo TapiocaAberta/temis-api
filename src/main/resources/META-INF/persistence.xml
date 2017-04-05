@@ -27,6 +27,7 @@
 			<!-- Properties for Hibernate -->
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
 			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.hbm2ddl.import_files" value="/META-INF/carga-inicial.sql" />
 		</properties>
 	</persistence-unit>
 </persistence>

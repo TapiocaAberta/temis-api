@@ -21,6 +21,7 @@ public class Vereadores extends Repository<Vereador> {
 	 * @return
 	 */
 	public Optional<Vereador> findByName(String nome) {
+		
 		TypedQuery<Vereador> query = em.createQuery("SELECT v FROM Vereador v WHERE v.nome = :nome ", Vereador.class);
 		query.setParameter("nome", nome);
 		

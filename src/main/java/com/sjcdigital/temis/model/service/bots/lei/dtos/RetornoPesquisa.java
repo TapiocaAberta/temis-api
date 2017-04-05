@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.model.service.extrator.lei.dto;
+package com.sjcdigital.temis.model.service.bots.lei.dtos;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

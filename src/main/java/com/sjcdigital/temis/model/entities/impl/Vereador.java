@@ -1,9 +1,11 @@
 package com.sjcdigital.temis.model.entities.impl;
 
 import java.math.BigInteger;
+import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 import com.sjcdigital.temis.model.entities.DefaultEntity;
 
@@ -28,6 +30,9 @@ public class Vereador extends DefaultEntity {
 	private String telefone;
 	private Boolean vereadorNaoEncontrado = false;
 	private BigInteger quantidadeLeis = BigInteger.ZERO;
+	
+	@OneToMany(mappedBy = "autor")
+	private Collection<Lei> leis;
 	
 	public String getNome() {
 		return nome;
@@ -107,6 +112,20 @@ public class Vereador extends DefaultEntity {
 	
 	public void setQuantidadeLeis(BigInteger quantidadeLeis) {
 		this.quantidadeLeis = quantidadeLeis;
+	}
+
+	/**
+	 * @return the leis
+	 */
+	public Collection<Lei> getLeis() {
+		return leis;
+	}
+
+	/**
+	 * @param leis the leis to set
+	 */
+	public void setLeis(Collection<Lei> leis) {
+		this.leis = leis;
 	}
 	
 }

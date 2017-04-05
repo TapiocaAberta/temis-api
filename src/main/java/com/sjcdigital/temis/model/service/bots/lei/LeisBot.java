@@ -1,9 +1,9 @@
-package com.sjcdigital.temis.model.service.extrator.lei;
+package com.sjcdigital.temis.model.service.bots.lei;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -11,17 +11,25 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import com.sjcdigital.temis.annotations.Property;
-import com.sjcdigital.temis.model.service.extrator.lei.dto.ArrayOfRetornoPesquisa;
+import com.sjcdigital.temis.model.entities.impl.Lei;
+import com.sjcdigital.temis.model.entities.impl.Vereador;
+import com.sjcdigital.temis.model.repositories.impl.Leis;
+import com.sjcdigital.temis.model.service.bots.AbstractBot;
+import com.sjcdigital.temis.model.service.bots.exceptions.BotException;
+import com.sjcdigital.temis.model.service.bots.lei.dtos.ArrayOfRetornoPesquisa;
+import com.sjcdigital.temis.model.service.bots.lei.dtos.RetornoPesquisa;
 
 /**
  * @author pedro-hos
+ *
  */
-@Stateless
-public class LeisExtrator {
-	
+public class LeisBot extends AbstractBot {
+
 	@Inject
 	private Logger logger;
-	
+
+	@Inject
+	private Leis leis;
 	
 	@Inject @Property("url.leis") private String url;
 	
@@ -51,8 +59,41 @@ public class LeisExtrator {
 	
 	@Inject @Property("tipoDoc") private String tipoDoc;
 	@Inject @Property("tipoDoc.value") private String tipoDocValue;
+	
+	
+	@Override
+	public void saveData() throws BotException {
+		
+		getDocuments().ifPresent(r -> {
+			r.getRetornoPesquisa().forEach(rp -> {
+				Lei lei = converteParaLei(rp);
+				leis.salvar(lei);
+			});
+		});
+		
+	}
+	
+	protected Lei converteParaLei(RetornoPesquisa retornoPesquisa) {
+		
+		Lei lei = new Lei();
+		
+		lei.setAutor(getVereador());
+		lei.setDcmId(retornoPesquisa.getDcmId());
+		lei.setDctId(retornoPesquisa.getDctId());
+		lei.setEmenta(retornoPesquisa.getEmenta());
+		lei.setNumeroProcesso(retornoPesquisa.getNumeroProcesso());
+		lei.setNumeroPropositura(retornoPesquisa.getNumeroPropositura());
+		lei.setQueryStringCriptografada(retornoPesquisa.getQueryStringCriptografada());
+		lei.setSituacao(retornoPesquisa.getSituacao());
+		
+		return lei;
+	}
 
-	public Optional<ArrayOfRetornoPesquisa> getDocuments() {
+	private Vereador getVereador() {
+		return null;
+	}
+
+	protected Optional<ArrayOfRetornoPesquisa> getDocuments() {
 
 		Client client = ClientBuilder.newClient();
 		
@@ -66,10 +107,11 @@ public class LeisExtrator {
 											 .queryParam(autor, autorValue)
 											 .queryParam(tipoDoc, tipoDocValue);
 		
-		Response response = target.request().get();
+		Response response = null;
 
 		try {
 			
+			response = target.request().get();
 			logger.info(String.valueOf(response.getStatus()));
 			return Optional.ofNullable(response.readEntity(ArrayOfRetornoPesquisa.class));
 			
@@ -78,10 +120,11 @@ public class LeisExtrator {
 			return Optional.empty();
 			
 		} finally {
-			response.close();
-			client.close();
+			
+			if(Objects.nonNull(response)) {
+				response.close();
+				client.close();
+			}
 		}
-
 	}
-
 }

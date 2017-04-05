@@ -18,8 +18,5 @@ public interface HelloResource {
 
 	@GET
 	Response sayHello( @QueryParam("text") String text );
-	
-	@GET
-	@Path("/extract")
-	Response extract();
+
 }

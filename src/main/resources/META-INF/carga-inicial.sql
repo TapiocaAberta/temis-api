@@ -1,0 +1,1 @@
+insert into tipo (id, nome, descricao) values (1, "Projeto de Lei", "Proposta por um(a) vereador(a) ou pela Prefeitura, visa criar nova lei ou alterar leis já existentes. Discutida na Câmara, poderá ser aprovada ou rejeitada.");

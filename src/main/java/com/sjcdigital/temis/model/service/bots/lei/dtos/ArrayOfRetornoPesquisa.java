@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.model.service.extrator.lei.dto;
+package com.sjcdigital.temis.model.service.bots.lei.dtos;
 
 import java.util.ArrayList;
 import java.util.List;
