@@ -3,8 +3,11 @@ package com.sjcdigital.temis.model.entities.impl;
 import java.math.BigInteger;
 import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.sjcdigital.temis.model.entities.DefaultEntity;
@@ -21,7 +24,10 @@ public class Vereador extends DefaultEntity {
 	@Column(unique = true, nullable = false)
 	private String nome;
 	
-	private String partidoPolitico;
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "partido_politico_id")
+	private PartidoPolitico partidoPolitico;
+	
 	private String info;
 	private String email;
 	private String legislatura;
@@ -31,9 +37,16 @@ public class Vereador extends DefaultEntity {
 	private Boolean vereadorNaoEncontrado = false;
 	private BigInteger quantidadeLeis = BigInteger.ZERO;
 	
-	@OneToMany(mappedBy = "autor")
+	@OneToMany(mappedBy = "vereador")
 	private Collection<Lei> leis;
 	
+	public Vereador() { }
+	
+	public Vereador(final String nome, final PartidoPolitico partidoPolitico) {
+		this.nome = nome;
+		this.partidoPolitico = partidoPolitico;
+	}
+
 	public String getNome() {
 		return nome;
 	}
@@ -42,11 +55,11 @@ public class Vereador extends DefaultEntity {
 		this.nome = nome;
 	}
 	
-	public String getPartidoPolitico() {
+	public PartidoPolitico getPartidoPolitico() {
 		return partidoPolitico;
 	}
 	
-	public void setPartidoPolitico(String partidoPolitico) {
+	public void setPartidoPolitico(PartidoPolitico partidoPolitico) {
 		this.partidoPolitico = partidoPolitico;
 	}
 	

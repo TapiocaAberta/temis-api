@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
-import com.sjcdigital.temis.model.entities.impl.Vereador;
+import com.sjcdigital.temis.model.entities.impl.PartidoPolitico;
 import com.sjcdigital.temis.model.repositories.Repository;
 
 /**
@@ -14,24 +14,18 @@ import com.sjcdigital.temis.model.repositories.Repository;
  *
  */
 @Stateless
-public class Vereadores extends Repository<Vereador> {
-
-	/**
-	 * @param nome
-	 * @return
-	 */
-	public Optional<Vereador> comName(String nome) {
+public class PartidosPolitico extends Repository<PartidoPolitico> {
+	
+	public Optional<PartidoPolitico> comNome(String nome) {
 		
-		TypedQuery<Vereador> query = em.createQuery("SELECT v FROM Vereador v WHERE v.nome = :nome ", Vereador.class);
+		TypedQuery<PartidoPolitico> query = em.createQuery("SELECT p FROM PartidoPolitico p WHERE LOWER(p.nome) like LOWER(:nome)", PartidoPolitico.class);
 		query.setParameter("nome", nome);
 		
 		try {
 			return  Optional.of(query.getSingleResult());
-			
 		} catch (NoResultException e) {
 			return Optional.empty();
-		}
-		
+		}		
 	}
-	
+
 }

@@ -1,6 +1,8 @@
 package com.sjcdigital.temis.model.entities.impl;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.sjcdigital.temis.model.entities.DefaultEntity;
@@ -18,14 +20,25 @@ public class Lei extends DefaultEntity {
 	private String numeroProcesso;
 	private String numeroPropositura;
 	private String situacao;
+	
+	@ManyToOne
+	@JoinColumn(name = "tipo_id")
 	private Tipo tipo;
-	private String situacaoSimplificada;
+	
+	@ManyToOne
+	@JoinColumn(name = "situacao_simplificada_id")
+	private SituacaoSimplificada situacaoSimplificada;
+	
+	@Column(name = "query_string_criptografada")
 	private String queryStringCriptografada;
 	private Integer dcmId;
 	private Integer dctId;
 
 	@ManyToOne
-	private Vereador autor;
+	@JoinColumn(name = "vereador_id")
+	private Vereador vereador;
+	
+	private String pdfLei;
 
 	public String getEmenta() {
 		return ementa;
@@ -67,11 +80,11 @@ public class Lei extends DefaultEntity {
 		this.tipo = tipo;
 	}
 
-	public String getSituacaoSimplificada() {
+	public SituacaoSimplificada getSituacaoSimplificada() {
 		return situacaoSimplificada;
 	}
 
-	public void setSituacaoSimplificada(String situacaoSimplificada) {
+	public void setSituacaoSimplificada(SituacaoSimplificada situacaoSimplificada) {
 		this.situacaoSimplificada = situacaoSimplificada;
 	}
 
@@ -99,12 +112,20 @@ public class Lei extends DefaultEntity {
 		this.dctId = dctId;
 	}
 
-	public Vereador getAutor() {
-		return autor;
+	public Vereador getVereador() {
+		return vereador;
 	}
 
-	public void setAutor(Vereador autor) {
-		this.autor = autor;
+	public void setVereador(Vereador autor) {
+		this.vereador = autor;
+	}
+
+	public String getPdfLei() {
+		return pdfLei;
+	}
+
+	public void setPdfLei(String pdfLei) {
+		this.pdfLei = pdfLei;
 	}
 
 }

@@ -1,1 +1,12 @@
 insert into tipo (id, nome, descricao) values (1, "Projeto de Lei", "Proposta por um(a) vereador(a) ou pela Prefeitura, visa criar nova lei ou alterar leis já existentes. Discutida na Câmara, poderá ser aprovada ou rejeitada.");
+insert into tipo (id, nome, descricao) values (2, "Projeto de Decreto Legislativo", "Projeto destinado a disciplinar assuntos que excedam ao âmbito da Câmara, tais como fixação de subsídios e aprovação das contas da Prefeitura. Este independe de sanção do prefeito.");
+insert into tipo (id, nome, descricao) values (3, "Projeto de Emenda à Lei Orgânica", "Projeto que visa alterar a Lei Orgânica Municipal (a “Constituição” do Município). Também exige quórum qualificado.");
+insert into tipo (id, nome, descricao) values (4, "Requerimento", "Instrumento de fiscalização, é apresentado por vereador(a) e tem por objetivo solicitar informações a Prefeitura ou a algum outro órgão público, acerca da gestão, investimentos ou políticas públicas.");
+insert into tipo (id, nome, descricao) values (5, "Projeto de Lei Complementar", "Da mesma forma que o projeto de lei, visa criar uma nova lei ou alterar lei já existente. Exige quórum qualificado (mais votos) para sua aprovação.");
+insert into tipo (id, nome, descricao) values (6, "Projeto de Resolução", "Projeto destinado a disciplinar assuntos internos da Câmara, tais como política administrativa, de pessoal, alteração do Regimento Interno e outros.");
+insert into tipo (id, nome, descricao) values (7, "Indicação", "Instrumento através do qual o(a) vereador(a) sugere ou solicita a Prefeitura a realização de determinados serviços públicos.");
+insert into tipo (id, nome, descricao) values (8, "Moção", "Proposta apresentada por vereador(a) congratulando-se ou repudiando atitudes ou ações de pessoas ou entidades ou ainda manifestando condolências.");
+
+insert into situacao_simplificada (id, nome, descricao) values (1, "Em tramitação", "São os processos que ainda não foram apreciados pelo plenário.");
+insert into situacao_simplificada (id, nome, descricao) values (2, "Aprovado", "São os processos que obtiveram maioria de voto no plenário.");
+insert into situacao_simplificada (id, nome, descricao) values (3, "Arquivado", "São os processos que foram retirados pelo autor ou rejeitados pelo plenário que não obtiveram a maioria de votos suficientes para a sua aprovação.");

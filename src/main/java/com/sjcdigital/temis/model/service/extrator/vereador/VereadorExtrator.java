@@ -3,6 +3,7 @@ package com.sjcdigital.temis.model.service.extrator.vereador;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -14,8 +15,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.sjcdigital.temis.annotations.Property;
+import com.sjcdigital.temis.model.entities.impl.PartidoPolitico;
 import com.sjcdigital.temis.model.entities.impl.Vereador;
+import com.sjcdigital.temis.model.repositories.impl.PartidosPolitico;
 import com.sjcdigital.temis.model.repositories.impl.Vereadores;
+import com.sjcdigital.temis.utils.RegexUtils;
 import com.sjcdigital.temis.utils.TemisFileUtil;
 import com.sjcdigital.temis.utils.TemisStringUtils;
 
@@ -32,6 +36,9 @@ public class VereadorExtrator {
 	
 	@Inject
 	private Vereadores vereadores;
+	
+	@Inject
+	private PartidosPolitico partidos;
 
 	@Inject
 	private TemisFileUtil fileUtil;
@@ -68,7 +75,7 @@ public class VereadorExtrator {
 			vereador.setInfo(getElementValue(elementsInfo, "Dados Pessoais").nextElementSibling().text().trim());
 			vereador.setLegislatura(getElementValue(elementsInfo, "Legislatura").nextSibling().toString().trim());
 			vereador.setTelefone(getElementValue(elementsInfo, "Telefone").nextSibling().toString().trim());
-			vereador.setPartidoPolitico(extractedPoliticalParty(elementsInfo).trim());
+			vereador.setPartidoPolitico(extractedPoliticalParty(elementsInfo));
 			vereador.setLocalTrabalho(getElementValue(elementsInfo, "Local de Trabalho").nextSibling().toString().trim());
 			vereador.setFoto(createPhoto(element.getElementsByClass("img-responsive").attr("src").trim(), politicianName));
 
@@ -84,8 +91,19 @@ public class VereadorExtrator {
 		return urlContext.concat(path);
 	}
 
-	protected String extractedPoliticalParty(final Elements elements) {
-		return elements.select("h3").first().nextElementSibling().text().replaceAll("Partido: ", "");
+	protected PartidoPolitico extractedPoliticalParty(final Elements elements) {
+		
+		Matcher matcher = RegexUtils.getMatcher("Partido: (\\w*) \\((.*)\\)", elements.select("h3").first().nextElementSibling().text().trim());
+		
+		String nome = "Partido Não Encontrado", sigla = "PNE";
+		
+		if(matcher.find()) {
+			nome = matcher.group(1);
+			sigla = matcher.group(2);
+		}
+		
+		return partidos.comNome(nome).orElse(new PartidoPolitico(nome, sigla));
+		
 	}
 
 	protected Element getElementValue(final Elements elementsInfo, final String key) {
@@ -95,7 +113,7 @@ public class VereadorExtrator {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	protected void saveOrUpdate(final Vereador vereadorEncontrado) {
 
-        final Optional<Vereador> vereador = vereadores.findByName(vereadorEncontrado.getNome());
+        final Optional<Vereador> vereador = vereadores.comName(vereadorEncontrado.getNome());
 
         if (vereador.isPresent()) {
         	
@@ -108,5 +126,15 @@ public class VereadorExtrator {
         }
 
     }
+	
+	public static void main(String[] args) {
+		Matcher matcher = RegexUtils.getMatcher("Partido: (\\w*) \\((.*)\\)", "Partido: SD (Partido Solidariedade)");
+		
+		if(matcher.find()) {
+			System.out.println(matcher.group(0));
+			System.out.println(matcher.group(1));
+			System.out.println(matcher.group(2));
+		}
+	}
 
 }

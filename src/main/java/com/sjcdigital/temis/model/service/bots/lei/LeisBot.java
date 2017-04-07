@@ -12,12 +12,15 @@ import javax.ws.rs.core.Response;
 
 import com.sjcdigital.temis.annotations.Property;
 import com.sjcdigital.temis.model.entities.impl.Lei;
+import com.sjcdigital.temis.model.entities.impl.PartidoPolitico;
 import com.sjcdigital.temis.model.entities.impl.Vereador;
 import com.sjcdigital.temis.model.repositories.impl.Leis;
+import com.sjcdigital.temis.model.repositories.impl.Vereadores;
 import com.sjcdigital.temis.model.service.bots.AbstractBot;
 import com.sjcdigital.temis.model.service.bots.exceptions.BotException;
 import com.sjcdigital.temis.model.service.bots.lei.dtos.ArrayOfRetornoPesquisa;
 import com.sjcdigital.temis.model.service.bots.lei.dtos.RetornoPesquisa;
+import com.sjcdigital.temis.utils.TemisFileUtil;
 
 /**
  * @author pedro-hos
@@ -30,6 +33,20 @@ public class LeisBot extends AbstractBot {
 
 	@Inject
 	private Leis leis;
+	
+	@Inject
+	private TemisFileUtil fileUtil;
+	
+	@Inject
+	private Vereadores vereadores;
+	
+	@Inject
+	@Property("url.context")
+	private String urlContext;
+	
+	@Inject
+	@Property("url.pdf.leis")
+	private String urlPDFLeis;
 	
 	@Inject @Property("url.leis") private String url;
 	
@@ -73,11 +90,11 @@ public class LeisBot extends AbstractBot {
 		
 	}
 	
-	protected Lei converteParaLei(RetornoPesquisa retornoPesquisa) {
+	protected Lei converteParaLei(final RetornoPesquisa retornoPesquisa) {
 		
 		Lei lei = new Lei();
 		
-		lei.setAutor(getVereador());
+		lei.setVereador(getVereador(retornoPesquisa.getAutor()));
 		lei.setDcmId(retornoPesquisa.getDcmId());
 		lei.setDctId(retornoPesquisa.getDctId());
 		lei.setEmenta(retornoPesquisa.getEmenta());
@@ -85,12 +102,23 @@ public class LeisBot extends AbstractBot {
 		lei.setNumeroPropositura(retornoPesquisa.getNumeroPropositura());
 		lei.setQueryStringCriptografada(retornoPesquisa.getQueryStringCriptografada());
 		lei.setSituacao(retornoPesquisa.getSituacao());
+		lei.setPdfLei(salvaPDF(retornoPesquisa.getDcmId(), retornoPesquisa.getQueryStringCriptografada()));
+		
+		lei.setSituacaoSimplificada(null); //TODO
+		lei.setTipo(null); //TODO
 		
 		return lei;
 	}
 
-	private Vereador getVereador() {
+	private String salvaPDF(int dcmId, String queryStringCriptografada) {
+		// TODO Auto-generated method stub
 		return null;
+	}
+
+	private Vereador getVereador(final String autor) {
+		// TODO Auto-generated method stub
+		PartidoPolitico partido = null; //criar partido
+		return vereadores.comName(autor).orElse(new Vereador(autor, partido));
 	}
 
 	protected Optional<ArrayOfRetornoPesquisa> getDocuments() {
