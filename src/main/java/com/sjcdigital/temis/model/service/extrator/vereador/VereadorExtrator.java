@@ -87,7 +87,7 @@ public class VereadorExtrator {
 
 	protected String createPhoto(String url, String politicianName) {
 		String path = vereadorImagePath + TemisStringUtils.unaccent(politicianName.toLowerCase().replaceAll(" ", "_")).concat(".jpg");
-		fileUtil.savePhoto(url, path);
+		fileUtil.saveFile(url, path);
 		return urlContext.concat(path);
 	}
 
@@ -98,8 +98,8 @@ public class VereadorExtrator {
 		String nome = "Partido Não Encontrado", sigla = "PNE";
 		
 		if(matcher.find()) {
-			nome = matcher.group(1);
-			sigla = matcher.group(2);
+			sigla = matcher.group(1);
+			nome = matcher.group(2);
 		}
 		
 		return partidos.comNome(nome).orElse(new PartidoPolitico(nome, sigla));
@@ -126,15 +126,4 @@ public class VereadorExtrator {
         }
 
     }
-	
-	public static void main(String[] args) {
-		Matcher matcher = RegexUtils.getMatcher("Partido: (\\w*) \\((.*)\\)", "Partido: SD (Partido Solidariedade)");
-		
-		if(matcher.find()) {
-			System.out.println(matcher.group(0));
-			System.out.println(matcher.group(1));
-			System.out.println(matcher.group(2));
-		}
-	}
-
 }

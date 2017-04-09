@@ -1,5 +1,6 @@
 package com.sjcdigital.temis.model.entities.impl;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -16,6 +17,7 @@ public class Lei extends DefaultEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(length = 1000)
 	private String ementa;
 	private String numeroProcesso;
 	private String numeroPropositura;
@@ -34,7 +36,7 @@ public class Lei extends DefaultEntity {
 	private Integer dcmId;
 	private Integer dctId;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "vereador_id")
 	private Vereador vereador;
 	

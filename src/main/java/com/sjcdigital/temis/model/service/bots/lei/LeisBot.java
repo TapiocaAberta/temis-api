@@ -1,31 +1,45 @@
 package com.sjcdigital.temis.model.service.bots.lei;
 
+import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import com.sjcdigital.temis.annotations.Property;
 import com.sjcdigital.temis.model.entities.impl.Lei;
 import com.sjcdigital.temis.model.entities.impl.PartidoPolitico;
 import com.sjcdigital.temis.model.entities.impl.Vereador;
 import com.sjcdigital.temis.model.repositories.impl.Leis;
+import com.sjcdigital.temis.model.repositories.impl.PartidosPolitico;
+import com.sjcdigital.temis.model.repositories.impl.SituacoesSimplificada;
+import com.sjcdigital.temis.model.repositories.impl.Tipos;
 import com.sjcdigital.temis.model.repositories.impl.Vereadores;
 import com.sjcdigital.temis.model.service.bots.AbstractBot;
 import com.sjcdigital.temis.model.service.bots.exceptions.BotException;
 import com.sjcdigital.temis.model.service.bots.lei.dtos.ArrayOfRetornoPesquisa;
 import com.sjcdigital.temis.model.service.bots.lei.dtos.RetornoPesquisa;
+import com.sjcdigital.temis.utils.RegexUtils;
 import com.sjcdigital.temis.utils.TemisFileUtil;
 
 /**
  * @author pedro-hos
  *
  */
+@Stateless
+//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class LeisBot extends AbstractBot {
 
 	@Inject
@@ -41,12 +55,19 @@ public class LeisBot extends AbstractBot {
 	private Vereadores vereadores;
 	
 	@Inject
-	@Property("url.context")
-	private String urlContext;
+	private SituacoesSimplificada situacoes;
 	
 	@Inject
-	@Property("url.pdf.leis")
-	private String urlPDFLeis;
+	private PartidosPolitico partidos;
+	
+	@Inject
+	private Tipos tipos;
+	
+	@Inject @Property("url.context") private String urlContext;
+	
+	@Inject @Property("url.pdf.leis") private String urlPDFLeis;
+	
+	@Inject @Property("path.leis.pdf") private String pathLeis;
 	
 	@Inject @Property("url.leis") private String url;
 	
@@ -81,13 +102,25 @@ public class LeisBot extends AbstractBot {
 	@Override
 	public void saveData() throws BotException {
 		
-		getDocuments().ifPresent(r -> {
-			r.getRetornoPesquisa().forEach(rp -> {
-				Lei lei = converteParaLei(rp);
-				leis.salvar(lei);
-			});
-		});
+		Optional<ArrayOfRetornoPesquisa> arrayOfRetornoPesquisa = getDocuments(this.paginaAtualValue);
 		
+		while(arrayOfRetornoPesquisa.isPresent()) {
+			
+			logger.info("Realizando extração de leis");
+			logger.info("[Página atual] " + this.paginaAtualValue);
+			
+			for(RetornoPesquisa retornoPesquisa : arrayOfRetornoPesquisa.get().getRetornoPesquisa()) {
+				salva(converteParaLei(retornoPesquisa));
+			}
+			
+			arrayOfRetornoPesquisa = getDocuments(++this.paginaAtualValue);
+		}
+		
+	}
+	
+	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	protected void salva(final Lei lei) {
+		leis.salvar(lei);
 	}
 	
 	protected Lei converteParaLei(final RetornoPesquisa retornoPesquisa) {
@@ -103,25 +136,48 @@ public class LeisBot extends AbstractBot {
 		lei.setQueryStringCriptografada(retornoPesquisa.getQueryStringCriptografada());
 		lei.setSituacao(retornoPesquisa.getSituacao());
 		lei.setPdfLei(salvaPDF(retornoPesquisa.getDcmId(), retornoPesquisa.getQueryStringCriptografada()));
-		
-		lei.setSituacaoSimplificada(null); //TODO
-		lei.setTipo(null); //TODO
+		lei.setSituacaoSimplificada(situacoes.comNome(retornoPesquisa.getSituacaoSimplificada()).orElse(null));
+		lei.setTipo(tipos.comNome(retornoPesquisa.getSituacaoSimplificada()).orElse(null));
 		
 		return lei;
 	}
 
 	private String salvaPDF(int dcmId, String queryStringCriptografada) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String url = MessageFormat.format(urlPDFLeis, dcmId, queryStringCriptografada);
+		String pathAndName = pathLeis + queryStringCriptografada.replace("x=", "") + ".pdf";
+		fileUtil.saveFile(url, pathAndName);
+		
+		return urlContext.concat(pathAndName);
 	}
 
-	private Vereador getVereador(final String autor) {
-		// TODO Auto-generated method stub
-		PartidoPolitico partido = null; //criar partido
-		return vereadores.comName(autor).orElse(new Vereador(autor, partido));
+	private Vereador getVereador(String autorEPartido) {
+		
+		logger.info("Tratando autor: " + autorEPartido);
+		
+		//Começou a patifaria ....
+		autorEPartido = autorEPartido.toLowerCase()
+									 .trim()
+									 .replaceAll("ver.", "")
+									 .replaceAll("professor calasans camargo - prp", "prof. calasans camargo - prp")
+									 .trim();
+		
+		Matcher matcher = RegexUtils.getMatcher("(.*) - (\\w*)", autorEPartido);
+		
+		String autor = autorEPartido;
+		String siglaPartido = "";
+		
+		if(matcher.find()) {
+			autor = matcher.group(1);
+			siglaPartido = matcher.group(2);
+		}
+		
+		PartidoPolitico partido = partidos.comSigla(siglaPartido).orElse(null);
+		
+		return vereadores.comName(autor).orElse(new Vereador(StringUtils.capitalize(autor), partido));
 	}
 
-	protected Optional<ArrayOfRetornoPesquisa> getDocuments() {
+	protected Optional<ArrayOfRetornoPesquisa> getDocuments(final Integer paginaAtualValue) {
 
 		Client client = ClientBuilder.newClient();
 		
@@ -139,12 +195,15 @@ public class LeisBot extends AbstractBot {
 
 		try {
 			
+			logger.info("Buscando para URL: " + target.getUri().toString());
 			response = target.request().get();
-			logger.info(String.valueOf(response.getStatus()));
+			logger.info("Status: " + String.valueOf(response.getStatus()));
+			
 			return Optional.ofNullable(response.readEntity(ArrayOfRetornoPesquisa.class));
 			
 			
 		} catch(Exception e){
+			logger.severe(ExceptionUtils.getStackTrace(e));
 			return Optional.empty();
 			
 		} finally {

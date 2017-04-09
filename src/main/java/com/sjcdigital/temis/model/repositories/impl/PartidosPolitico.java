@@ -16,7 +16,7 @@ import com.sjcdigital.temis.model.repositories.Repository;
 @Stateless
 public class PartidosPolitico extends Repository<PartidoPolitico> {
 	
-	public Optional<PartidoPolitico> comNome(String nome) {
+	public Optional<PartidoPolitico> comNome( final String nome) {
 		
 		TypedQuery<PartidoPolitico> query = em.createQuery("SELECT p FROM PartidoPolitico p WHERE LOWER(p.nome) like LOWER(:nome)", PartidoPolitico.class);
 		query.setParameter("nome", nome);
@@ -26,6 +26,18 @@ public class PartidosPolitico extends Repository<PartidoPolitico> {
 		} catch (NoResultException e) {
 			return Optional.empty();
 		}		
+	}
+
+	public Optional<PartidoPolitico> comSigla(final String sigla) {
+		
+		TypedQuery<PartidoPolitico> query = em.createQuery("SELECT p FROM PartidoPolitico p WHERE LOWER(p.sigla) like LOWER(:sigla)", PartidoPolitico.class);
+		query.setParameter("sigla", sigla);
+		
+		try {
+			return  Optional.of(query.getSingleResult());
+		} catch (NoResultException e) {
+			return Optional.empty();
+		}	
 	}
 
 }

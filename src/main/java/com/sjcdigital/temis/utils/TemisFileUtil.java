@@ -26,11 +26,11 @@ public class TemisFileUtil {
 	
 	private static final String CONTENT_PATH = System.getProperty("jboss.home.dir").concat("/welcome-content");
 	
-	public void savePhoto(String urlPhoto, String fileName) {
+	public void saveFile(String urlPhoto, String filePahtAndName) {
 
 		try {
 			
-			Path path = Paths.get(CONTENT_PATH + "/" + fileName);
+			Path path = Paths.get(CONTENT_PATH + "/" + filePahtAndName);
 
 			if (!Files.exists(path.getParent())) {
 				Files.createDirectories(path.getParent());
