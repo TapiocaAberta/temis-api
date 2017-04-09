@@ -20,9 +20,9 @@ public class Vereadores extends Repository<Vereador> {
 	 * @param nome
 	 * @return
 	 */
-	public Optional<Vereador> comName(String nome) {
+	public Optional<Vereador> comName(final String nome) {
 		
-		TypedQuery<Vereador> query = em.createQuery("SELECT v FROM Vereador v WHERE v.nome = :nome ", Vereador.class);
+		TypedQuery<Vereador> query = em.createQuery("SELECT v FROM Vereador v WHERE LOWER(v.nome) = LOWER(:nome)", Vereador.class);
 		query.setParameter("nome", nome);
 		
 		try {

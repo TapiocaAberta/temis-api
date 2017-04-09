@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.logging.Logger;
 
+import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -24,11 +25,14 @@ public class TemisFileUtil {
 	@Inject
 	private Logger logger;
 	
-	private static final String CONTENT_PATH = System.getProperty("jboss.home.dir").concat("/welcome-content");
+	private static final String CONTENT_PATH = "/Volumes/MAC/temis-files"; //System.getProperty("jboss.home.dir").concat("/welcome-content");
 	
+	@Asynchronous
 	public void saveFile(String urlPhoto, String filePahtAndName) {
 
 		try {
+			
+			logger.info("Salvando Arquivo: " + filePahtAndName);
 			
 			Path path = Paths.get(CONTENT_PATH + "/" + filePahtAndName);
 

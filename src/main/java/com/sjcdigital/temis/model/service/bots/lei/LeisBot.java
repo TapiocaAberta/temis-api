@@ -7,8 +7,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -39,7 +37,6 @@ import com.sjcdigital.temis.utils.TemisFileUtil;
  *
  */
 @Stateless
-//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class LeisBot extends AbstractBot {
 
 	@Inject
@@ -110,17 +107,12 @@ public class LeisBot extends AbstractBot {
 			logger.info("[Página atual] " + this.paginaAtualValue);
 			
 			for(RetornoPesquisa retornoPesquisa : arrayOfRetornoPesquisa.get().getRetornoPesquisa()) {
-				salva(converteParaLei(retornoPesquisa));
+				leis.salvar(converteParaLei(retornoPesquisa));
 			}
 			
 			arrayOfRetornoPesquisa = getDocuments(++this.paginaAtualValue);
 		}
 		
-	}
-	
-	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	protected void salva(final Lei lei) {
-		leis.salvar(lei);
 	}
 	
 	protected Lei converteParaLei(final RetornoPesquisa retornoPesquisa) {
@@ -195,12 +187,10 @@ public class LeisBot extends AbstractBot {
 
 		try {
 			
-			logger.info("Buscando para URL: " + target.getUri().toString());
 			response = target.request().get();
 			logger.info("Status: " + String.valueOf(response.getStatus()));
 			
 			return Optional.ofNullable(response.readEntity(ArrayOfRetornoPesquisa.class));
-			
 			
 		} catch(Exception e){
 			logger.severe(ExceptionUtils.getStackTrace(e));

@@ -17,7 +17,7 @@ public class Lei extends DefaultEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(length = 1000)
+	@Column(length = 5000)
 	private String ementa;
 	private String numeroProcesso;
 	private String numeroPropositura;
