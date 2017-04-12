@@ -1,4 +1,4 @@
-package com.sjcdigital.temis.model.service.bots.vereador;
+package com.sjcdigital.temis.model.service.bots.autor;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -17,14 +17,14 @@ import org.jsoup.select.Elements;
 import com.sjcdigital.temis.annotations.Property;
 import com.sjcdigital.temis.model.service.bots.AbstractBot;
 import com.sjcdigital.temis.model.service.bots.exceptions.BotException;
-import com.sjcdigital.temis.model.service.extrator.vereador.VereadorExtrator;
+import com.sjcdigital.temis.model.service.extrator.autor.AutorExtrator;
 
 /**
  * @author pedro-hos
  *
  */
 @Stateless
-public class VereadorBot extends AbstractBot {
+public class AutorBot extends AbstractBot {
 	
 	@Inject
 	private Logger logger;
@@ -34,7 +34,7 @@ public class VereadorBot extends AbstractBot {
 	private String vereadoresUrl;
 	
 	@Inject
-	private VereadorExtrator vereadorExtractor;
+	private AutorExtrator vereadorExtractor;
 	
 	@Override
 	public void saveData() throws BotException {

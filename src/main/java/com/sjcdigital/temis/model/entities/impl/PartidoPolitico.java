@@ -44,14 +44,5 @@ public class PartidoPolitico extends DefaultEntity {
 	public void setSigla(String sigla) {
 		this.sigla = sigla;
 	}
-
-	public static void main(String[] args) {
-		
-		int i = 1;
-		
-		while (i != 5) {
-			System.out.println(++i);
-		}
-		
-	}
+	
 }

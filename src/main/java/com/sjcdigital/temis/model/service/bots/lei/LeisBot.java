@@ -7,30 +7,30 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.text.WordUtils;
 
 import com.sjcdigital.temis.annotations.Property;
+import com.sjcdigital.temis.model.entities.impl.Autor;
 import com.sjcdigital.temis.model.entities.impl.Lei;
-import com.sjcdigital.temis.model.entities.impl.PartidoPolitico;
-import com.sjcdigital.temis.model.entities.impl.Vereador;
+import com.sjcdigital.temis.model.repositories.impl.Autores;
 import com.sjcdigital.temis.model.repositories.impl.Leis;
 import com.sjcdigital.temis.model.repositories.impl.PartidosPolitico;
 import com.sjcdigital.temis.model.repositories.impl.SituacoesSimplificada;
 import com.sjcdigital.temis.model.repositories.impl.Tipos;
-import com.sjcdigital.temis.model.repositories.impl.Vereadores;
 import com.sjcdigital.temis.model.service.bots.AbstractBot;
 import com.sjcdigital.temis.model.service.bots.exceptions.BotException;
 import com.sjcdigital.temis.model.service.bots.lei.dtos.ArrayOfRetornoPesquisa;
 import com.sjcdigital.temis.model.service.bots.lei.dtos.RetornoPesquisa;
 import com.sjcdigital.temis.utils.RegexUtils;
-import com.sjcdigital.temis.utils.TemisFileUtil;
 
 /**
  * @author pedro-hos
@@ -46,10 +46,7 @@ public class LeisBot extends AbstractBot {
 	private Leis leis;
 	
 	@Inject
-	private TemisFileUtil fileUtil;
-	
-	@Inject
-	private Vereadores vereadores;
+	private Autores vereadores;
 	
 	@Inject
 	private SituacoesSimplificada situacoes;
@@ -99,7 +96,9 @@ public class LeisBot extends AbstractBot {
 	@Override
 	public void saveData() throws BotException {
 		
-		Optional<ArrayOfRetornoPesquisa> arrayOfRetornoPesquisa = getDocuments(this.paginaAtualValue);
+		Integer paginaAtual = this.paginaAtualValue;
+		
+		Optional<ArrayOfRetornoPesquisa> arrayOfRetornoPesquisa = getDocuments(paginaAtual);
 		
 		while(arrayOfRetornoPesquisa.isPresent()) {
 			
@@ -107,19 +106,24 @@ public class LeisBot extends AbstractBot {
 			logger.info("[Página atual] " + this.paginaAtualValue);
 			
 			for(RetornoPesquisa retornoPesquisa : arrayOfRetornoPesquisa.get().getRetornoPesquisa()) {
-				leis.salvar(converteParaLei(retornoPesquisa));
+				salva(converteParaLei(retornoPesquisa));
 			}
 			
-			arrayOfRetornoPesquisa = getDocuments(++this.paginaAtualValue);
+			arrayOfRetornoPesquisa = getDocuments(++paginaAtual);
 		}
 		
+	}
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	protected void salva(Lei lei) {
+		leis.salvar(lei);
 	}
 	
 	protected Lei converteParaLei(final RetornoPesquisa retornoPesquisa) {
 		
 		Lei lei = new Lei();
 		
-		lei.setVereador(getVereador(retornoPesquisa.getAutor()));
+		lei.setAutor(getVereador(retornoPesquisa.getAutor()));
 		lei.setDcmId(retornoPesquisa.getDcmId());
 		lei.setDctId(retornoPesquisa.getDctId());
 		lei.setEmenta(retornoPesquisa.getEmenta());
@@ -127,23 +131,15 @@ public class LeisBot extends AbstractBot {
 		lei.setNumeroPropositura(retornoPesquisa.getNumeroPropositura());
 		lei.setQueryStringCriptografada(retornoPesquisa.getQueryStringCriptografada());
 		lei.setSituacao(retornoPesquisa.getSituacao());
-		lei.setPdfLei(salvaPDF(retornoPesquisa.getDcmId(), retornoPesquisa.getQueryStringCriptografada()));
+		lei.setPdfLei(MessageFormat.format(urlPDFLeis, retornoPesquisa.getDcmId(), retornoPesquisa.getQueryStringCriptografada()));
 		lei.setSituacaoSimplificada(situacoes.comNome(retornoPesquisa.getSituacaoSimplificada()).orElse(null));
 		lei.setTipo(tipos.comNome(retornoPesquisa.getSituacaoSimplificada()).orElse(null));
 		
 		return lei;
 	}
 
-	private String salvaPDF(int dcmId, String queryStringCriptografada) {
-		
-		String url = MessageFormat.format(urlPDFLeis, dcmId, queryStringCriptografada);
-		String pathAndName = pathLeis + queryStringCriptografada.replace("x=", "") + ".pdf";
-		fileUtil.saveFile(url, pathAndName);
-		
-		return urlContext.concat(pathAndName);
-	}
-
-	private Vereador getVereador(String autorEPartido) {
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	private Autor getVereador(String autorEPartido) {
 		
 		logger.info("Tratando autor: " + autorEPartido);
 		
@@ -154,19 +150,20 @@ public class LeisBot extends AbstractBot {
 									 .replaceAll("professor calasans camargo - prp", "prof. calasans camargo - prp")
 									 .trim();
 		
-		Matcher matcher = RegexUtils.getMatcher("(.*) - (\\w*)", autorEPartido);
+		Matcher matcher = RegexUtils.getMatcher("(.+) - (\\w+)", autorEPartido);
 		
 		String autor = autorEPartido;
 		String siglaPartido = "";
 		
 		if(matcher.find()) {
 			autor = matcher.group(1);
-			siglaPartido = matcher.group(2);
+			siglaPartido = matcher.group(2).toUpperCase();
 		}
 		
-		PartidoPolitico partido = partidos.comSigla(siglaPartido).orElse(null);
+		Optional<Autor> vereador = vereadores.comName(autor);
+		return vereador.orElse(new Autor(WordUtils.capitalize(autor), partidos.comSigla(siglaPartido).orElse(null)));
 		
-		return vereadores.comName(autor).orElse(new Vereador(StringUtils.capitalize(autor), partido));
+		
 	}
 
 	protected Optional<ArrayOfRetornoPesquisa> getDocuments(final Integer paginaAtualValue) {

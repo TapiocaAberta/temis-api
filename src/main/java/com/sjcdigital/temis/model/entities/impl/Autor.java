@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import com.sjcdigital.temis.model.entities.DefaultEntity;
 
@@ -17,7 +18,8 @@ import com.sjcdigital.temis.model.entities.DefaultEntity;
  */
 
 @Entity
-public class Vereador extends DefaultEntity {
+@Table(name = "autor")
+public class Autor extends DefaultEntity {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -34,15 +36,16 @@ public class Vereador extends DefaultEntity {
 	private String localTrabalho;
 	private String foto;
 	private String telefone;
-	private Boolean vereadorNaoEncontrado = false;
-	private BigInteger quantidadeLeis = BigInteger.ZERO;
 	
-	@OneToMany(mappedBy = "vereador")
+	@OneToMany(mappedBy = "autor")
 	private Collection<Lei> leis;
 	
-	public Vereador() { }
+	@Column(name = "quantidade_de_leis")
+	private BigInteger quantidadeDeLeis = BigInteger.ZERO;
 	
-	public Vereador(final String nome, final PartidoPolitico partidoPolitico) {
+	public Autor() { }
+	
+	public Autor(final String nome, final PartidoPolitico partidoPolitico) {
 		this.nome = nome;
 		this.partidoPolitico = partidoPolitico;
 	}
@@ -110,35 +113,21 @@ public class Vereador extends DefaultEntity {
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
 	}
-	
-	public Boolean getVereadorNaoEncontrado() {
-		return vereadorNaoEncontrado;
-	}
-	
-	public void setVereadorNaoEncontrado(Boolean vereadorNaoEncontrado) {
-		this.vereadorNaoEncontrado = vereadorNaoEncontrado;
-	}
-	
-	public BigInteger getQuantidadeLeis() {
-		return quantidadeLeis;
-	}
-	
-	public void setQuantidadeLeis(BigInteger quantidadeLeis) {
-		this.quantidadeLeis = quantidadeLeis;
-	}
 
-	/**
-	 * @return the leis
-	 */
 	public Collection<Lei> getLeis() {
 		return leis;
 	}
 
-	/**
-	 * @param leis the leis to set
-	 */
 	public void setLeis(Collection<Lei> leis) {
 		this.leis = leis;
+	}
+
+	public BigInteger getQuantidadeDeLeis() {
+		return quantidadeDeLeis;
+	}
+
+	public void setQuantidadeDeLeis(BigInteger quantidadeDeLeis) {
+		this.quantidadeDeLeis = quantidadeDeLeis;
 	}
 	
 }

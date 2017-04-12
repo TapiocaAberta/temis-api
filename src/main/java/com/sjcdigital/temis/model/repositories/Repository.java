@@ -24,9 +24,8 @@ public abstract class Repository<T> {
 	@PersistenceContext(unitName = "temis-unit")
 	protected EntityManager em;
 
-	public T salvar(T entidade) {
+	public void salvar(T entidade) {
 		em.persist(entidade);
-		return entidade;
 	}
 
 	public void remover(T entidade) {

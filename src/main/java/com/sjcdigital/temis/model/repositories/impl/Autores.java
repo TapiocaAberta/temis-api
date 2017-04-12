@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
-import com.sjcdigital.temis.model.entities.impl.Vereador;
+import com.sjcdigital.temis.model.entities.impl.Autor;
 import com.sjcdigital.temis.model.repositories.Repository;
 
 /**
@@ -14,15 +14,15 @@ import com.sjcdigital.temis.model.repositories.Repository;
  *
  */
 @Stateless
-public class Vereadores extends Repository<Vereador> {
+public class Autores extends Repository<Autor> {
 
 	/**
 	 * @param nome
 	 * @return
 	 */
-	public Optional<Vereador> comName(final String nome) {
+	public Optional<Autor> comName(final String nome) {
 		
-		TypedQuery<Vereador> query = em.createQuery("SELECT v FROM Vereador v WHERE LOWER(v.nome) = LOWER(:nome)", Vereador.class);
+		TypedQuery<Autor> query = em.createQuery("SELECT autor FROM Autor autor WHERE LOWER(autor.nome) = LOWER(:nome)", Autor.class);
 		query.setParameter("nome", nome);
 		
 		try {

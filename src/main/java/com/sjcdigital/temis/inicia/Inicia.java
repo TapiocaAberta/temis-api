@@ -5,9 +5,9 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 
+import com.sjcdigital.temis.model.service.bots.autor.AutorBot;
 import com.sjcdigital.temis.model.service.bots.exceptions.BotException;
 import com.sjcdigital.temis.model.service.bots.lei.LeisBot;
-import com.sjcdigital.temis.model.service.bots.vereador.VereadorBot;
 
 /**
  * @author pedro-hos
@@ -19,7 +19,7 @@ import com.sjcdigital.temis.model.service.bots.vereador.VereadorBot;
 public class Inicia {
 
 	@Inject
-	private VereadorBot vereadorBot;
+	private AutorBot vereadorBot;
 	
 	@Inject
 	private LeisBot leisBot;

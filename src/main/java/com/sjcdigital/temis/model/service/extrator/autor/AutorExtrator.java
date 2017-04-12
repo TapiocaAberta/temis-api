@@ -1,6 +1,7 @@
-package com.sjcdigital.temis.model.service.extrator.vereador;
+package com.sjcdigital.temis.model.service.extrator.autor;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -16,9 +17,9 @@ import org.jsoup.select.Elements;
 
 import com.sjcdigital.temis.annotations.Property;
 import com.sjcdigital.temis.model.entities.impl.PartidoPolitico;
-import com.sjcdigital.temis.model.entities.impl.Vereador;
+import com.sjcdigital.temis.model.entities.impl.Autor;
 import com.sjcdigital.temis.model.repositories.impl.PartidosPolitico;
-import com.sjcdigital.temis.model.repositories.impl.Vereadores;
+import com.sjcdigital.temis.model.repositories.impl.Autores;
 import com.sjcdigital.temis.utils.RegexUtils;
 import com.sjcdigital.temis.utils.TemisFileUtil;
 import com.sjcdigital.temis.utils.TemisStringUtils;
@@ -29,13 +30,13 @@ import com.sjcdigital.temis.utils.TemisStringUtils;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-public class VereadorExtrator {
+public class AutorExtrator {
 	
 	@Inject
 	private Logger logger;
 	
 	@Inject
-	private Vereadores vereadores;
+	private Autores vereadores;
 	
 	@Inject
 	private PartidosPolitico partidos;
@@ -54,16 +55,17 @@ public class VereadorExtrator {
 	
 	public void parse(final Document document) throws IOException {
 		
-		logger.info("Criando vereadores!");
 		
-		final Vereador vereador = extractAldermenInfo(document.select("div.row.info")); // <div class="row info">
-		saveOrUpdate(vereador);
+		final Autor autor = extractAldermenInfo(document.select("div.row.info")); // <div class="row info">
+		logger.info("Criando autor " + autor.getNome());
+		
+		saveOrUpdate(autor);
 	
 	}
 
-	protected Vereador extractAldermenInfo(final Elements elements) {
+	protected Autor extractAldermenInfo(final Elements elements) {
 
-		final Vereador vereador = new Vereador();
+		final Autor vereador = new Autor();
 
 		for (final Element element : elements) {
 
@@ -111,14 +113,14 @@ public class VereadorExtrator {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	protected void saveOrUpdate(final Vereador vereadorEncontrado) {
+	protected void saveOrUpdate(final Autor vereadorEncontrado) {
 
-        final Optional<Vereador> vereador = vereadores.comName(vereadorEncontrado.getNome());
+        final Optional<Autor> vereador = vereadores.comName(vereadorEncontrado.getNome());
 
         if (vereador.isPresent()) {
         	
         	vereadorEncontrado.setId(vereador.get().getId());
-        	vereadorEncontrado.setQuantidadeLeis(vereador.get().getQuantidadeLeis());
+        	vereadorEncontrado.setQuantidadeDeLeis(vereador.get().getQuantidadeDeLeis().add(BigInteger.ONE));
             vereadores.atualizar(vereadorEncontrado);
 
         } else {

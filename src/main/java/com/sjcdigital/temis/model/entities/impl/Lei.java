@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.sjcdigital.temis.model.entities.DefaultEntity;
 
@@ -13,6 +14,7 @@ import com.sjcdigital.temis.model.entities.DefaultEntity;
  *
  */
 @Entity
+@Table(name = "lei")
 public class Lei extends DefaultEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -36,9 +38,9 @@ public class Lei extends DefaultEntity {
 	private Integer dcmId;
 	private Integer dctId;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "vereador_id")
-	private Vereador vereador;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "autor_id")
+	private Autor autor;
 	
 	private String pdfLei;
 
@@ -114,12 +116,12 @@ public class Lei extends DefaultEntity {
 		this.dctId = dctId;
 	}
 
-	public Vereador getVereador() {
-		return vereador;
+	public Autor getAutor() {
+		return autor;
 	}
 
-	public void setVereador(Vereador autor) {
-		this.vereador = autor;
+	public void setAutor(Autor autor) {
+		this.autor = autor;
 	}
 
 	public String getPdfLei() {
