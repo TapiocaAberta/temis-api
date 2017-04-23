@@ -6,10 +6,13 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -46,7 +49,7 @@ public class LeisBot extends AbstractBot {
 	private Leis leis;
 	
 	@Inject
-	private Autores vereadores;
+	private Autores autores;
 	
 	@Inject
 	private SituacoesSimplificada situacoes;
@@ -92,6 +95,8 @@ public class LeisBot extends AbstractBot {
 	@Inject @Property("tipoDoc") private String tipoDoc;
 	@Inject @Property("tipoDoc.value") private String tipoDocValue;
 	
+	@Resource(lookup = "java:jboss/TransactionManager")
+	TransactionManager tm;
 	
 	@Override
 	public void saveData() throws BotException {
@@ -116,6 +121,14 @@ public class LeisBot extends AbstractBot {
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	protected void salva(Lei lei) {
+		
+		try {
+			logger.info("1 ################## " + tm.getTransaction().toString());
+		} catch (SystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		leis.salvar(lei);
 	}
 	
@@ -138,8 +151,15 @@ public class LeisBot extends AbstractBot {
 		return lei;
 	}
 
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	private Autor getVereador(String autorEPartido) {
+		
+		try {
+			logger.info("2 ################## " + tm.getTransaction().toString());
+		} catch (SystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		logger.info("Tratando autor: " + autorEPartido);
 		
@@ -160,10 +180,15 @@ public class LeisBot extends AbstractBot {
 			siglaPartido = matcher.group(2).toUpperCase();
 		}
 		
-		Optional<Autor> vereador = vereadores.comName(autor);
-		return vereador.orElse(new Autor(WordUtils.capitalize(autor), partidos.comSigla(siglaPartido).orElse(null)));
+		Optional<Autor> vereador = autores.comName(autor);
 		
-		
+		if(vereador.isPresent()) {
+			return vereador.get();
+		} else {
+			Autor autorNovo = new Autor(WordUtils.capitalize(autor), partidos.comSigla(siglaPartido).orElse(null));
+			autores.salvarNovaTransacao(autorNovo);
+			return autorNovo;
+		}
 	}
 
 	protected Optional<ArrayOfRetornoPesquisa> getDocuments(final Integer paginaAtualValue) {

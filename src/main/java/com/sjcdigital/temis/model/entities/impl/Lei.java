@@ -1,6 +1,5 @@
 package com.sjcdigital.temis.model.entities.impl;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -38,7 +37,7 @@ public class Lei extends DefaultEntity {
 	private Integer dcmId;
 	private Integer dctId;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "autor_id")
 	private Autor autor;
 	

@@ -3,6 +3,8 @@ package com.sjcdigital.temis.model.repositories.impl;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
@@ -31,7 +33,10 @@ public class Autores extends Repository<Autor> {
 		} catch (NoResultException e) {
 			return Optional.empty();
 		}
-		
 	}
 	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void salvarNovaTransacao(Autor entidade) {
+		super.salvar(entidade);
+	}
 }
