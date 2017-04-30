@@ -1,14 +1,12 @@
 package com.sjcdigital.temis.model.entities.impl;
 
 import java.math.BigInteger;
-import java.util.Collection;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.sjcdigital.temis.model.entities.DefaultEntity;
@@ -36,9 +34,6 @@ public class Autor extends DefaultEntity {
 	private String localTrabalho;
 	private String foto;
 	private String telefone;
-	
-	@OneToMany(mappedBy = "autor")
-	private Collection<Lei> leis;
 	
 	@Column(name = "quantidade_de_leis")
 	private BigInteger quantidadeDeLeis = BigInteger.ZERO;
@@ -112,14 +107,6 @@ public class Autor extends DefaultEntity {
 	
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
-	}
-
-	public Collection<Lei> getLeis() {
-		return leis;
-	}
-
-	public void setLeis(Collection<Lei> leis) {
-		this.leis = leis;
 	}
 
 	public BigInteger getQuantidadeDeLeis() {
