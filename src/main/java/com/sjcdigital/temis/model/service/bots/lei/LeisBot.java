@@ -162,8 +162,6 @@ public class LeisBot extends AbstractBot {
 		
 		Optional<Autor> vereador = vereadores.comName(autor);
 		return vereador.orElse(new Autor(WordUtils.capitalize(autor), partidos.comSigla(siglaPartido).orElse(null)));
-		
-		
 	}
 
 	protected Optional<ArrayOfRetornoPesquisa> getDocuments(final Integer paginaAtualValue) {
