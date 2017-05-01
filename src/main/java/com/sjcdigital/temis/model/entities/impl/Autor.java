@@ -2,7 +2,6 @@ package com.sjcdigital.temis.model.entities.impl;
 
 import java.math.BigInteger;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -24,7 +23,7 @@ public class Autor extends DefaultEntity {
 	@Column(unique = true, nullable = false)
 	private String nome;
 	
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne
 	@JoinColumn(name = "partido_politico_id")
 	private PartidoPolitico partidoPolitico;
 	

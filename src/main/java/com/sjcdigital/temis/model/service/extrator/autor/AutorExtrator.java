@@ -16,10 +16,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.sjcdigital.temis.annotations.Property;
-import com.sjcdigital.temis.model.entities.impl.PartidoPolitico;
 import com.sjcdigital.temis.model.entities.impl.Autor;
-import com.sjcdigital.temis.model.repositories.impl.PartidosPolitico;
+import com.sjcdigital.temis.model.entities.impl.PartidoPolitico;
 import com.sjcdigital.temis.model.repositories.impl.Autores;
+import com.sjcdigital.temis.model.repositories.impl.PartidosPolitico;
 import com.sjcdigital.temis.utils.RegexUtils;
 import com.sjcdigital.temis.utils.TemisFileUtil;
 import com.sjcdigital.temis.utils.TemisStringUtils;
@@ -104,8 +104,20 @@ public class AutorExtrator {
 			nome = matcher.group(2);
 		}
 		
-		return partidos.comNome(nome).orElse(new PartidoPolitico(nome, sigla));
+		Optional<PartidoPolitico> partido = partidos.comNome(nome);
 		
+		if(partido.isPresent()) {
+			return partido.get();
+		} 
+		
+		return novoPartido(nome, sigla);
+		
+	}
+
+	private PartidoPolitico novoPartido(String nome, String sigla) {
+		PartidoPolitico partidoPolitico = new PartidoPolitico(nome, sigla);
+		partidos.salvar(partidoPolitico);
+		return  partidoPolitico;
 	}
 
 	protected Element getElementValue(final Elements elementsInfo, final String key) {

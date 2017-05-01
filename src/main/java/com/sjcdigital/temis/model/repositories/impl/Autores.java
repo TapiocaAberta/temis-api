@@ -22,6 +22,7 @@ public class Autores extends Repository<Autor> {
 	 * @param nome
 	 * @return
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Optional<Autor> comName(final String nome) {
 		
 		TypedQuery<Autor> query = em.createQuery("SELECT autor FROM Autor autor WHERE LOWER(autor.nome) = LOWER(:nome)", Autor.class);

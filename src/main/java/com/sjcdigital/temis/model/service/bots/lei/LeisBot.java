@@ -1,18 +1,16 @@
 package com.sjcdigital.temis.model.service.bots.lei;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -95,9 +93,6 @@ public class LeisBot extends AbstractBot {
 	@Inject @Property("tipoDoc") private String tipoDoc;
 	@Inject @Property("tipoDoc.value") private String tipoDocValue;
 	
-	@Resource(lookup = "java:jboss/TransactionManager")
-	TransactionManager tm;
-	
 	@Override
 	public void saveData() throws BotException {
 		
@@ -121,14 +116,6 @@ public class LeisBot extends AbstractBot {
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	protected void salva(Lei lei) {
-		
-		try {
-			logger.info("1 ################## " + tm.getTransaction().toString());
-		} catch (SystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		leis.salvar(lei);
 	}
 	
@@ -154,13 +141,6 @@ public class LeisBot extends AbstractBot {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	private Autor getVereador(String autorEPartido) {
 		
-		try {
-			logger.info("2 ################## " + tm.getTransaction().toString());
-		} catch (SystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		logger.info("Tratando autor: " + autorEPartido);
 		
 		//Começou a patifaria ....
@@ -183,12 +163,16 @@ public class LeisBot extends AbstractBot {
 		Optional<Autor> vereador = autores.comName(autor);
 		
 		if(vereador.isPresent()) {
-			return vereador.get();
-		} else {
-			Autor autorNovo = new Autor(WordUtils.capitalize(autor), partidos.comSigla(siglaPartido).orElse(null));
-			autores.salvarNovaTransacao(autorNovo);
-			return autorNovo;
+			
+			Autor vereadorEncontrado = vereador.get();
+			vereadorEncontrado.setQuantidadeDeLeis(vereador.get().getQuantidadeDeLeis().add(BigInteger.ONE));
+			return vereadorEncontrado;
+			
 		}
+		
+		Autor autorNovo = new Autor(WordUtils.capitalize(autor), partidos.comSigla(siglaPartido).orElse(null));
+		autores.salvarNovaTransacao(autorNovo);
+		return autorNovo;
 	}
 
 	protected Optional<ArrayOfRetornoPesquisa> getDocuments(final Integer paginaAtualValue) {
