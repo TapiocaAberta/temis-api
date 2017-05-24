@@ -21,6 +21,13 @@ public class Tipo extends DefaultEntity {
 	
 	private String descricao;
 	
+	public Tipo() { }
+	
+	public Tipo(String nome) {
+		this.nome = nome;
+		this.descricao = "";
+	}
+	
 	public String getNome() {
 		return nome;
 	}

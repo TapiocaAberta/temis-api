@@ -8,10 +8,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.logging.Logger;
 
-import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
@@ -29,8 +26,6 @@ public class TemisFileUtil {
 	
 	private static final String CONTENT_PATH = System.getProperty("jboss.home.dir").concat("/welcome-content");
 	
-	@Asynchronous
-	@TransactionAttribute(TransactionAttributeType.NEVER)
 	public void saveFile(String urlPhoto, String filePahtAndName) {
 
 		try {

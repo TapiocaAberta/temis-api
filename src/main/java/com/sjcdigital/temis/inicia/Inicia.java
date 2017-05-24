@@ -28,5 +28,6 @@ public class Inicia {
 	public void executaBots() throws BotException {
 		vereadorBot.saveData();
 		leisBot.saveData();
+		System.out.println("passou ....");
 	}
 }

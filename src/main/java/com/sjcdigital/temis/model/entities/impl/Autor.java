@@ -24,7 +24,7 @@ public class Autor extends DefaultEntity {
 	private String nome;
 	
 	@ManyToOne
-	@JoinColumn(name = "partido_politico_id")
+	@JoinColumn(name = "partido_politico_id", nullable = true)
 	private PartidoPolitico partidoPolitico;
 	
 	private String info;

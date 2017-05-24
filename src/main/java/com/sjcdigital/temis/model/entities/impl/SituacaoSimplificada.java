@@ -20,6 +20,14 @@ public class SituacaoSimplificada extends DefaultEntity {
 	private String nome;
 	private String descricao;
 
+	public SituacaoSimplificada() {
+	}
+
+	public SituacaoSimplificada(String nome) {
+		this.nome = nome;
+		this.descricao = "";
+	}
+
 	public String getNome() {
 		return nome;
 	}

@@ -97,10 +97,9 @@ public class AutorExtrator {
 		
 		Matcher matcher = RegexUtils.getMatcher("Partido: (\\w*) \\((.*)\\)", elements.select("h3").first().nextElementSibling().text().trim());
 		
-		String nome = "Partido Não Encontrado", sigla = "PNE";
+		String nome = "";
 		
 		if(matcher.find()) {
-			sigla = matcher.group(1);
 			nome = matcher.group(2);
 		}
 		
@@ -110,14 +109,8 @@ public class AutorExtrator {
 			return partido.get();
 		} 
 		
-		return novoPartido(nome, sigla);
+		return null;
 		
-	}
-
-	private PartidoPolitico novoPartido(String nome, String sigla) {
-		PartidoPolitico partidoPolitico = new PartidoPolitico(nome, sigla);
-		partidos.salvar(partidoPolitico);
-		return  partidoPolitico;
 	}
 
 	protected Element getElementValue(final Elements elementsInfo, final String key) {

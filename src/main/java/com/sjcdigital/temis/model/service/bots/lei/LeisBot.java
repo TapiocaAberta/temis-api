@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
+import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -16,12 +17,16 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
 import com.sjcdigital.temis.annotations.Property;
 import com.sjcdigital.temis.model.entities.impl.Autor;
 import com.sjcdigital.temis.model.entities.impl.Lei;
+import com.sjcdigital.temis.model.entities.impl.PartidoPolitico;
+import com.sjcdigital.temis.model.entities.impl.SituacaoSimplificada;
+import com.sjcdigital.temis.model.entities.impl.Tipo;
 import com.sjcdigital.temis.model.repositories.impl.Autores;
 import com.sjcdigital.temis.model.repositories.impl.Leis;
 import com.sjcdigital.temis.model.repositories.impl.PartidosPolitico;
@@ -94,6 +99,7 @@ public class LeisBot extends AbstractBot {
 	@Inject @Property("tipoDoc.value") private String tipoDocValue;
 	
 	@Override
+	@Asynchronous
 	public void saveData() throws BotException {
 		
 		Integer paginaAtual = this.paginaAtualValue;
@@ -103,23 +109,16 @@ public class LeisBot extends AbstractBot {
 		while(arrayOfRetornoPesquisa.isPresent()) {
 			
 			logger.info("Realizando extração de leis");
-			logger.info("[Página atual] " + this.paginaAtualValue);
+			logger.info("[Página atual] " + paginaAtual);
 			
-			for(RetornoPesquisa retornoPesquisa : arrayOfRetornoPesquisa.get().getRetornoPesquisa()) {
-				salva(converteParaLei(retornoPesquisa));
-			}
-			
+			arrayOfRetornoPesquisa.get().getRetornoPesquisa().forEach(this :: converteParaLei);
 			arrayOfRetornoPesquisa = getDocuments(++paginaAtual);
 		}
 		
 	}
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	protected void salva(Lei lei) {
-		leis.salvar(lei);
-	}
-	
-	protected Lei converteParaLei(final RetornoPesquisa retornoPesquisa) {
+	protected void converteParaLei(final RetornoPesquisa retornoPesquisa) {
 		
 		Lei lei = new Lei();
 		
@@ -132,16 +131,55 @@ public class LeisBot extends AbstractBot {
 		lei.setQueryStringCriptografada(retornoPesquisa.getQueryStringCriptografada());
 		lei.setSituacao(retornoPesquisa.getSituacao());
 		lei.setPdfLei(MessageFormat.format(urlPDFLeis, retornoPesquisa.getDcmId(), retornoPesquisa.getQueryStringCriptografada()));
-		lei.setSituacaoSimplificada(situacoes.comNome(retornoPesquisa.getSituacaoSimplificada()).orElse(null));
-		lei.setTipo(tipos.comNome(retornoPesquisa.getSituacaoSimplificada()).orElse(null));
+		lei.setSituacaoSimplificada(buildSituacaoSimplicada(retornoPesquisa.getSituacaoSimplificada()));
+		lei.setTipo(novoTipo(retornoPesquisa.getTipo()));
 		
-		return lei;
+		try {
+			
+			leis.salvar(lei);
+			
+		} catch (Exception e) {
+			logger.severe(">> >> " + ExceptionUtils.getStackTrace(e));
+		}
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	private Tipo novoTipo(String nome) {
+		
+		nome = nome.replace(" - (PL)", "");
+		
+		Optional<Tipo> tipo = tipos.comNome(nome);
+		
+		if(tipo.isPresent()) {
+			return tipo.get();
+		}
+		
+		logger.info("tipo " + nome);
+		
+		Tipo novoTipo = new Tipo(WordUtils.capitalizeFully(nome));
+		tipos.salvar(novoTipo);
+		
+		return novoTipo;
+	}
+
+	private SituacaoSimplificada buildSituacaoSimplicada(String nome) {
+		
+		Optional<SituacaoSimplificada> situacaoSimplificada = situacoes.comNome(nome);
+		
+		if(situacaoSimplificada.isPresent()) {
+			return situacaoSimplificada.get();
+		}
+		
+		logger.info("Situação Simplificada: " + nome);
+		
+		SituacaoSimplificada novaSituacaoSimplificada = new SituacaoSimplificada(WordUtils.capitalizeFully(nome));
+		situacoes.salvar(novaSituacaoSimplificada);
+		
+		return novaSituacaoSimplificada;
+	}
+
 	private Autor getVereador(String autorEPartido) {
 		
-		logger.info("Tratando autor: " + autorEPartido);
+		//logger.info("Tratando autor: " + autorEPartido);
 		
 		//Começou a patifaria ....
 		autorEPartido = autorEPartido.toLowerCase()
@@ -157,7 +195,7 @@ public class LeisBot extends AbstractBot {
 		
 		if(matcher.find()) {
 			autor = matcher.group(1);
-			siglaPartido = matcher.group(2).toUpperCase();
+			siglaPartido = matcher.group(2).toUpperCase().trim();
 		}
 		
 		Optional<Autor> vereador = autores.comName(autor);
@@ -170,9 +208,28 @@ public class LeisBot extends AbstractBot {
 			
 		}
 		
-		Autor autorNovo = new Autor(WordUtils.capitalize(autor), partidos.comSigla(siglaPartido).orElse(null));
+		Autor autorNovo = new Autor(WordUtils.capitalizeFully(autor), buildPartidoPolitico(siglaPartido));
 		autores.salvarNovaTransacao(autorNovo);
+		
 		return autorNovo;
+	}
+
+	private PartidoPolitico buildPartidoPolitico(String siglaPartido) {
+		
+		/*if(StringUtils.isEmpty(siglaPartido)) {
+			siglaPartido = "Sem Partido";
+		}*/
+		
+		Optional<PartidoPolitico> partido = partidos.comSigla(siglaPartido);
+		
+		if(partido.isPresent()) {
+			return partido.get();
+		}
+		
+		//PartidoPolitico novoPartido = new PartidoPolitico(siglaPartido, siglaPartido);
+		//partidos.salvar(novoPartido);
+		
+		return null;
 	}
 
 	protected Optional<ArrayOfRetornoPesquisa> getDocuments(final Integer paginaAtualValue) {
