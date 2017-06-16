@@ -34,12 +34,17 @@ public class Lei extends DefaultEntity {
 	
 	@Column(name = "query_string_criptografada")
 	private String queryStringCriptografada;
+	
 	private Integer dcmId;
 	private Integer dctId;
 
 	@ManyToOne
 	@JoinColumn(name = "autor_id")
 	private Autor autor;
+	
+	@ManyToOne
+	@JoinColumn(nullable = true)
+	private Classe classe;
 	
 	private String pdfLei;
 

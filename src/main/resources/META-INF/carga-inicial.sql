@@ -1,3 +1,11 @@
+insert into classe (id, nome) values (1, "Nomeação");
+insert into classe (id, nome) values (2, "Utilidade Pública");
+insert into classe (id, nome) values (3, "Saúde");
+insert into classe (id, nome) values (4, "Acessibilidade");
+insert into classe (id, nome) values (5, "Data comemorativa");
+insert into classe (id, nome) values (6, "Educação");
+insert into classe (id, nome) values (7, "Outros");
+
 insert into partido_politico (id, sigla, nome) values (1, "PMDB", "PARTIDO DO MOVIMENTO DEMOCRÁTICO BRASILEIRO");
 insert into partido_politico (id, sigla, nome) values (2, "PTB", "PARTIDO TRABALHISTA BRASILEIRO");
 insert into partido_politico (id, sigla, nome) values (3, "PDT", "PARTIDO DEMOCRÁTICO TRABALHISTA");

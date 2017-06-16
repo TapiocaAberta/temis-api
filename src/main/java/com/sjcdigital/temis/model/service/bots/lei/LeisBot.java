@@ -9,15 +9,12 @@ import java.util.regex.Matcher;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -42,6 +39,7 @@ import com.sjcdigital.temis.utils.RegexUtils;
  * @author pedro-hos
  *
  */
+
 @Stateless
 public class LeisBot extends AbstractBot {
 
@@ -98,6 +96,8 @@ public class LeisBot extends AbstractBot {
 	@Inject @Property("tipoDoc") private String tipoDoc;
 	@Inject @Property("tipoDoc.value") private String tipoDocValue;
 	
+	@Inject LeiClassficacaoQueueSender sender;
+	
 	@Override
 	@Asynchronous
 	public void saveData() throws BotException {
@@ -117,15 +117,16 @@ public class LeisBot extends AbstractBot {
 		
 	}
 	
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@Asynchronous
+	//@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	protected void converteParaLei(final RetornoPesquisa retornoPesquisa) {
 		
 		Lei lei = new Lei();
 		
-		lei.setAutor(getVereador(retornoPesquisa.getAutor()));
+		lei.setAutor(buildAutor(retornoPesquisa.getAutor()));
 		lei.setDcmId(retornoPesquisa.getDcmId());
 		lei.setDctId(retornoPesquisa.getDctId());
-		lei.setEmenta(retornoPesquisa.getEmenta());
+		lei.setEmenta(retornoPesquisa.getEmenta().trim());
 		lei.setNumeroProcesso(retornoPesquisa.getNumeroProcesso());
 		lei.setNumeroPropositura(retornoPesquisa.getNumeroPropositura());
 		lei.setQueryStringCriptografada(retornoPesquisa.getQueryStringCriptografada());
@@ -134,13 +135,10 @@ public class LeisBot extends AbstractBot {
 		lei.setSituacaoSimplificada(buildSituacaoSimplicada(retornoPesquisa.getSituacaoSimplificada()));
 		lei.setTipo(novoTipo(retornoPesquisa.getTipo()));
 		
-		try {
+		//logger.info("Salvando Lei: " + lei.getNumeroProcesso() + " do autor: " + lei.getAutor().getNome());
+		sender.send(lei);
+		//leis.salvar(lei);
 			
-			leis.salvar(lei);
-			
-		} catch (Exception e) {
-			logger.severe(">> >> " + ExceptionUtils.getStackTrace(e));
-		}
 	}
 
 	private Tipo novoTipo(String nome) {
@@ -177,9 +175,7 @@ public class LeisBot extends AbstractBot {
 		return novaSituacaoSimplificada;
 	}
 
-	private Autor getVereador(String autorEPartido) {
-		
-		//logger.info("Tratando autor: " + autorEPartido);
+	private Autor buildAutor(String autorEPartido) {
 		
 		//Começou a patifaria ....
 		autorEPartido = autorEPartido.toLowerCase()
@@ -216,18 +212,11 @@ public class LeisBot extends AbstractBot {
 
 	private PartidoPolitico buildPartidoPolitico(String siglaPartido) {
 		
-		/*if(StringUtils.isEmpty(siglaPartido)) {
-			siglaPartido = "Sem Partido";
-		}*/
-		
 		Optional<PartidoPolitico> partido = partidos.comSigla(siglaPartido);
 		
 		if(partido.isPresent()) {
 			return partido.get();
 		}
-		
-		//PartidoPolitico novoPartido = new PartidoPolitico(siglaPartido, siglaPartido);
-		//partidos.salvar(novoPartido);
 		
 		return null;
 	}
