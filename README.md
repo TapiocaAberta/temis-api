@@ -12,7 +12,7 @@ Fonte: http://deuseseherois.webnode.com.br/products/t%C3%AAmis/
 
 ### O projeto
 
-Neste projeto, criamos um "chupa-cabra" e raspamos as Leis Ordinárias presentes na página [http://www.ceaam.net/sjc/legislacao/](http://www.ceaam.net/sjc/legislacao/). Com esses dados, expomos esses dados através de uma API rest.
+Neste projeto, criamos um "chupa-cabra" e raspamos as Leis Ordinárias presentes na página http://ged.camarasjc.sp.gov.br/municipe/. Para então mostrar estes dados através de uma API rest.
 
 ### O que usamos?
 
