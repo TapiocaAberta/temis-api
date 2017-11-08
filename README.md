@@ -43,7 +43,7 @@ Executando em Windows:  WILDFLY_HOME\bin\standalone.bat -c standalone-full.xml
 
 * H2
 
-**Você pode utilizar o H2 como banco, para isso basta alterar o arquivo temis-api/src/resources/META-INF/persistence.xml** e comentar a linha do `MySQL` e descomentar a linha do `H2`, como mostrado a seguir:
+Você pode utilizar o H2 como banco, para isso basta alterar o arquivo **temis-api/src/resources/META-INF/persistence.xml** e comentar a linha do `MySQL` e descomentar a linha do `H2`, como mostrado a seguir:
 
 ```xml
 <!--<jta-data-source>java:jboss/datasources/MySQLDS</jta-data-source>-->
