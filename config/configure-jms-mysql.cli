@@ -1,0 +1,25 @@
+# Batch script to add the JMS configuration to the JBoss EAP server
+
+# Start batching commands
+batch
+
+# Configure module
+
+module	add	--name=com.mysql	--resources=/caminho-para-o-connector/mysql-connector-java-5.1.41-bin.jar	--dependencies=javax.api,javax.transaction.api
+
+# Configure Subsystem
+
+/subsystem=datasources/jdbc-driver=com.mysql:add(driver-name=com.mysql, driver-module-name=com.mysql, driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource)
+/subsystem=datasources/data-source=mysql:add(driver-name=com.mysql, jndi-name="java:jboss/datasources/MySQLDS", enabled=true, connection-url="jdbc:mysql://localhost:3306/temis", username=root, password=root)
+run-batch
+
+batch
+
+# Configure the JMS test queue
+jms-queue add --queue-address=classificaLeiQueue --entries=java:/jms/queue/classifica
+
+# Run the batch commands
+run-batch
+
+# Reload the server configuration
+reload

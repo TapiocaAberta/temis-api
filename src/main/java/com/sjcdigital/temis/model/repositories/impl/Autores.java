@@ -1,5 +1,6 @@
 package com.sjcdigital.temis.model.repositories.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -18,10 +19,6 @@ import com.sjcdigital.temis.model.repositories.Repository;
 @Stateless
 public class Autores extends Repository<Autor> {
 
-	/**
-	 * @param nome
-	 * @return
-	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Optional<Autor> comName(final String nome) {
 		
@@ -30,6 +27,20 @@ public class Autores extends Repository<Autor> {
 		
 		try {
 			return  Optional.of(query.getSingleResult());
+			
+		} catch (NoResultException e) {
+			return Optional.empty();
+		}
+	}
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public Optional<List<Autor>> comNameList(final String nome) {
+		
+		TypedQuery<Autor> query = em.createQuery("SELECT autor FROM Autor autor WHERE LOWER(autor.nome) LIKE LOWER(CONCAT('%', :nome, '%'))", Autor.class);
+		query.setParameter("nome", nome);
+		
+		try {
+			return  Optional.of(query.getResultList());
 			
 		} catch (NoResultException e) {
 			return Optional.empty();

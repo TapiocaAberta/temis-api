@@ -1,8 +1,6 @@
 package com.sjcdigital.temis.model.service.bots.lei;
 
 import javax.annotation.Resource;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.jms.Destination;
 import javax.jms.JMSConnectionFactory;
@@ -20,7 +18,6 @@ public class LeiClassficacaoQueueSender {
 	@JMSConnectionFactory("java:/ConnectionFactory")
 	private JMSContext context;
 
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void send(Lei lei) {		
 		ObjectMessage message = context.createObjectMessage(lei);
 		context.createProducer().send(destination, message);

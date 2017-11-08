@@ -46,6 +46,7 @@ public class Lei extends DefaultEntity {
 	@JoinColumn(nullable = true)
 	private Classe classe;
 	
+	@Column(length = 500)
 	private String pdfLei;
 
 	public String getEmenta() {

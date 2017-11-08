@@ -1,6 +1,7 @@
 package com.sjcdigital.temis.model.entities.impl;
 
 import java.math.BigInteger;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,7 +36,7 @@ public class Autor extends DefaultEntity {
 	private String telefone;
 	
 	@Column(name = "quantidade_de_leis")
-	private BigInteger quantidadeDeLeis = BigInteger.ZERO;
+	private BigInteger quantidadeDeLeis;
 	
 	public Autor() { }
 	
@@ -109,6 +110,11 @@ public class Autor extends DefaultEntity {
 	}
 
 	public BigInteger getQuantidadeDeLeis() {
+		
+		if(Objects.isNull(this.quantidadeDeLeis)) {
+			return BigInteger.ZERO;
+		}
+		
 		return quantidadeDeLeis;
 	}
 

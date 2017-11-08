@@ -1,5 +1,7 @@
 package com.sjcdigital.temis.model.service.bots.lei;
 
+import java.util.logging.Logger;
+
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.inject.Inject;
@@ -8,7 +10,10 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import com.sjcdigital.temis.model.entities.impl.Lei;
+import com.sjcdigital.temis.model.repositories.impl.Leis;
 
 /**
  * @author pesilva
@@ -20,7 +25,13 @@ import com.sjcdigital.temis.model.entities.impl.Lei;
 public class LeiClassificacaoQueueReceiver implements MessageListener {
 
 	@Inject
+	private Logger logger;
+	
+	@Inject
 	private LeiClassificacao leiClassificacao;
+	
+	@Inject
+	private Leis leis;
 
 	@Override
 	public void onMessage(Message message) {
@@ -29,11 +40,14 @@ public class LeiClassificacaoQueueReceiver implements MessageListener {
 		
 		try {
 			
-			Lei body = ob.getBody(Lei.class);
-			leiClassificacao.classifica(body.getEmenta());
+			Lei lei = ob.getBody(Lei.class);
+			leiClassificacao.classifica(lei.getEmenta());
+			
+			logger.info("Salvando Lei: " + lei.getNumeroProcesso() + " do autor: " + lei.getAutor().getNome());
+			leis.salvar(lei);
 			
 		} catch (JMSException e) {
-			e.printStackTrace();
+			logger.severe(ExceptionUtils.getStackTrace(e));
 		}
 	}
 

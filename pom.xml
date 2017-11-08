@@ -160,17 +160,24 @@
 
 	<profiles>
 		<profile>
-			<!-- When built in OpenShift the 'openshift' profile will be used when 
+			<!-- When built in OpenShift the 'openshift' profile will be used when
 				invoking mvn. -->
-			<!-- Use this profile for any OpenShift specific customization your app 
+			<!-- Use this profile for any OpenShift specific customization your app
 				will need. -->
-			<!-- By default that is to put the resulting archive into the 'deployments' 
+			<!-- By default that is to put the resulting archive into the 'deployments'
 				folder. -->
 			<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
 			<id>openshift</id>
 			<build>
 				<finalName>temis-api</finalName>
 				<plugins>
+
+					<plugin>
+				     <groupId>org.wildfly.plugins</groupId>
+				     <artifactId>wildfly-maven-plugin</artifactId>
+				     <version>1.1.0.Alpha1</version>
+         </plugin>
+
 					<plugin>
 						<artifactId>maven-war-plugin</artifactId>
 						<version>${version.war.plugin}</version>
