@@ -25,7 +25,9 @@ public class SituacoesSimplificada extends Repository<SituacaoSimplificada> {
 		query.setParameter("nome", nome);
 
 		try {
+			
 			return Optional.of(query.getSingleResult());
+			
 		} catch (NoResultException e) {
 			return Optional.empty();
 		}

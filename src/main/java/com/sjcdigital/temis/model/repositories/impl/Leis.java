@@ -22,5 +22,23 @@ public class Leis extends Repository<Lei> {
 		query.setParameter("autor_id", idAutor);
 		return query.getResultList();
 	}
+	
+	public List<Lei> comSituacaoSimplificada(final Long id) {
+		TypedQuery<Lei> query = em.createQuery("SELECT lei FROM Lei lei WHERE lei.situacaoSimplificada.id = :id", Lei.class);
+		query.setParameter("id", id);
+		return query.getResultList();
+	}
+	
+	public List<Lei> comTipo(final Long id) {
+		TypedQuery<Lei> query = em.createQuery("SELECT lei FROM Lei lei WHERE lei.tipo.id = :id", Lei.class);
+		query.setParameter("id", id);
+		return query.getResultList();
+	}
+	
+	public List<Lei> comClasse(final Long id) {
+		TypedQuery<Lei> query = em.createQuery("SELECT lei FROM Lei lei WHERE lei.classe.id = :id", Lei.class);
+		query.setParameter("id", id);
+		return query.getResultList();
+	}
 
 }
