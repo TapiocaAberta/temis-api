@@ -243,6 +243,7 @@ public class LeisBot extends AbstractBot {
 		
 		Autor vereador = pegaUsuarioJaroWinklerDistance(trataAutor(autor), siglaPartido);
 		vereador.setQuantidadeDeLeis(vereador.getQuantidadeDeLeis().add(BigInteger.ONE));
+		
 		return vereador;
 
 	}

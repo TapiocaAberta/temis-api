@@ -13,7 +13,7 @@ import com.sjcdigital.temis.model.entities.DefaultEntity;
  *
  */
 @Entity
-@Table(name = "lei")
+@Table(name = "leis")
 public class Lei extends DefaultEntity {
 
 	private static final long serialVersionUID = 1L;
