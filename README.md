@@ -89,9 +89,20 @@ Em seguida, faça o deploy:
 ```bash
 sh WILDFLY_HOME/bin/jboss-cli.sh -c --command="deploy temis-api/target/ROOT.war"
 ```
-Caso tudo ocorra bem você deverá ver nos logs a criação de vereadores e leis.
+#### Preenchendo o projeto com dados
 
-### URIs
+O projeto é capaz de pegar os dados no portal da transparência da cidade de São José dos Campos automaticamente fazendo o download, parser e preenchendo o banco de dados. Para isso acesse http://localhost:8080/api/v2/carga usando POST, por exemplo:
+
+$ curl -X POST -u '{usuario}:{senha}' http://localhost:8080/api/v2/carga
+
+* Para criar o usuário e senha no **WildFly** execute o seguinte comando no terminal:
+
+```bash
+WILDFLY_HOME/bin/add-user.sh -a -u 'user' -p 'password' -g 'admin'
+```
+
+
+### URIs e Endpoints
 
 Em desenvolvimento
 

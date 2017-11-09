@@ -147,7 +147,7 @@ public class LeisBot extends AbstractBot {
 	@Asynchronous
 	public void saveData() throws BotException {
 		
-		logger.info("Iniciando Captura de leis ...");
+		logger.info("\n## Iniciando Captura de leis ##\n");
 
 		Integer paginaAtual = this.paginaAtualValue;
 
@@ -245,10 +245,6 @@ public class LeisBot extends AbstractBot {
 		vereador.setQuantidadeDeLeis(vereador.getQuantidadeDeLeis().add(BigInteger.ONE));
 		return vereador;
 
-	}
-	
-	public static void main(String[] args) {
-		System.out.println(trataAutor("Ckr - Engenharia E Construções".toLowerCase()));
 	}
 	
 	private static String trataAutor(final String autor) {
@@ -499,19 +495,26 @@ public class LeisBot extends AbstractBot {
 		Client client = ClientBuilder.newClient();
 
 		WebTarget target = client.target(url).queryParam(paginaAtual, paginaAtualValue)
-				.queryParam(quantidadePorPagina, quantidadePorPaginaValue).queryParam(ordenacao, ordenacaoValue)
-				.queryParam(termo, termoValue).queryParam(anoProtocolo, anoProtocoloValue).queryParam(nProc, nProcValue)
-				.queryParam(nProp, nPropValue).queryParam(autor, autorValue).queryParam(tipoDoc, tipoDocValue);
+											 .queryParam(quantidadePorPagina, quantidadePorPaginaValue)
+											 .queryParam(ordenacao, ordenacaoValue)
+											 .queryParam(termo, termoValue)
+											 .queryParam(anoProtocolo, anoProtocoloValue)
+											 .queryParam(nProc, nProcValue)
+											 .queryParam(nProp, nPropValue)
+											 .queryParam(autor, autorValue)
+											 .queryParam(tipoDoc, tipoDocValue);
 
 		Response response = null;
 
 		try {
 
 			response = target.request().get();
+			
 			logger.info("Status: " + String.valueOf(response.getStatus()));
+			
 			ArrayOfRetornoPesquisa readEntity = response.readEntity(ArrayOfRetornoPesquisa.class);
 
-			if (Objects.isNull(readEntity)) {
+			if (Objects.isNull(readEntity) || readEntity.getRetornoPesquisa().isEmpty()) {
 				return Optional.empty(); 
 			}
 
