@@ -34,8 +34,8 @@ public class LeiResourceImpl implements LeiResource {
 	}
 
 	@Override
-	public Response buscaPorTipo(Long id) {
-		List<Lei> leisPaginados = RESTUtils.lanca404SeNulo(leis.comTipo(id));
+	public Response buscaPorTipo(Long id, int total, int pg) {
+		List<Lei> leisPaginados = RESTUtils.lanca404SeNulo(leis.comTipo(id, total, pg));
 		return Response.ok().entity(leisPaginados).build();
 	}
 

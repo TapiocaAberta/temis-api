@@ -11,11 +11,12 @@ import javax.ws.rs.core.Response;
  *
  */
 
-@Path("carga")
-public interface CargaResource {
+@Path("machine-learn")
+public interface MachineLernResource {
 	
 	@POST
-	@Produces(MediaType.TEXT_PLAIN)
-	Response carregaVereadoresELeis();
+	@Produces(MediaType.APPLICATION_JSON)
+	Response geraDataParaML();
 	
+
 }

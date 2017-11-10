@@ -44,7 +44,7 @@ insert into partido_politico (id, sigla, nome) values (35, "PMB", "PARTIDO DA MU
 
 insert into tipo (id, nome, descricao) values (1, "Projeto de Lei", "Proposta por um(a) vereador(a) ou pela Prefeitura, visa criar nova lei ou alterar leis já existentes. Discutida na Câmara, poderá ser aprovada ou rejeitada.");
 insert into tipo (id, nome, descricao) values (2, "Projeto de Decreto Legislativo", "Projeto destinado a disciplinar assuntos que excedam ao âmbito da Câmara, tais como fixação de subsídios e aprovação das contas da Prefeitura. Este independe de sanção do prefeito.");
-insert into tipo (id, nome, descricao) values (3, "Projeto de Emenda à Lei Orgânica", "Projeto que visa alterar a Lei Orgânica Municipal (a “Constituição” do Município). Também exige quórum qualificado.");
+insert into tipo (id, nome, descricao) values (3, "Projeto De Emenda À Lei Orgânica Municipal", "Projeto que visa alterar a Lei Orgânica Municipal (a “Constituição” do Município). Também exige quórum qualificado.");
 insert into tipo (id, nome, descricao) values (4, "Requerimento", "Instrumento de fiscalização, é apresentado por vereador(a) e tem por objetivo solicitar informações a Prefeitura ou a algum outro órgão público, acerca da gestão, investimentos ou políticas públicas.");
 insert into tipo (id, nome, descricao) values (5, "Projeto de Lei Complementar", "Da mesma forma que o projeto de lei, visa criar uma nova lei ou alterar lei já existente. Exige quórum qualificado (mais votos) para sua aprovação.");
 insert into tipo (id, nome, descricao) values (6, "Projeto de Resolução", "Projeto destinado a disciplinar assuntos internos da Câmara, tais como política administrativa, de pessoal, alteração do Regimento Interno e outros.");

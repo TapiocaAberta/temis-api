@@ -28,7 +28,7 @@ public interface LeiResource {
 	
 	@GET
 	@Path("/tipo/{id}")
-	Response buscaPorTipo(@PathParam("id") Long id);
+	Response buscaPorTipo(@PathParam("id") Long id, @QueryParam("total") int total, @QueryParam("pg") int pg);
 	
 	@GET
 	@Path("/classe/{id}")

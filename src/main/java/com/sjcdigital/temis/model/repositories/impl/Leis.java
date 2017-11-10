@@ -35,9 +35,12 @@ public class Leis extends Repository<Lei> {
 		return query.getResultList();
 	}
 	
-	public List<Lei> comTipo(final Long id) {
+	public List<Lei> comTipo(final Long id, int total, int pg) {
 		TypedQuery<Lei> query = em.createQuery("SELECT lei FROM Lei lei WHERE lei.tipo.id = :id", Lei.class);
 		query.setParameter("id", id);
+		query.setFirstResult(pg * total);
+		query.setMaxResults(total);
+		
 		return query.getResultList();
 	}
 	
