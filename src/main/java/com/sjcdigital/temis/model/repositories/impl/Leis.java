@@ -16,6 +16,12 @@ import com.sjcdigital.temis.model.repositories.Repository;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class Leis extends Repository<Lei> {
+	
+	public List<Lei> comIds(final List<Long> ids) {
+		TypedQuery<Lei> query = em.createQuery("SELECT lei FROM Lei lei WHERE lei.id in (:ids)", Lei.class);
+		query.setParameter("ids", ids);
+		return query.getResultList();
+	}
 
 	public List<Lei> doAutor(final Long idAutor) {
 		TypedQuery<Lei> query = em.createQuery("SELECT lei FROM Lei lei WHERE lei.autor.id = :autor_id", Lei.class);

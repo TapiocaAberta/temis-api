@@ -187,6 +187,8 @@ public class LeisBot extends AbstractBot {
 	private Tipo novoTipo(String nome) {
 
 		nome = nome.replaceAll(" - \\(\\w+\\)", "");
+		
+		nome = StringUtils.isEmpty(nome.trim()) ? "Diversos" : nome;
 
 		Optional<Tipo> tipo = tipos.comNome(nome);
 
@@ -201,8 +203,10 @@ public class LeisBot extends AbstractBot {
 
 		return novoTipo;
 	}
-
+	
 	private SituacaoSimplificada buildSituacaoSimplicada(String nome) {
+		
+		nome = StringUtils.isEmpty(nome.trim()) ? "Sem Situação" : nome;
 
 		Optional<SituacaoSimplificada> situacaoSimplificada = situacoes.comNome(nome);
 
@@ -241,10 +245,7 @@ public class LeisBot extends AbstractBot {
 			siglaPartido = matcher.group(3).toUpperCase().trim();
 		}
 		
-		Autor vereador = pegaUsuarioJaroWinklerDistance(trataAutor(autor), siglaPartido);
-		vereador.setQuantidadeDeLeis(vereador.getQuantidadeDeLeis().add(BigInteger.ONE));
-		
-		return vereador;
+		return pegaUsuarioJaroWinklerDistance(trataAutor(autor), siglaPartido);
 
 	}
 	
@@ -541,12 +542,15 @@ public class LeisBot extends AbstractBot {
 
 		if (autorList.get().isEmpty()) {
 			Autor autorNovo = new Autor(WordUtils.capitalizeFully(nome), buildPartidoPolitico(siglaPartido));
+			autorNovo.setQuantidadeDeLeis(BigInteger.ONE);
 			autores.salvarNovaTransacao(autorNovo);
 			return autorNovo;
 		}
 
 		if (autorList.get().size() == 1) {
-			return autorList.get().get(0);
+			Autor autor = autorList.get().get(0);
+			atualizaQuantidadeLeis(autor);
+			return autor;
 		}
 
 		for (Autor autor : autorList.get()) {
@@ -555,8 +559,18 @@ public class LeisBot extends AbstractBot {
 			names.put(distance, autor);
 		}
 
-		return names.entrySet().stream().sorted(Map.Entry.<Double, Autor>comparingByKey().reversed()).findFirst().get()
-				.getValue();
+		Autor autor = names.entrySet().stream()
+										.sorted(Map.Entry.<Double, Autor>comparingByKey().reversed())
+										.findFirst().get().getValue();
+		
+		atualizaQuantidadeLeis(autor);
+		
+		return autor;
+	}
+
+	private void atualizaQuantidadeLeis(Autor autor) {
+		autor.setQuantidadeDeLeis(autor.getQuantidadeDeLeis().add(BigInteger.ONE));
+		autores.atualizaNovaTransacao(autor);
 	}
 }
 

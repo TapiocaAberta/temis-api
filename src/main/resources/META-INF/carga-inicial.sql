@@ -56,3 +56,4 @@ insert into situacao_simplificada (id, nome, descricao) values (1, "Em tramitaç
 insert into situacao_simplificada (id, nome, descricao) values (2, "Aprovado", "São os processos que obtiveram maioria de voto no plenário.");
 insert into situacao_simplificada (id, nome, descricao) values (3, "Arquivado", "São os processos que foram retirados pelo autor ou rejeitados pelo plenário que não obtiveram a maioria de votos suficientes para a sua aprovação.");
 insert into situacao_simplificada (id, nome, descricao) values (4, "Rejeitado", "São processos rejeitados");
+insert into situacao_simplificada (id, nome, descricao) values (5, "Sem Situação", "Processo antigo sem situação cadastrada");

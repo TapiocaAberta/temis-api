@@ -52,6 +52,11 @@ public class Autores extends Repository<Autor> {
 		super.salvar(entidade);
 	}
 	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void atualizaNovaTransacao(Autor entidade) {
+		super.atualizar(entidade);
+	}
+	
 	public List<Autor> doPartido(final Long id) {
 		TypedQuery<Autor> query = em.createQuery("SELECT autor FROM Autor autor WHERE autor.partidoPolitico.id = :id", Autor.class);
 		query.setParameter("id", id);
