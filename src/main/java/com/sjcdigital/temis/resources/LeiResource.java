@@ -23,6 +23,10 @@ public interface LeiResource {
 	Response buscaTodosPaginados(@QueryParam("total") int total, @QueryParam("pg") int pg);
 	
 	@GET
+	@Path("/{id}")
+	Response buscaPorId(@PathParam("id") Long id);
+	
+	@GET
 	@Path("/situacao-simplificada/{id}")
 	Response buscaPorSituacaoSimplificada(@PathParam("id") Long id);
 	

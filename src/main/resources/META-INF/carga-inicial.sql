@@ -1,10 +1,13 @@
-insert into classe (id, nome) values (1, "Nomeação");
-insert into classe (id, nome) values (2, "Utilidade Pública");
-insert into classe (id, nome) values (3, "Saúde");
-insert into classe (id, nome) values (4, "Acessibilidade");
-insert into classe (id, nome) values (5, "Data comemorativa");
-insert into classe (id, nome) values (6, "Educação");
-insert into classe (id, nome) values (7, "Outros");
+insert into classe (id, nome, tag) values (1, "Nomeação", "NOMEACAO");
+insert into classe (id, nome, tag) values (2, "Utilidade Pública", "UTILIDADE_PUBLICA");
+insert into classe (id, nome, tag) values (3, "Saúde", "SAUDE");
+insert into classe (id, nome, tag) values (4, "Acessibilidade", "ACESSIBILIDADE");
+insert into classe (id, nome, tag) values (5, "Data comemorativa", "DATA_COMEMORATIVA");
+insert into classe (id, nome, tag) values (6, "Educação", "EDUCACAO");
+insert into classe (id, nome, tag) values (7, "Outros", "OUTRO");
+insert into classe (id, nome, tag) values (8, "Sem Classificação", "SEM_CLASSIFICACAO");
+insert into classe (id, nome, tag) values (9, "Causas Animais", "CAUSAS_ANIMAIS");
+insert into classe (id, nome, tag) values (10, "Manutenção", "MANUTENCAO");
 
 insert into partido_politico (id, sigla, nome) values (1, "PMDB", "PARTIDO DO MOVIMENTO DEMOCRÁTICO BRASILEIRO");
 insert into partido_politico (id, sigla, nome) values (2, "PTB", "PARTIDO TRABALHISTA BRASILEIRO");

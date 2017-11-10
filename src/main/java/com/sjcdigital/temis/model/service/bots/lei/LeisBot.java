@@ -255,7 +255,9 @@ public class LeisBot extends AbstractBot {
 		
 		autorClean = autorClean.replaceAll("^ana paula s\\. melo$", "ana paula de souza melo");
 		
-		autorClean = autorClean.replaceAll("^professor calasans camargo - prp$", "prof. calasans camargo - prp");
+		autorClean = autorClean.replaceAll("^professor calasans camargo - prp$|"
+										 + "^luma professor calasans camargo$|"
+										 + "^professor calasans camargo$", "prof. calasans camargo");
 		
 		autorClean = autorClean.replaceAll("^carlinhos tiaca$|"
 										 + "^carlinhos tiaca \\(pmdb\\)$|"

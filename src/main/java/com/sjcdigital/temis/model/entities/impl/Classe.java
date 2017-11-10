@@ -14,6 +14,9 @@ public class Classe extends DefaultEntity {
 	
 	@Column(unique = true)
 	private String nome;
+	
+	@Column(unique = true)
+	private String tag;
 
 	public String getNome() {
 		return nome;
@@ -21,6 +24,14 @@ public class Classe extends DefaultEntity {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
 	}
 
 }

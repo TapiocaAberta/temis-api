@@ -46,8 +46,8 @@ public class AutorResourceImpl implements AutorResource {
 	}
 
 	@Override
-	public Response buscaLeisPorAutor(Long id) {
-		List<Lei> leisDoAutor = RESTUtils.lanca404SeNulo(leis.doAutor(id));
+	public Response buscaLeisPorAutor(Long id, int total, int pg) {
+		List<Lei> leisDoAutor = RESTUtils.lanca404SeNulo(leis.doAutor(id, total, pg));
 		return Response.ok().entity(leisDoAutor).build();
 	}
 

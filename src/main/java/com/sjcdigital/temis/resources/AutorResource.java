@@ -34,6 +34,6 @@ public interface AutorResource {
 	
 	@GET
 	@Path("/{id}/leis")
-	Response buscaLeisPorAutor(@PathParam("id") Long id);
+	Response buscaLeisPorAutor(@PathParam("id") Long id, @QueryParam("total") int total, @QueryParam("pg") int pg);
 	
 }

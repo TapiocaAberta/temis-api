@@ -45,4 +45,10 @@ public class LeiResourceImpl implements LeiResource {
 		return Response.ok().entity(leisPaginados).build();
 	}
 
+	@Override
+	public Response buscaPorId(Long id) {
+		Lei lei = RESTUtils.lanca404SeNulo(leis.buscarPorId(id));
+		return Response.ok().entity(lei).build();
+	}
+
 }

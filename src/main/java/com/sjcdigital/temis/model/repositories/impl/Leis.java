@@ -23,9 +23,11 @@ public class Leis extends Repository<Lei> {
 		return query.getResultList();
 	}
 
-	public List<Lei> doAutor(final Long idAutor) {
+	public List<Lei> doAutor(final Long idAutor, int total, int pg) {
 		TypedQuery<Lei> query = em.createQuery("SELECT lei FROM Lei lei WHERE lei.autor.id = :autor_id", Lei.class);
 		query.setParameter("autor_id", idAutor);
+		query.setFirstResult(pg * total);
+		query.setMaxResults(total);
 		return query.getResultList();
 	}
 	
