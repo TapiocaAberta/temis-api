@@ -1,5 +1,8 @@
 package com.sjcdigital.temis.model.entities.impl;
 
+import java.math.BigInteger;
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -15,14 +18,21 @@ import com.sjcdigital.temis.model.entities.DefaultEntity;
 @Entity
 @Table(name = "leis")
 public class Lei extends DefaultEntity {
-
+	
 	private static final long serialVersionUID = 1L;
+	
+	private static final String MAX_RATING = "5";
+	private static final String CEM_PORCENTO = "100";
 
 	@Column(length = 5000)
 	private String ementa;
 	private String numeroProcesso;
 	private String numeroPropositura;
 	private String situacao;
+	
+	private BigInteger ratingTotal = BigInteger.ZERO;
+	private BigInteger quantidadeDeVotos = BigInteger.ZERO;
+	private BigInteger relevancia = BigInteger.ZERO;
 	
 	@ManyToOne
 	@JoinColumn(name = "tipo_id")
@@ -48,6 +58,11 @@ public class Lei extends DefaultEntity {
 	
 	@Column(length = 1000)
 	private String pdfLei;
+	
+	public void calculaRelevancia() {
+		this.relevancia = this.ratingTotal.multiply(new BigInteger(CEM_PORCENTO))
+									 .divide(this.quantidadeDeVotos.multiply(new BigInteger(MAX_RATING)));
+	}
 
 	public String getEmenta() {
 		return ementa;
@@ -135,6 +150,45 @@ public class Lei extends DefaultEntity {
 
 	public void setPdfLei(String pdfLei) {
 		this.pdfLei = pdfLei;
+	}
+
+	public BigInteger getRelevancia() {
+		
+		if(Objects.isNull(this.relevancia)) {
+			return BigInteger.ZERO;
+		}
+		
+		return relevancia;
+	}
+
+	public void setRelevancia(BigInteger relevancia) {
+		this.relevancia = relevancia;
+	}
+
+	public BigInteger getQuantidadeDeVotos() {
+		
+		if(Objects.isNull(this.quantidadeDeVotos)) {
+			return BigInteger.ZERO;
+		}
+		
+		return quantidadeDeVotos;
+	}
+
+	public void setQuantidadeDeVotos(BigInteger quantidadeDeVotos) {
+		this.quantidadeDeVotos = quantidadeDeVotos;
+	}
+
+	public BigInteger getRatingTotal() {
+		
+		if(Objects.isNull(this.ratingTotal)) {
+			return BigInteger.ZERO;
+		}
+		
+		return ratingTotal;
+	}
+
+	public void setRatingTotal(BigInteger rating) {
+		this.ratingTotal = rating;
 	}
 
 }

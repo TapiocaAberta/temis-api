@@ -1,13 +1,18 @@
 package com.sjcdigital.temis.resources.impl;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
+import com.sjcdigital.temis.model.dto.Mensagem;
 import com.sjcdigital.temis.model.entities.impl.Lei;
 import com.sjcdigital.temis.model.repositories.impl.Leis;
+import com.sjcdigital.temis.model.repositories.impl.Votos;
 import com.sjcdigital.temis.resources.LeiResource;
 import com.sjcdigital.temis.utils.RESTUtils;
 
@@ -20,6 +25,9 @@ public class LeiResourceImpl implements LeiResource {
 	
 	@Inject
 	private Leis leis;
+	
+	@Inject
+	private Votos votos;
 
 	@Override
 	public Response buscaTodosPaginados(int total, int pg) {
@@ -49,6 +57,33 @@ public class LeiResourceImpl implements LeiResource {
 	public Response buscaPorId(Long id) {
 		Lei lei = RESTUtils.lanca404SeNulo(leis.buscarPorId(id));
 		return Response.ok().entity(lei).build();
+	}
+
+	@Override
+	public Response votar(Long id, Integer rating, HttpServletRequest request) {
+		
+		if(rating > 5) {
+			return Response.status(Status.FORBIDDEN).entity(new Mensagem("Rating máximo é 5")).build();
+		}
+		
+		Lei lei = RESTUtils.lanca404SeNulo(leis.buscarPorId(id));
+		
+		if(votos.podeVotar(request.getRemoteAddr(), lei)) {
+			
+			lei.setRatingTotal(lei.getRatingTotal().add(new BigInteger(rating.toString())));
+			lei.setQuantidadeDeVotos(lei.getQuantidadeDeVotos().add(BigInteger.ONE));
+			lei.calculaRelevancia();
+			
+			leis.atualizar(lei);
+			
+			return Response.ok().entity(lei).build();
+			
+		} else {
+			
+			return Response.status(Status.FORBIDDEN).entity(new Mensagem("Você já votou nesta lei")).build();
+		}
+		
+		
 	}
 
 }

@@ -22,6 +22,21 @@
 		
 	</security-constraint>
 	
+	<security-constraint>
+		
+		<web-resource-collection>
+			<web-resource-name>Access to Leis</web-resource-name>
+			<url-pattern>/api/v2/leis/*</url-pattern>
+			<http-method>PUT</http-method>
+		</web-resource-collection>
+		
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+		
+	</security-constraint>
+	
+	
 	<login-config>
 		<auth-method>BASIC</auth-method>
 		<realm-name>default</realm-name>
