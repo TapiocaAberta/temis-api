@@ -33,6 +33,10 @@ public interface AutorResource {
 	Response buscaId( @PathParam("id") Long id);
 	
 	@GET
+	@Path("/{id}/grafico")
+	Response montaGrafico( @PathParam("id") Long id);
+	
+	@GET
 	@Path("/{id}/leis")
 	Response buscaLeisPorAutor(@PathParam("id") Long id, @QueryParam("total") int total, @QueryParam("pg") int pg);
 	

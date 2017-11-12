@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
+import com.sjcdigital.temis.model.dto.Data;
 import com.sjcdigital.temis.model.entities.impl.Lei;
 import com.sjcdigital.temis.model.entities.impl.Tipo;
 import com.sjcdigital.temis.model.repositories.impl.Leis;
@@ -31,7 +32,6 @@ public class MachineLearnResourceImpl implements MachineLernResource {
 	
 	@Inject
 	private Tipos tipos;
-
 
 	@Override
 	public Response geraDataParaML() {
@@ -63,44 +63,6 @@ public class MachineLearnResourceImpl implements MachineLernResource {
 		logger.info("Data size - " + datas.size());
 
 		return Response.ok(datas).build();
-	}
-
-	public static class Data {
-
-		public Data(String text, String tipo) {
-			this.text = text;
-			this.tipo = tipo;
-			this.tag = "SEM_CLASSIFICACAO";
-		}
-		
-		private String tag;
-		private String tipo;
-		private String text;
-
-		public String getText() {
-			return text;
-		}
-
-		public void setText(String text) {
-			this.text = text;
-		}
-
-		public String getTag() {
-			return tag;
-		}
-
-		public void setTag(String tag) {
-			this.tag = tag;
-		}
-
-		public String getTipo() {
-			return tipo;
-		}
-
-		public void setTipo(String tipo) {
-			this.tipo = tipo;
-		}
-
 	}
 
 }

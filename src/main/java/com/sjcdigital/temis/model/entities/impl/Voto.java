@@ -1,7 +1,5 @@
 package com.sjcdigital.temis.model.entities.impl;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -21,7 +19,6 @@ public class Voto extends DefaultEntity {
 	public Voto(final String ip, final Lei lei) {
 		this.ip = ip;	
 		this.lei = lei;
-		this.dataRegistro = LocalDateTime.now();
 	}
 	
 	@Column(nullable = false)
@@ -31,7 +28,7 @@ public class Voto extends DefaultEntity {
 	@JoinColumn(name = "lei_id", nullable = false)
 	private Lei lei;
 	
-	private LocalDateTime dataRegistro;
+	
 
 	public String getIp() {
 		return ip;
@@ -49,11 +46,4 @@ public class Voto extends DefaultEntity {
 		this.lei = lei;
 	}
 
-	public LocalDateTime getDataRegistro() {
-		return dataRegistro;
-	}
-
-	public void setDataRegistro(LocalDateTime dataRegistro) {
-		this.dataRegistro = dataRegistro;
-	}
 }

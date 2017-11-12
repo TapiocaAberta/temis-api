@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 public interface CargaResource {
 	
 	@POST
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	Response carregaVereadoresELeis();
 	
 }

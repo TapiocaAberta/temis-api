@@ -8,6 +8,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import com.sjcdigital.temis.model.dto.Mensagem;
 import com.sjcdigital.temis.model.service.bots.autor.AutorBot;
 import com.sjcdigital.temis.model.service.bots.exceptions.BotException;
 import com.sjcdigital.temis.model.service.bots.lei.LeisBot;
@@ -44,6 +45,6 @@ public class CargaResourceImpl implements CargaResource {
 			Response.serverError().entity(ExceptionUtils.getMessage(e)).build();
 		}
 
-		return Response.ok().entity("Dados sendo carregados, veja o log da aplicação para mais detalhes").build();
+		return Response.ok().entity(new Mensagem("Dados sendo carregados, veja o log da aplicação para mais detalhes")).build();
 	}
 }

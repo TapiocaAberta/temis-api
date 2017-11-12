@@ -10,6 +10,7 @@ import com.sjcdigital.temis.model.entities.impl.Autor;
 import com.sjcdigital.temis.model.entities.impl.Lei;
 import com.sjcdigital.temis.model.repositories.impl.Autores;
 import com.sjcdigital.temis.model.repositories.impl.Leis;
+import com.sjcdigital.temis.model.service.chart.AutorChartService;
 import com.sjcdigital.temis.resources.AutorResource;
 import com.sjcdigital.temis.utils.RESTUtils;
 
@@ -26,6 +27,9 @@ public class AutorResourceImpl implements AutorResource {
 	
 	@Inject
 	private Leis leis;
+	
+	@Inject
+	private AutorChartService autorChart;
 
 	@Override
 	public Response buscaTodosPaginados(int total, int pg) {
@@ -49,6 +53,11 @@ public class AutorResourceImpl implements AutorResource {
 	public Response buscaLeisPorAutor(Long id, int total, int pg) {
 		List<Lei> leisDoAutor = RESTUtils.lanca404SeNulo(leis.doAutor(id, total, pg));
 		return Response.ok().entity(leisDoAutor).build();
+	}
+
+	@Override
+	public Response montaGrafico(Long id) {
+		return Response.ok(autorChart.montaAutorChart(id)).build();
 	}
 
 }
