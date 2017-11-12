@@ -20,8 +20,12 @@ public class LeisChartService {
 	@Inject
 	private Leis leis;
 	
-	public LeisChart montaChartPorAutor(final Long id) {
+	public LeisChart montaLeisChartPorAutor(final Long id) {
 		return new LeisChart(leis.contaLeisPorTipoEAutor(id), leis.contaLeisPorSituacaoEAutor(id), leis.contaLeisPorClasseEAutor(id));
+	}
+	
+	public LeisChart montaLeisChart() {
+		return new LeisChart(leis.contaLeisPorTipo(), leis.contaLeisPorSituacao(), leis.contaLeisPorClasse());
 	}
 
 }

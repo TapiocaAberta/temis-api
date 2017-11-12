@@ -19,6 +19,6 @@ public class AutorChartService {
 	// futuramente terão outros dados em autor, como grafico de presença etc...
 	
 	public AutorChart montaAutorChart(final Long id) {
-		 return new AutorChart(leisChartService.montaChartPorAutor(id));
+		 return new AutorChart(leisChartService.montaLeisChartPorAutor(id));
 	}
 }

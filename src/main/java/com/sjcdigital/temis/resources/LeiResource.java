@@ -26,6 +26,10 @@ public interface LeiResource {
 	@GET
 	Response buscaTodosPaginados(@QueryParam("total") int total, @QueryParam("pg") int pg);
 	
+	@GET
+	@Path("/grafico")
+	Response graficos();
+	
 	@PUT
 	@Path("/{id}")
 	Response votar(@PathParam("id") Long id, @QueryParam("rating") Integer rating, @Context HttpServletRequest request);

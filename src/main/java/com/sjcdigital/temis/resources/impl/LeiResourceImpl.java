@@ -13,6 +13,7 @@ import com.sjcdigital.temis.model.dto.Mensagem;
 import com.sjcdigital.temis.model.entities.impl.Lei;
 import com.sjcdigital.temis.model.repositories.impl.Leis;
 import com.sjcdigital.temis.model.repositories.impl.Votos;
+import com.sjcdigital.temis.model.service.chart.LeisChartService;
 import com.sjcdigital.temis.resources.LeiResource;
 import com.sjcdigital.temis.utils.RESTUtils;
 
@@ -28,6 +29,9 @@ public class LeiResourceImpl implements LeiResource {
 	
 	@Inject
 	private Votos votos;
+	
+	@Inject
+	private LeisChartService leisChartService;
 
 	@Override
 	public Response buscaTodosPaginados(int total, int pg) {
@@ -84,6 +88,11 @@ public class LeiResourceImpl implements LeiResource {
 		}
 		
 		
+	}
+
+	@Override
+	public Response graficos() {
+		return Response.ok(leisChartService.montaLeisChart()).build();
 	}
 
 }

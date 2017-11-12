@@ -70,6 +70,24 @@ public class Leis extends Repository<Lei> {
 		return query.getResultList();
 	}
 	
+	public List<DataChart> contaLeisPorSituacao() {
+		
+		String sql = "SELECT new com.sjcdigital.temis.model.dto.chart.DataChart(situacaoSimplificada.nome, count(situacaoSimplificada)) "
+				   + "FROM Lei lei JOIN lei.situacaoSimplificada situacaoSimplificada GROUP BY situacaoSimplificada.id";
+		
+		TypedQuery<DataChart> query = em.createQuery(sql, DataChart.class);
+		return query.getResultList();
+	}
+
+	public List<DataChart> contaLeisPorClasse() {
+	
+		String sql = "SELECT new com.sjcdigital.temis.model.dto.chart.DataChart(classe.nome, count(classe)) "
+				   + "FROM Lei lei JOIN lei.classe classe GROUP BY classe.id";
+		
+		TypedQuery<DataChart> query = em.createQuery(sql, DataChart.class);
+		return query.getResultList();
+	}
+	
 	public List<Lei> comIds(final List<Long> ids) {
 		TypedQuery<Lei> query = em.createQuery("SELECT lei FROM Lei lei WHERE lei.id in (:ids)", Lei.class);
 		query.setParameter("ids", ids);
