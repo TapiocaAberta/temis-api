@@ -27,11 +27,17 @@ public interface LeiResource {
 	Response buscaTodosPaginados(@QueryParam("total") int total, @QueryParam("pg") int pg);
 	
 	@GET
+	@Path("/filtra")
+	Response filtraPaginado( @QueryParam("idSituacao") Long idSituacao, @QueryParam("idClasse") Long idClasse, 
+							 @QueryParam("idTipo") Long idTipo, @QueryParam("ano") Integer ano, @QueryParam("total") int total, 
+							 @QueryParam("pg") int pg );
+	
+	@GET
 	@Path("/grafico")
 	Response graficos();
 	
 	@PUT
-	@Path("/{id}")
+	@Path("/{id}/vota")
 	Response votar(@PathParam("id") Long id, @QueryParam("rating") Integer rating, @Context HttpServletRequest request);
 	
 	@GET

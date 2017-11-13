@@ -15,6 +15,7 @@ import com.sjcdigital.temis.model.entities.DefaultEntity;
  * @author pedro-hos
  *
  */
+
 @Entity
 @Table(name = "leis")
 public class Lei extends DefaultEntity {
@@ -26,12 +27,24 @@ public class Lei extends DefaultEntity {
 
 	@Column(length = 5000)
 	private String ementa;
+	
+	@Column(name="numero_processo")
 	private String numeroProcesso;
+	
+	@Column(name="numero_propositura")
 	private String numeroPropositura;
+	
 	private String situacao;
 	
+	@Column(length = 4, nullable = false)
+	private Integer ano;
+	
+	@Column(name="rating_total")
 	private BigInteger ratingTotal = BigInteger.ZERO;
+	
+	@Column(name="quantidade_de_votos")
 	private BigInteger quantidadeDeVotos = BigInteger.ZERO;
+	
 	private BigInteger relevancia = BigInteger.ZERO;
 	
 	@ManyToOne
@@ -189,6 +202,14 @@ public class Lei extends DefaultEntity {
 
 	public void setRatingTotal(BigInteger rating) {
 		this.ratingTotal = rating;
+	}
+
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
 	}
 
 }

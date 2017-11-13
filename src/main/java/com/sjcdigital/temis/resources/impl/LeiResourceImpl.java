@@ -86,13 +86,17 @@ public class LeiResourceImpl implements LeiResource {
 			
 			return Response.status(Status.FORBIDDEN).entity(new Mensagem("Você já votou nesta lei")).build();
 		}
-		
-		
 	}
 
 	@Override
 	public Response graficos() {
 		return Response.ok(leisChartService.montaLeisChart()).build();
+	}
+
+	@Override
+	public Response filtraPaginado(Long idSituacao, Long idClasse, Long idTipo, Integer ano, int total, int pg) {
+		List<Lei> leisFiltrada = RESTUtils.lanca404SeNulo(leis.filtraPaginado(idSituacao, idClasse, idTipo, ano, total, pg));
+		return Response.ok().entity(leisFiltrada).build();
 	}
 
 }

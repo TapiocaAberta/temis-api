@@ -1,6 +1,7 @@
 package com.sjcdigital.temis.model.repositories.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -59,6 +60,79 @@ public class Leis extends Repository<Lei> {
 	}
 	
 	// Sem ser por autor
+	
+	public List<Lei> filtraPaginado(final Long idSituacao, final Long idClasse, final Long idTipo, final Integer ano, final int total, final int pg) {
+		
+		StringBuilder sql = new StringBuilder("SELECT lei FROM Lei lei ");
+		boolean and = false;
+		boolean where = false;
+		
+		if(Objects.nonNull(idTipo)) {
+			and = true;
+			where = true;
+			sql.append(" WHERE lei.tipo.id = :idTipo ");
+		}
+		
+		if(Objects.nonNull(idClasse)) {
+			adicionaWhereSeNecessario(sql, where);
+			adicionaAndSeNecessario(sql, and);
+			and = true;
+			where = true;
+			sql.append("lei.classe.id = :idClasse ");
+		}
+		
+		if(Objects.nonNull(idSituacao)) {
+			adicionaWhereSeNecessario(sql, where);
+			adicionaAndSeNecessario(sql, and);
+			and = true;
+			where = true;
+			sql.append("lei.situacaoSimplificada.id = :idSituacao ");
+		}
+		
+		if(Objects.nonNull(ano)) {
+			adicionaWhereSeNecessario(sql, where);
+			adicionaAndSeNecessario(sql, and);
+			and = true;
+			where = true;
+			sql.append("lei.ano = :ano ");
+			
+		}
+		
+		TypedQuery<Lei> query = em.createQuery(sql.toString(), Lei.class);
+		
+		if(Objects.nonNull(idTipo)) {
+			query.setParameter("idTipo", idTipo);
+		}
+		
+		if(Objects.nonNull(idClasse)) {
+			query.setParameter("idClasse", idClasse);
+		}
+		
+		if(Objects.nonNull(idSituacao)) {
+			query.setParameter("idSituacao", idSituacao);
+		}
+		
+		if(Objects.nonNull(ano)) {
+			query.setParameter("ano", ano);
+		}
+		
+		query.setFirstResult(pg * total);
+		query.setMaxResults(total);
+		
+		return query.getResultList();
+	}
+
+	private void adicionaWhereSeNecessario(StringBuilder sql, boolean where) {
+		if(!where) {
+			sql.append(" WHERE ");
+		}
+	}
+
+	private void adicionaAndSeNecessario(StringBuilder sql, boolean and) {
+		if (and) {
+			sql.append(" and ");
+		}
+	}
 	
 	public List<DataChart> contaLeisPorTipo() {
 		
