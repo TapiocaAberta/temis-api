@@ -96,7 +96,7 @@ public class LeiResourceImpl implements LeiResource {
 	@Override
 	public Response filtraPaginado(Long idSituacao, Long idClasse, Long idTipo, Integer ano, int total, int pg) {
 		List<Lei> leisFiltrada = RESTUtils.lanca404SeNulo(leis.filtraPaginado(idSituacao, idClasse, idTipo, ano, total, pg));
-		return Response.ok().entity(leisFiltrada).build();
+		return Response.ok().entity(leisFiltrada).build(); 
 	}
 
 }
