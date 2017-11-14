@@ -56,12 +56,15 @@ public class MachineLearnResourceImpl implements MachineLernResource {
 
 		List<Data> datas = new ArrayList<>();
 		
+		
 		for (Lei lei : leisSorteadas) {
-			datas.add(new Data(lei.getEmenta(), lei.getTipo().getNome()));
+			
+			String ementa = lei.getEmenta().replace("\n", "").replace("\t", "").replace("\r", "");
+			logger.info(ementa);
+			
+			datas.add(new Data(ementa, lei.getTipo().getNome()));
 		}
 		
-		logger.info("Data size - " + datas.size());
-
 		return Response.ok(datas).build();
 	}
 

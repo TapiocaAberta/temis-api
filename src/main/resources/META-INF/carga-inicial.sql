@@ -8,6 +8,12 @@ insert into classe (id, nome, tag) values (7, "Outros", "OUTRO");
 insert into classe (id, nome, tag) values (8, "Sem Classificação", "SEM_CLASSIFICACAO");
 insert into classe (id, nome, tag) values (9, "Causas Animais", "CAUSAS_ANIMAIS");
 insert into classe (id, nome, tag) values (10, "Manutenção", "MANUTENCAO");
+insert into classe (id, nome, tag) values (11, "Transporte", "TRANSPORTE");
+insert into classe (id, nome, tag) values (12, "Segurança", "SEGURANCA");
+insert into classe (id, nome, tag) values (13, "Orçamento", "ORCAMENTO");
+insert into classe (id, nome, tag) values (14, "Alteração de Lei", "ALTERACAO_LEI");
+insert into classe (id, nome, tag) values (15, "Congratulação", "CONGRATULACAO");
+insert into classe (id, nome, tag) values (15, "Meio Ambiente", "MEIO_AMBIENTE");
 
 insert into partido_politico (id, sigla, nome) values (1, "PMDB", "PARTIDO DO MOVIMENTO DEMOCRÁTICO BRASILEIRO");
 insert into partido_politico (id, sigla, nome) values (2, "PTB", "PARTIDO TRABALHISTA BRASILEIRO");

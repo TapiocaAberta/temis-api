@@ -172,7 +172,7 @@ public class LeisBot extends AbstractBot {
 		lei.setAutor(buildAutor(retornoPesquisa.getAutor()));
 		lei.setDcmId(retornoPesquisa.getDcmId());
 		lei.setDctId(retornoPesquisa.getDctId());
-		lei.setEmenta(retornoPesquisa.getEmenta().trim());
+		lei.setEmenta(retornoPesquisa.getEmenta().trim().replace("\n", "").replace("\t", "").replace("\r", ""));
 		lei.setNumeroProcesso(retornoPesquisa.getNumeroProcesso());
 		lei.setAno(montaAno(retornoPesquisa.getNumeroProcesso()));
 		lei.setNumeroPropositura(retornoPesquisa.getNumeroPropositura());
