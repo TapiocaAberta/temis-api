@@ -28,7 +28,7 @@
 
 		<properties>
 			<!-- Properties for Hibernate -->
-			<property name="hibernate.hbm2ddl.auto" value="create" /> <!-- update create-drop -->
+			<property name="hibernate.hbm2ddl.auto" value="update" /> <!-- update create-drop -->
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.hbm2ddl.import_files" value="/META-INF/carga-inicial.sql" />
 		</properties>
