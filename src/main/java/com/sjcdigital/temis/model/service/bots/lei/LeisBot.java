@@ -172,7 +172,7 @@ public class LeisBot extends AbstractBot {
 		lei.setAutor(buildAutor(retornoPesquisa.getAutor()));
 		lei.setDcmId(retornoPesquisa.getDcmId());
 		lei.setDctId(retornoPesquisa.getDctId());
-		lei.setEmenta(retornoPesquisa.getEmenta().trim().replace("\n", "").replace("\t", "").replace("\r", ""));
+		lei.setEmenta(retornoPesquisa.getEmenta().trim().replace("\n", " ").replace("\t", " ").replace("\r", " ").trim());
 		lei.setNumeroProcesso(retornoPesquisa.getNumeroProcesso());
 		lei.setAno(montaAno(retornoPesquisa.getNumeroProcesso()));
 		lei.setNumeroPropositura(retornoPesquisa.getNumeroPropositura());
@@ -210,8 +210,6 @@ public class LeisBot extends AbstractBot {
 			return tipo.get();
 		}
 
-		logger.info("tipo " + nome);
-
 		Tipo novoTipo = new Tipo(WordUtils.capitalizeFully(nome));
 		tipos.salvar(novoTipo);
 
@@ -227,8 +225,6 @@ public class LeisBot extends AbstractBot {
 		if (situacaoSimplificada.isPresent()) {
 			return situacaoSimplificada.get();
 		}
-
-		logger.info("Situação Simplificada: " + nome);
 
 		SituacaoSimplificada novaSituacaoSimplificada = new SituacaoSimplificada(WordUtils.capitalizeFully(nome));
 		situacoes.salvar(novaSituacaoSimplificada);

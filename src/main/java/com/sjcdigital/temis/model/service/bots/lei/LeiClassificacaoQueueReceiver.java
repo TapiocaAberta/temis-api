@@ -13,6 +13,7 @@ import javax.jms.ObjectMessage;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.sjcdigital.temis.model.entities.impl.Lei;
+import com.sjcdigital.temis.model.repositories.impl.Classes;
 import com.sjcdigital.temis.model.repositories.impl.Leis;
 
 /**
@@ -32,6 +33,9 @@ public class LeiClassificacaoQueueReceiver implements MessageListener {
 	
 	@Inject
 	private Leis leis;
+	
+	@Inject
+	private Classes classes;
 
 	@Override
 	public void onMessage(Message message) {
@@ -41,9 +45,15 @@ public class LeiClassificacaoQueueReceiver implements MessageListener {
 		try {
 			
 			Lei lei = ob.getBody(Lei.class);
-			leiClassificacao.classifica(lei.getEmenta());
+			String tag = leiClassificacao.classifica(lei.getEmenta());
 			
-			logger.info("Salvando Lei: " + lei.getNumeroProcesso() + " do autor: " + lei.getAutor().getNome());
+			logger.info("### Tag Encontrada: " + tag);
+			
+			lei.setClasse(classes.comTag(tag));
+			
+			logger.info("Salvando Lei: " + lei.getNumeroProcesso() + " do autor: " + lei.getAutor().getNome() + 
+						" e Classificação: " + lei.getClasse().getTag());
+			
 			leis.salvar(lei);
 			
 		} catch (JMSException e) {

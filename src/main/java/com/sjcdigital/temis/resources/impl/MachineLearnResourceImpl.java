@@ -9,12 +9,16 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.sjcdigital.temis.model.dto.Data;
+import com.sjcdigital.temis.model.dto.Mensagem;
 import com.sjcdigital.temis.model.entities.impl.Lei;
 import com.sjcdigital.temis.model.entities.impl.Tipo;
 import com.sjcdigital.temis.model.repositories.impl.Leis;
 import com.sjcdigital.temis.model.repositories.impl.Tipos;
+import com.sjcdigital.temis.model.service.machine_learn.TreinaClassificacao;
+import com.sjcdigital.temis.model.service.machine_learn.exception.TreinoException;
 import com.sjcdigital.temis.resources.MachineLernResource;
 
 /**
@@ -32,6 +36,9 @@ public class MachineLearnResourceImpl implements MachineLernResource {
 	
 	@Inject
 	private Tipos tipos;
+	
+	@Inject
+	private TreinaClassificacao treinar;
 
 	@Override
 	public Response geraDataParaML() {
@@ -66,6 +73,18 @@ public class MachineLearnResourceImpl implements MachineLernResource {
 		}
 		
 		return Response.ok(datas).build();
+	}
+
+	@Override
+	public Response treinaMaquina() {
+		
+		try {
+			treinar.run();
+			return Response.ok(new Mensagem("Classificação executada com sucesso!")).build();
+		} catch (TreinoException e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new Mensagem("Falha na classificação, leia o log!")).build();
+		}
+		
 	}
 
 }

@@ -17,6 +17,8 @@ public class Classe extends DefaultEntity {
 	
 	@Column(unique = true)
 	private String tag;
+	
+	private String descricao;
 
 	public String getNome() {
 		return nome;
@@ -32,6 +34,14 @@ public class Classe extends DefaultEntity {
 
 	public void setTag(String tag) {
 		this.tag = tag;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 
 }

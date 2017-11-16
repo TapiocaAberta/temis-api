@@ -12,11 +12,14 @@ import javax.ws.rs.core.Response;
  */
 
 @Path("machine-learn")
+@Produces({MediaType.APPLICATION_JSON})
 public interface MachineLernResource {
 	
 	@POST
-	@Produces({MediaType.APPLICATION_JSON})
 	Response geraDataParaML();
 	
+	@POST
+	@Path("/treina")
+	Response treinaMaquina();
 
 }

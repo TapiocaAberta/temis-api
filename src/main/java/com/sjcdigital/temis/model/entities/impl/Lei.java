@@ -212,4 +212,12 @@ public class Lei extends DefaultEntity {
 		this.ano = ano;
 	}
 
+	public Classe getClasse() {
+		return classe;
+	}
+
+	public void setClasse(Classe classe) {
+		this.classe = classe;
+	}
+
 }
