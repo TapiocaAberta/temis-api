@@ -47,6 +47,8 @@ import com.sjcdigital.temis.utils.RegexUtils;
 @Stateless
 public class LeisBot extends AbstractBot {
 
+	private static final String POLITICO_SEM_FOTO = "politico_sem_foto.png";
+
 	@Inject
 	private Logger logger;
 
@@ -77,6 +79,10 @@ public class LeisBot extends AbstractBot {
 	@Inject
 	@Property("url.leis")
 	private String url;
+	
+	@Inject
+	@Property("path.vereadores.images")
+	private String vereadorImagePath;
 
 	@Inject
 	@Property("pagina.atual")
@@ -554,6 +560,7 @@ public class LeisBot extends AbstractBot {
 
 		if (autorList.get().isEmpty()) {
 			Autor autorNovo = new Autor(WordUtils.capitalizeFully(nome), buildPartidoPolitico(siglaPartido));
+			autorNovo.setFoto(urlContext.concat(vereadorImagePath).concat(POLITICO_SEM_FOTO));
 			autorNovo.setQuantidadeDeLeis(BigInteger.ONE);
 			autores.salvarNovaTransacao(autorNovo);
 			return autorNovo;
