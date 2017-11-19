@@ -99,4 +99,9 @@ public class LeiResourceImpl implements LeiResource {
 		return Response.ok().entity(leisFiltrada).build(); 
 	}
 
+	@Override
+	public Response buscaAnos() {
+		return Response.ok().entity(leis.anos()).build(); 
+	}
+
 }

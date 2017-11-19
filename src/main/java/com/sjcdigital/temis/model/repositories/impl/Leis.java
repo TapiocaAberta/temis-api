@@ -8,6 +8,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.TypedQuery;
 
+import com.sjcdigital.temis.model.dto.Ano;
+import com.sjcdigital.temis.model.dto.Anos;
 import com.sjcdigital.temis.model.dto.chart.DataChart;
 import com.sjcdigital.temis.model.entities.impl.Lei;
 import com.sjcdigital.temis.model.repositories.Repository;
@@ -160,6 +162,12 @@ public class Leis extends Repository<Lei> {
 		
 		TypedQuery<DataChart> query = em.createQuery(sql, DataChart.class);
 		return query.getResultList();
+	}
+	
+	public Anos anos() {
+		TypedQuery<Ano> query = em.createQuery("SELECT DISTINCT new com.sjcdigital.temis.model.dto.Ano(lei.ano) FROM Lei lei ORDER BY lei.ano", Ano.class);
+		List<Ano> anos = query.getResultList();
+		return new Anos(anos);
 	}
 	
 	public List<Lei> comIds(final List<Long> ids) {

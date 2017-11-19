@@ -194,12 +194,12 @@ public class LeisBot extends AbstractBot {
 	
 	private Integer montaAno(String numeroProcesso) {
 		
-		Matcher matcher = RegexUtils.getMatcher("(\\/)([0-9]{2,4})", numeroProcesso);
+		Matcher matcher = RegexUtils.getMatcher("(\\/)([0-9]{4})", numeroProcesso);
 		Integer ano = LocalDate.now().getYear();
 		
 		if (matcher.find()) {
-			ano = matcher.group(2).length() == 2 ? new Integer("20" + matcher.group(2).trim()) : new Integer(matcher.group(2).trim());
-		}
+			ano = new Integer(matcher.group(2).trim());
+		} 
 		
 		return ano;
 	}
