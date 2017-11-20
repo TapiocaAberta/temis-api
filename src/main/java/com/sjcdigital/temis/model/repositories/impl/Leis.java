@@ -63,7 +63,8 @@ public class Leis extends Repository<Lei> {
 	
 	// Sem ser por autor
 	
-	public List<Lei> filtraPaginado(final Long idSituacao, final Long idClasse, final Long idTipo, final Integer ano, final int total, final int pg) {
+	public List<Lei> filtraPaginado( final Long idSituacao, final Long idClasse, final Long idTipo, final Integer ano, final Long idAutor, 
+									 final int total, final int pg) {
 		
 		StringBuilder sql = new StringBuilder("SELECT lei FROM Lei lei ");
 		boolean and = false;
@@ -100,6 +101,15 @@ public class Leis extends Repository<Lei> {
 			
 		}
 		
+		if(Objects.nonNull(idAutor)) {
+			adicionaWhereSeNecessario(sql, where);
+			adicionaAndSeNecessario(sql, and);
+			and = true;
+			where = true;
+			sql.append("lei.autor.id = :idAutor ");
+			
+		}
+		
 		TypedQuery<Lei> query = em.createQuery(sql.toString(), Lei.class);
 		
 		if(Objects.nonNull(idTipo)) {
@@ -116,6 +126,10 @@ public class Leis extends Repository<Lei> {
 		
 		if(Objects.nonNull(ano)) {
 			query.setParameter("ano", ano);
+		}
+		
+		if(Objects.nonNull(idAutor)) {
+			query.setParameter("idAutor", idAutor);
 		}
 		
 		query.setFirstResult(pg * total);
@@ -164,9 +178,24 @@ public class Leis extends Repository<Lei> {
 		return query.getResultList();
 	}
 	
-	public Anos anos() {
-		TypedQuery<Ano> query = em.createQuery("SELECT DISTINCT new com.sjcdigital.temis.model.dto.Ano(lei.ano) FROM Lei lei ORDER BY lei.ano", Ano.class);
+	public Anos anos(final Long idAutor) {
+		StringBuilder sql = new StringBuilder("SELECT DISTINCT new com.sjcdigital.temis.model.dto.Ano(lei.ano) FROM Lei lei ");
+		
+		if(Objects.nonNull(idAutor)) {
+			sql.append("WHERE lei.autor.id = :idAutor ");
+			
+		}
+		
+		sql.append("ORDER BY lei.ano");
+		
+		TypedQuery<Ano> query = em.createQuery(sql.toString(), Ano.class);
+		
+		if(Objects.nonNull(idAutor)) {
+			query.setParameter("idAutor", idAutor);
+		}
+		
 		List<Ano> anos = query.getResultList();
+		
 		return new Anos(anos);
 	}
 	

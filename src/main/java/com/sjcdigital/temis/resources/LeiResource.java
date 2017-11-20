@@ -29,7 +29,7 @@ public interface LeiResource {
 	@GET
 	@Path("/filtra")
 	Response filtraPaginado( @QueryParam("idSituacao") Long idSituacao, @QueryParam("idClasse") Long idClasse, 
-							 @QueryParam("idTipo") Long idTipo, @QueryParam("ano") Integer ano, 
+							 @QueryParam("idTipo") Long idTipo, @QueryParam("ano") Integer ano, @QueryParam("idAutor") Long idAutor,
 							 @QueryParam("total") int total, @QueryParam("pg") int pg );
 	
 	@GET
@@ -38,7 +38,7 @@ public interface LeiResource {
 	
 	@GET
 	@Path("/anos")
-	Response buscaAnos();
+	Response buscaAnos(@QueryParam("idAutor") Long idAutor);
 	
 	@PUT
 	@Path("/{id}/vota")

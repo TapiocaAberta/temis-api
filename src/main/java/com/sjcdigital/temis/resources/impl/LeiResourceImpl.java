@@ -94,14 +94,14 @@ public class LeiResourceImpl implements LeiResource {
 	}
 
 	@Override
-	public Response filtraPaginado(Long idSituacao, Long idClasse, Long idTipo, Integer ano, int total, int pg) {
-		List<Lei> leisFiltrada = RESTUtils.lanca404SeNulo(leis.filtraPaginado(idSituacao, idClasse, idTipo, ano, total, pg));
+	public Response filtraPaginado(Long idSituacao, Long idClasse, Long idTipo, Integer ano, Long idAutor, int total, int pg) {
+		List<Lei> leisFiltrada = RESTUtils.lanca404SeNulo(leis.filtraPaginado(idSituacao, idClasse, idTipo, ano, idAutor, total, pg));
 		return Response.ok().entity(leisFiltrada).build(); 
 	}
 
 	@Override
-	public Response buscaAnos() {
-		return Response.ok().entity(leis.anos()).build(); 
+	public Response buscaAnos(final Long idAutor) {
+		return Response.ok().entity(leis.anos(idAutor)).build(); 
 	}
 
 }
