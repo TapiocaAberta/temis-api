@@ -8,6 +8,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.sjcdigital.temis.model.dto.Ano;
 import com.sjcdigital.temis.model.dto.Anos;
 import com.sjcdigital.temis.model.dto.chart.DataChart;
@@ -67,86 +69,52 @@ public class Leis extends Repository<Lei> {
 									 final int total, final int pg) {
 		
 		StringBuilder sql = new StringBuilder("SELECT lei FROM Lei lei ");
-		boolean and = false;
-		boolean where = false;
+		StringBuilder where = new StringBuilder();
 		
-		if(Objects.nonNull(idTipo)) {
-			and = true;
-			where = true;
-			sql.append(" WHERE lei.tipo.id = :idTipo ");
-		}
+		escreveSeNaoNulo(idTipo, "lei.tipo.id = :idTipo ", where);
+		escreveSeNaoNulo(idClasse, "lei.classe.id = :idClasse ", where);
+		escreveSeNaoNulo(idSituacao, "lei.situacaoSimplificada.id = :idSituacao ", where);
+		escreveSeNaoNulo(ano, "lei.ano = :ano ", where);
+		escreveSeNaoNulo(idAutor, "lei.autor.id = :idAutor ", where);
 		
-		if(Objects.nonNull(idClasse)) {
-			adicionaWhereSeNecessario(sql, where);
-			adicionaAndSeNecessario(sql, and);
-			and = true;
-			where = true;
-			sql.append("lei.classe.id = :idClasse ");
-		}
-		
-		if(Objects.nonNull(idSituacao)) {
-			adicionaWhereSeNecessario(sql, where);
-			adicionaAndSeNecessario(sql, and);
-			and = true;
-			where = true;
-			sql.append("lei.situacaoSimplificada.id = :idSituacao ");
-		}
-		
-		if(Objects.nonNull(ano)) {
-			adicionaWhereSeNecessario(sql, where);
-			adicionaAndSeNecessario(sql, and);
-			and = true;
-			where = true;
-			sql.append("lei.ano = :ano ");
-			
-		}
-		
-		if(Objects.nonNull(idAutor)) {
-			adicionaWhereSeNecessario(sql, where);
-			adicionaAndSeNecessario(sql, and);
-			and = true;
-			where = true;
-			sql.append("lei.autor.id = :idAutor ");
-			
-		}
+		adicionaWhereSeNecessario(sql, where);
 		
 		TypedQuery<Lei> query = em.createQuery(sql.toString(), Lei.class);
 		
-		if(Objects.nonNull(idTipo)) {
-			query.setParameter("idTipo", idTipo);
-		}
-		
-		if(Objects.nonNull(idClasse)) {
-			query.setParameter("idClasse", idClasse);
-		}
-		
-		if(Objects.nonNull(idSituacao)) {
-			query.setParameter("idSituacao", idSituacao);
-		}
-		
-		if(Objects.nonNull(ano)) {
-			query.setParameter("ano", ano);
-		}
-		
-		if(Objects.nonNull(idAutor)) {
-			query.setParameter("idAutor", idAutor);
-		}
+		setParameterSeNaoNulo(idTipo, "idTipo", query);
+		setParameterSeNaoNulo(idClasse, "idClasse", query);
+		setParameterSeNaoNulo(idSituacao, "idSituacao", query);
+		setParameterSeNaoNulo(ano, "ano", query);
+		setParameterSeNaoNulo(idAutor, "idAutor", query);
 		
 		query.setFirstResult(pg * total);
 		query.setMaxResults(total);
 		
 		return query.getResultList();
 	}
-
-	private void adicionaWhereSeNecessario(StringBuilder sql, boolean where) {
-		if(!where) {
-			sql.append(" WHERE ");
+	
+	private void escreveSeNaoNulo(final Object obj, final String whereQuery, StringBuilder where) {
+		if(Objects.nonNull(obj)) {
+			adicionaAndSeNecessario(where);
+			where.append(whereQuery);
+		}
+	}
+	
+	private void setParameterSeNaoNulo(final Object obj, final String parameter, TypedQuery<?> query) {
+		if(Objects.nonNull(obj)) {
+			query.setParameter(parameter, obj);
 		}
 	}
 
-	private void adicionaAndSeNecessario(StringBuilder sql, boolean and) {
-		if (and) {
-			sql.append(" and ");
+	private void adicionaWhereSeNecessario(StringBuilder sql, StringBuilder where) {
+		if(StringUtils.isNotEmpty(where)) {
+			sql.append(" WHERE ").append(where);
+		}
+	}
+
+	private void adicionaAndSeNecessario(StringBuilder where) {
+		if(StringUtils.isNotEmpty(where)) {
+			where.append(" AND ");
 		}
 	}
 	

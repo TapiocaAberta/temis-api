@@ -74,7 +74,7 @@ public class Lei extends DefaultEntity {
 	
 	public void calculaRelevancia() {
 		this.relevancia = this.ratingTotal.multiply(new BigInteger(CEM_PORCENTO))
-									 .divide(this.quantidadeDeVotos.multiply(new BigInteger(MAX_RATING)));
+									 	  .divide(this.quantidadeDeVotos.multiply(new BigInteger(MAX_RATING)));
 	}
 
 	public String getEmenta() {
