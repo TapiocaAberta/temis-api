@@ -1,17 +1,20 @@
 package com.sjcdigital.temis.model.entities.impl;
 
-import java.util.Date;
+import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.sjcdigital.temis.model.entities.DefaultEntity;
 
 @Entity
 @Table(name = "sessao")
+@NamedQueries(@NamedQuery(name = "Sessao.porNome", query = "select s from Sessao s where s.nome = :nome"))
 public class Sessao extends DefaultEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -56,6 +59,48 @@ public class Sessao extends DefaultEntity {
 
 	public void setLegislatura(Legislatura legislatura) {
 		this.legislatura = legislatura;
+	}
+
+	@Override
+	public String toString() {
+		return "Sessao [nome=" + nome + ", data=" + data + ", legislatura=" + legislatura + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((data == null) ? 0 : data.hashCode());
+		result = prime * result + ((legislatura == null) ? 0 : legislatura.hashCode());
+		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Sessao other = (Sessao) obj;
+		if (data == null) {
+			if (other.data != null)
+				return false;
+		} else if (!data.equals(other.data))
+			return false;
+		if (legislatura == null) {
+			if (other.legislatura != null)
+				return false;
+		} else if (!legislatura.equals(other.legislatura))
+			return false;
+		if (nome == null) {
+			if (other.nome != null)
+				return false;
+		} else if (!nome.equals(other.nome))
+			return false;
+		return true;
 	}
 
 }

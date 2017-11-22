@@ -18,4 +18,10 @@ public interface CargaResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	Response carregaVereadoresELeis();
 	
+	
+	@POST
+	@Path("presenca")
+	@Produces(MediaType.APPLICATION_JSON)
+	Response carregaPresencaVereadores();
+	
 }

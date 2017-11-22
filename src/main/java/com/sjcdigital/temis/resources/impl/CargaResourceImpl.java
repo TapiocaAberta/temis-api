@@ -12,6 +12,7 @@ import com.sjcdigital.temis.model.dto.Mensagem;
 import com.sjcdigital.temis.model.service.bots.autor.AutorBot;
 import com.sjcdigital.temis.model.service.bots.exceptions.BotException;
 import com.sjcdigital.temis.model.service.bots.lei.LeisBot;
+import com.sjcdigital.temis.model.service.bots.presenca.PresencasBot;
 import com.sjcdigital.temis.resources.CargaResource;
 
 /**
@@ -29,13 +30,16 @@ public class CargaResourceImpl implements CargaResource {
 
 	@Inject
 	private LeisBot leisBot;
+	
+	@Inject 
+	private PresencasBot presencasBot;
 
 	@Override
 	public Response carregaVereadoresELeis() {
 
 		try {
 
-			logger.info("## Iniciando carga de dados ##\n");
+			logger.info("## Iniciando carga de dados de vereadores e leis ##\n");
 
 			vereadorBot.saveData();
 			leisBot.saveData();
@@ -46,5 +50,18 @@ public class CargaResourceImpl implements CargaResource {
 		}
 
 		return Response.ok().entity(new Mensagem("Dados sendo carregados, veja o log da aplicação para mais detalhes")).build();
+	}
+
+	@Override
+	public Response carregaPresencaVereadores() {
+		try {
+			logger.info("## Iniciando carga de dados de presença de vereadores em sessões ##\n");
+			presencasBot.saveData();
+		} catch (BotException e) {
+			logger.severe(ExceptionUtils.getStackTrace(e));
+			Response.serverError().entity(ExceptionUtils.getMessage(e)).build();
+		}
+		return Response.ok().entity(new Mensagem("Dados de presença sendo carregados, veja o log da aplicação para mais detalhes")).build();
+
 	}
 }
