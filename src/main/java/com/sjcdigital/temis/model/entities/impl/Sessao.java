@@ -22,6 +22,7 @@ public class Sessao extends DefaultEntity {
 	@Column(unique = true)
 	private String nome;
 	private Date data;
+	private String dataTexto;
 	@ManyToOne
 	@JoinColumn(name = "legislatura_id")
 	private Legislatura legislatura;
@@ -61,9 +62,22 @@ public class Sessao extends DefaultEntity {
 		this.legislatura = legislatura;
 	}
 
+	public String getDataTexto() {
+		return dataTexto;
+	}
+
+	public void setDataTexto(String dataTexto) {
+		this.dataTexto = dataTexto;
+	}
+
+	public String resumo() {
+		return legislatura.getNome() + " - " + nome + " - " + dataTexto;
+	}
+
 	@Override
 	public String toString() {
-		return "Sessao [nome=" + nome + ", data=" + data + ", legislatura=" + legislatura + "]";
+		return "Sessao [nome=" + nome + ", data=" + data + ", dataTexto=" + dataTexto + ", legislatura=" + legislatura
+				+ "]";
 	}
 
 	@Override
@@ -71,6 +85,7 @@ public class Sessao extends DefaultEntity {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((data == null) ? 0 : data.hashCode());
+		result = prime * result + ((dataTexto == null) ? 0 : dataTexto.hashCode());
 		result = prime * result + ((legislatura == null) ? 0 : legislatura.hashCode());
 		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
 		return result;
@@ -89,6 +104,11 @@ public class Sessao extends DefaultEntity {
 			if (other.data != null)
 				return false;
 		} else if (!data.equals(other.data))
+			return false;
+		if (dataTexto == null) {
+			if (other.dataTexto != null)
+				return false;
+		} else if (!dataTexto.equals(other.dataTexto))
 			return false;
 		if (legislatura == null) {
 			if (other.legislatura != null)

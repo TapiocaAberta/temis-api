@@ -3,12 +3,15 @@ package com.sjcdigital.temis.model.entities.impl;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.sjcdigital.temis.model.entities.DefaultEntity;
 
 @Entity
 @Table(name = "presenca")
+@NamedQueries(@NamedQuery(name = "Presenca.porAutor", query = "select p from Presenca p where p.autor = :autor"))
 public class Presenca extends DefaultEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -94,5 +97,5 @@ public class Presenca extends DefaultEntity {
 			return false;
 		return true;
 	}
-	
+
 }

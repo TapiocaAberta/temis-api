@@ -52,6 +52,7 @@ public class PresencaExtractor {
 			// TODO: retrieve date from the String to create the actual date (which is not important right now)
 			Date data = new Date(new java.util.Date().getTime());
 			Sessao novaSessao = new Sessao(nomeSessao, data, legislatura);
+			novaSessao.setDataTexto(dadosPresencas.getData());
 			sessoes.salvar(novaSessao);
 			return novaSessao;
 		});

@@ -31,7 +31,7 @@ public class PresencaVereadores {
 		this.sessao = session;
 	}
 
-	public String getDate() {
+	public String getData() {
 		return data;
 	}
 
