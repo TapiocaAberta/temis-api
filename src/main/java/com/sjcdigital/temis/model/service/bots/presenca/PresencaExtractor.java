@@ -39,6 +39,10 @@ public class PresencaExtractor {
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void salvaPresencas(PresencaVereadores dadosPresencas) {
+		if(dadosPresencas == null) {
+			logger.fine("Dados presenca é nulo - ignorando");
+			return;
+		}
 		String nomeLegistatura = dadosPresencas.getLegislatura();
 		Legislatura legislatura = legislaturas.comNome(nomeLegistatura).orElseGet(() -> {
 			logger.info("Legislatura não encontrada... Criando:" + nomeLegistatura);

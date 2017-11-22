@@ -149,6 +149,66 @@
 					<artifactId>cxf-rt-rs-client</artifactId>
 					<groupId>org.apache.cxf</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>jackcess</artifactId>
+					<groupId>com.healthmarketscience.jackcess</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jackcess-encrypt</artifactId>
+					<groupId>com.healthmarketscience.jackcess</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jmatio</artifactId>
+					<groupId>org.tallison</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>json-simple</artifactId>
+					<groupId>com.googlecode.json-simple</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>json</artifactId>
+					<groupId>com.tdunning</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>gson</artifactId>
+					<groupId>com.google.code.gson</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>sentiment-analysis-parser</artifactId>
+					<groupId>edu.usc.ir</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>geoapi</artifactId>
+					<groupId>org.opengis</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bcmail-jdk15on</artifactId>
+					<groupId>org.bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bcprov-jdk15on</artifactId>
+					<groupId>org.bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>httpservices</artifactId>
+					<groupId>edu.ucar</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>rome</artifactId>
+					<groupId>com.rometools</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>junrar</artifactId>
+					<groupId>com.github.junrar</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>grib</artifactId>
+					<groupId>edu.ucar</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>cdm</artifactId>
+					<groupId>edu.ucar</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		
