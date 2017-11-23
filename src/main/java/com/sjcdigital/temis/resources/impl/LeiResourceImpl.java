@@ -15,7 +15,7 @@ import com.sjcdigital.temis.model.repositories.impl.Leis;
 import com.sjcdigital.temis.model.repositories.impl.Votos;
 import com.sjcdigital.temis.model.service.chart.LeisChartService;
 import com.sjcdigital.temis.resources.LeiResource;
-import com.sjcdigital.temis.utils.RESTUtils;
+import com.sjcdigital.temis.utils.JaxrsUtils;
 
 /**
  * @author pedro-hos
@@ -35,31 +35,32 @@ public class LeiResourceImpl implements LeiResource {
 
 	@Override
 	public Response buscaTodosPaginados(int total, int pg) {
-		List<Lei> leisPaginados = RESTUtils.lanca404SeNulo(leis.todosPaginado(total, pg));
-		return Response.ok().entity(leisPaginados).build();
+		return Response.ok().header(JaxrsUtils.HEADER_TOTAL_ITENS, leis.contaTodos())
+							.entity(JaxrsUtils.lanca404SeNulo(leis.todosPaginado(total, pg)))
+							.build();
 	}
 
 	@Override
 	public Response buscaPorSituacaoSimplificada(Long id) {
-		List<Lei> leisPaginados = RESTUtils.lanca404SeNulo(leis.comSituacaoSimplificada(id));
+		List<Lei> leisPaginados = JaxrsUtils.lanca404SeNulo(leis.comSituacaoSimplificada(id));
 		return Response.ok().entity(leisPaginados).build();
 	}
 
 	@Override
 	public Response buscaPorTipo(Long id, int total, int pg) {
-		List<Lei> leisPaginados = RESTUtils.lanca404SeNulo(leis.comTipo(id, total, pg));
+		List<Lei> leisPaginados = JaxrsUtils.lanca404SeNulo(leis.comTipo(id, total, pg));
 		return Response.ok().entity(leisPaginados).build();
 	}
 
 	@Override
 	public Response buscaPorClasse(Long id) {
-		List<Lei> leisPaginados = RESTUtils.lanca404SeNulo(leis.comClasse(id));
+		List<Lei> leisPaginados = JaxrsUtils.lanca404SeNulo(leis.comClasse(id));
 		return Response.ok().entity(leisPaginados).build();
 	}
 
 	@Override
 	public Response buscaPorId(Long id) {
-		Lei lei = RESTUtils.lanca404SeNulo(leis.buscarPorId(id));
+		Lei lei = JaxrsUtils.lanca404SeNulo(leis.buscarPorId(id));
 		return Response.ok().entity(lei).build();
 	}
 
@@ -70,7 +71,7 @@ public class LeiResourceImpl implements LeiResource {
 			return Response.status(Status.FORBIDDEN).entity(new Mensagem("Rating máximo é 5")).build();
 		}
 		
-		Lei lei = RESTUtils.lanca404SeNulo(leis.buscarPorId(id));
+		Lei lei = JaxrsUtils.lanca404SeNulo(leis.buscarPorId(id));
 		
 		if(votos.podeVotar(request.getRemoteAddr(), lei)) {
 			
@@ -95,8 +96,9 @@ public class LeiResourceImpl implements LeiResource {
 
 	@Override
 	public Response filtraPaginado(Long idSituacao, Long idClasse, Long idTipo, Integer ano, Long idAutor, int total, int pg) {
-		List<Lei> leisFiltrada = RESTUtils.lanca404SeNulo(leis.filtraPaginado(idSituacao, idClasse, idTipo, ano, idAutor, total, pg));
-		return Response.ok().entity(leisFiltrada).build(); 
+		return Response.ok().header(JaxrsUtils.HEADER_TOTAL_ITENS, leis.contaTodosFiltrado(idSituacao, idClasse, idTipo, ano, idAutor))
+							.entity(JaxrsUtils.lanca404SeNulo(leis.filtraPaginado(idSituacao, idClasse, idTipo, ano, idAutor, total, pg)))
+							.build();
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import com.sjcdigital.temis.model.entities.impl.Autor;
 import com.sjcdigital.temis.model.repositories.impl.Autores;
 import com.sjcdigital.temis.model.repositories.impl.Presencas;
 import com.sjcdigital.temis.resources.PresencaResource;
-import com.sjcdigital.temis.utils.RESTUtils;
+import com.sjcdigital.temis.utils.JaxrsUtils;
 
 @Stateless
 public class PresencaResourceImpl implements PresencaResource {
@@ -24,7 +24,7 @@ public class PresencaResourceImpl implements PresencaResource {
 
 	@Override
 	public Response porVereador(long id) {
-		Autor autor = RESTUtils.lanca404SeNulo(autores.buscarPorId(id));
+		Autor autor = JaxrsUtils.lanca404SeNulo(autores.buscarPorId(id));
 		Map<String, Boolean> mapaPresencas = new HashMap<>();
 		// for some reason this is NOT working - sounds like a bug
 //		mapaPresencas = presencasPorAutor.stream().collect(Collectors.toMap(p -> p.getSessao().resumo(), Presenca::isPresenca));

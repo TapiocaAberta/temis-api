@@ -23,7 +23,7 @@
 		<!-- The datasource is deployed as WEB-INF/kitchensink-quickstart-ds.xml,
 			you can find it in the source at src/main/webapp/WEB-INF/kitchensink-quickstart-ds.xml -->
 
-		<jta-data-source>java:jboss/datasources/TemisDS</jta-data-source>
+		<jta-data-source>java:jboss/datasources/MySQLDS</jta-data-source>
 <!-- 		<jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source> -->
 
 		<properties>

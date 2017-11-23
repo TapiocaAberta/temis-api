@@ -11,7 +11,7 @@ import com.sjcdigital.temis.model.entities.impl.PartidoPolitico;
 import com.sjcdigital.temis.model.repositories.impl.Autores;
 import com.sjcdigital.temis.model.repositories.impl.PartidosPolitico;
 import com.sjcdigital.temis.resources.PartidoResource;
-import com.sjcdigital.temis.utils.RESTUtils;
+import com.sjcdigital.temis.utils.JaxrsUtils;
 
 /**
  * @author pesilva
@@ -28,19 +28,19 @@ public class PartidoResourceImpl implements PartidoResource {
 
 	@Override
 	public Response todos() {
-		List<PartidoPolitico> todosPartidos = RESTUtils.lanca404SeNulo(partidos.todos());
+		List<PartidoPolitico> todosPartidos = JaxrsUtils.lanca404SeNulo(partidos.todos());
 		return Response.ok(todosPartidos).build();
 	}
 
 	@Override
 	public Response porSigla(String sigla) {
-		PartidoPolitico partido = RESTUtils.lanca404SeNulo(partidos.comSigla(sigla));
+		PartidoPolitico partido = JaxrsUtils.lanca404SeNulo(partidos.comSigla(sigla));
 		return Response.ok(partido).build();
 	}
 
 	@Override
 	public Response vereadoresDoPartido(Long id) {
-		List<Autor> vereadoresDoPartido = RESTUtils.lanca404SeNulo(autores.doPartido(id));
+		List<Autor> vereadoresDoPartido = JaxrsUtils.lanca404SeNulo(autores.doPartido(id));
 		return Response.ok(vereadoresDoPartido).build();
 	}
 

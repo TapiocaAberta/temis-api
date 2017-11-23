@@ -65,6 +65,31 @@ public class Leis extends Repository<Lei> {
 	
 	// Sem ser por autor
 	
+	public Long contaTodosFiltrado(final Long idSituacao, final Long idClasse, final Long idTipo, final Integer ano,
+										final Long idAutor) {
+
+		StringBuilder sql = new StringBuilder("SELECT COUNT(lei) FROM Lei lei ");
+		StringBuilder where = new StringBuilder();
+
+		escreveSeNaoNulo(idTipo, "lei.tipo.id = :idTipo ", where);
+		escreveSeNaoNulo(idClasse, "lei.classe.id = :idClasse ", where);
+		escreveSeNaoNulo(idSituacao, "lei.situacaoSimplificada.id = :idSituacao ", where);
+		escreveSeNaoNulo(ano, "lei.ano = :ano ", where);
+		escreveSeNaoNulo(idAutor, "lei.autor.id = :idAutor ", where);
+
+		adicionaWhereSeNecessario(sql, where);
+
+		TypedQuery<Long> query = em.createQuery(sql.toString(), Long.class);
+
+		setParameterSeNaoNulo(idTipo, "idTipo", query);
+		setParameterSeNaoNulo(idClasse, "idClasse", query);
+		setParameterSeNaoNulo(idSituacao, "idSituacao", query);
+		setParameterSeNaoNulo(ano, "ano", query);
+		setParameterSeNaoNulo(idAutor, "idAutor", query);
+
+		return query.getSingleResult();
+	}
+	
 	public List<Lei> filtraPaginado( final Long idSituacao, final Long idClasse, final Long idTipo, final Integer ano, final Long idAutor, 
 									 final int total, final int pg) {
 		
